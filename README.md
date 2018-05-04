@@ -1,2 +1,2 @@
 # QTestConnect
-Retrieves QTest projects, modules, and test cases via QTest Java SDK
+Retrieve QTest projects, modules, and test cases via QTest Java SDK
