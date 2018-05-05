@@ -211,7 +211,11 @@ public class QTestConnect {
 	public static void main(String[] args) throws Exception {
 		// connectToProjectService();
 		// observeRetrieveTestCasesFromModule("To Be Automated");
+<<<<<<< HEAD
 		/*System.out.println(observeGetTestCaseByName("Create Opportunity with a custom opportunity "
 				+ "type and custom Rationale, and add to target list")); */
+=======
+		System.out.println(observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY"));
+>>>>>>> branch 'observations' of https://github.com/7cOs/QTestConnect.git
 	}
 }
