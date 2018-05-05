@@ -210,7 +210,6 @@ public class QTestConnect {
 
 	public static void main(String[] args) throws Exception {
 		// observeRetrieveTestCasesFromModule("To Be Automated");
-		System.out.println(observeGetTestCaseByName("Create Opportunity with a custom opportunity "
-				+ "type and custom Rationale, and add to target list"));
+		System.out.println(observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY"));
 	}
 }
