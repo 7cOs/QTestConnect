@@ -1,0 +1,122 @@
+
+<script type="text/javascript">
+
+	var d, ci;
+	window.onload = function() {
+		init();
+	};
+	
+	function init() {
+		
+		d = document;
+		q=function( q ) { return d.querySelector( q ); };
+		qs=function( q ) { return d.querySelectorAll( q ); };
+		
+		// - Let ci be client-interface - //
+		ci = d.body;
+		ci.id = 'ci';
+
+		Element.prototype.add = function(n) {
+			if(typeof(n)== 'object') {
+				this.appendChild( n ); 
+				n.progen = this;
+				return;
+			}
+			var cmp = d.createElement(n);
+			cmp.className = 'cmp';
+			with( cmp.style ) {
+				if ( n != 'ico' ) {
+					display = 'block';
+				}
+			}
+			// - Store progenitor in child - //
+			cmp.progen = this;
+			return this.appendChild(cmp);
+		};
+		
+		Element.prototype.q = function( q ) {
+			return this.querySelector( q );
+		};
+		
+		Element.prototype.qs = function( q ) {
+			return this.querySelectorAll( q );
+		};
+		
+		Element.prototype.clear = function() {
+			this.textContent = '';
+		};
+		
+		Element.prototype.show = function( ) {
+			this.style.display = '';
+		};
+		
+		Element.prototype.hide = function( ) {
+			this.style.display = 'none';
+		};	
+
+		build(); // - Build cI - //
+	}
+
+	function build() {
+		var layout = ci.add('layout');
+		layout.add('quadrants');
+		for( var i=0; i<3; i++ ) {
+			var qd = layout.q('quadrants').add('quadrant');	
+			for(var j=0; j<3; j++) {
+				var p = qd.add('part');
+				// p.textContent = 'part';
+				if(i==1 && j==1 ) {
+					var cn = p.add( 'cn' );
+					var b = cn.add('button');
+					b.innerHTML = 'Fetch qTest<br />test case...';
+					b.addEventListener('click', function( e ){
+						// q('#progress desc').textContent = 'Executing test(s)...';
+						// q('#progress').show();
+						xhttp = getXmlHttpReq();
+						xhttp.onreadystatechange = function() {
+						    if (this.readyState == 4 && this.status == 200) {
+						    	// q('#progress').hide();
+						    }
+						};
+						xhttp.open("GET", "/fetchQtestTestcase", true);
+						xhttp.send();
+					});
+				}
+			}
+		}
+		with(layout.style) {
+			display = 'table';
+			height = '100%'; width = height;
+			border = 'solid';
+			layout.q( 'quadrants' ).style.display = 'table-row-group';
+			[].forEach.call(layout.qs('quadrant'), function(o, i) {
+				with(o.style) {
+					display = 'table-row';
+				}
+				[].forEach.call( o.qs('part'), function(p) {
+					with(p.style) {
+						display = 'table-cell';
+						border = 'solid';
+						verticalAlign = 'middle';
+						if( i==1 ) {
+							height = '65%';
+							textAlign = 'center';
+							if(b = p.q('button')) {
+								with(b.style) {
+									display = 'inline';
+									fontSize = '25px';
+									b.progen.progen.style.width = '50%';
+									// height = '55px';
+								}
+							}
+						}
+					}
+				});
+			});
+		}
+	}
+	
+	function getXmlHttpReq() {
+		return new XMLHttpRequest();
+	}	
+</script>
