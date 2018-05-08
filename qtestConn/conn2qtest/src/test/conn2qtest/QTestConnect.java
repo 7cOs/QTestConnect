@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
+
 import org.qas.qtest.api.auth.PropertiesQTestCredentials;
 import org.qas.qtest.api.auth.QTestCredentials;
 import org.qas.qtest.api.services.design.TestDesignService;
@@ -91,6 +94,31 @@ public class QTestConnect {
 		}
 	}
 
+	public static TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>();
+	
+	public static void observeDisplayProjectModules( String name ) {
+	     ListProjectRequest listProjectRequest = new ListProjectRequest();
+	     List<Project> projects = projectService.listProject(listProjectRequest);
+	     System.out.println( "Located [" + projects.size() + "] Project(s)...\n" );
+	     projects.forEach( p -> {
+	       String n = p.getName();
+	       if( p.getName().equals(name) ) {
+	         System.out.println( "Located ProjectName: " + n + "!");
+	         ListModuleRequest listModuleRequest = new ListModuleRequest();
+	         listModuleRequest.withProjectId(p.getId()).withIncludeDescendants(true);
+	         List<org.qas.qtest.api.services.project.model.Module> modules = 
+	                projectService.listModule(listModuleRequest);
+	         modules.forEach( m -> {
+	           System.out.println( m.getName() + ", order_no: " + m.getOrder() );
+	           treeMap.put( m.getOrder(),  m.getName());
+	         });
+	       }
+	     });
+	     
+	     System.out.println( treeMap.firstKey() );
+	}
+	
+	
 	public static long getProjectId(String name) {
 		long pId = -1;
 		ListProjectRequest listProjectRequest = new ListProjectRequest();
@@ -209,6 +237,9 @@ public class QTestConnect {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY"));
+	  observeDisplayProjectModules("Compass Portal - Beer ");
+	  // displayProjects();
+		// System.out.println(observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY"));
+	  // observeRetrieveTestCasesFromModule("To Be Automated");
 	}
 }

@@ -18,10 +18,15 @@
 				var qd = layout.q('quadrants').add('quadrant');	
 				for(var j=0; j<3; j++) {
 					var p = qd.add('part');
-					if(i==1 && j==1 ) {
+					if( i==0 && j==1) {
+						p.id = 'ciHeader';
+						p.htm('qTestConnect');
+					} else if( i==1 && j==1 ) {
+						p.id = 'cnContents';
+					} else if(i==1 && j==2 ) {
 						var cn = p.add( 'cn' );
 						var b = cn.add('button');
-						b.innerHTML = 'Fetch qTest<br />test case...';
+						b.innerHTML = 'Fetch qTest TestCase...';
 						b.addEventListener('click', function( e ){
 							q('#cnProgress _progress_').className = 'fa fa-spinner fa-spin';
 							q('#cnProgress desc').txt('Processing...');
@@ -29,7 +34,8 @@
 							xhttp.onreadystatechange = function() {
 							    if (this.readyState == 4 && this.status == 200) {
 							    	q('#cnProgress _progress_').className = 'cmp';
-							    	q('#cnProgress desc').htm('&nbsp;');
+							    	// q('#cnProgress desc').htm('&nbsp;');
+							    	q('#cnProgress desc').htm(this.responseText);
 							    }
 							};
 							xhttp.open("GET", "/fetchQtestTestcase", true);
@@ -44,10 +50,11 @@
 			}
 			
 			with(layout.style) {
+				fontFamily = 'arial';
 				display = 'table';
 				height = '100%'; width = height;
 				// border = 'solid';
-				layout.q( 'quadrants' ).style.display = 'table-row-group';
+				layout.q('quadrants').style.display = 'table-row-group';
 				[].forEach.call(layout.qs('quadrant'), function(o, i) {
 					with(o.style) {
 						display = 'table-row';
@@ -57,20 +64,30 @@
 							display = 'table-cell';
 							border = 'solid';
 							verticalAlign = 'middle';
-							if( i==1 ) {
+							if( i==0 || i==2 ) {
+								width = '11%';
+							}
+							else if( i==1 ) {
 								height = '65%';
 								textAlign = 'center';
 								if(b = p.q('button')) {
+									verticalAlign = 'top';
+									textAlign = 'left';
 									with(b.style) {
 										display = 'inline';
-										fontSize = '25px';
-										b.progen.progen.style.width = '50%';
+										fontSize = '17px';
+										// b.progen.progen.style.width = '50%';
 										// height = '55px';
 									}
 								}
 							}
 							
-							if(p.id == 'cnProgress'){
+							if(p.id == 'cnContents') {
+								width = '50%';
+								verticalAlign = 'top';
+							}
+							
+							else if(p.id == 'cnProgress'){
 								with(p.style) {
 									textAlign = 'center';
 								}
@@ -78,7 +95,10 @@
 									with(o.style) {
 										display = 'inline';
 										if( o.nodeName == '_PROGRESS_' ) {
-											display =null;
+											display=null;
+											fontSize = '29px';
+										}else {
+											paddingLeft = '7px';
 										}
 									}
 								});
