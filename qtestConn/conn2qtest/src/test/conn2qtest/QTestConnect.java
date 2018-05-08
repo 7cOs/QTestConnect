@@ -27,12 +27,20 @@ import org.qas.qtest.api.services.project.model.ListModuleRequest;
 import org.qas.qtest.api.services.project.model.ListProjectRequest;
 import org.qas.qtest.api.services.project.model.Project;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 public class QTestConnect {
 
 	public static final String QTEST_PROPS_PATH = "./qTestCredentials.properties";
 	public static Properties qTestProps = null;
 	public static ProjectService projectService = null;
 	public static long projectId;
+	public static TreeMap<Integer, org.qas.qtest.api.services.project.model.Module> treeMap = 
+	    new TreeMap<Integer, org.qas.qtest.api.services.project.model.Module>();
+	public static JsonArray jsaModules = new JsonArray();    
 
 	static {
 		try {
@@ -94,8 +102,6 @@ public class QTestConnect {
 		}
 	}
 
-	public static TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>();
-	
 	public static void observeDisplayProjectModules( String name ) {
 	     ListProjectRequest listProjectRequest = new ListProjectRequest();
 	     List<Project> projects = projectService.listProject(listProjectRequest);
@@ -109,16 +115,52 @@ public class QTestConnect {
 	         List<org.qas.qtest.api.services.project.model.Module> modules = 
 	                projectService.listModule(listModuleRequest);
 	         modules.forEach( m -> {
-	           System.out.println( m.getName() + ", order_no: " + m.getOrder() );
-	           treeMap.put( m.getOrder(),  m.getName());
+	           // System.out.println( m.getName() + ", order_no: " + m.getOrder());
+	           treeMap.put( m.getOrder(), m);
 	         });
 	       }
 	     });
 	     
-	     System.out.println( treeMap.firstKey() );
+	     Iterator it = treeMap.navigableKeySet().iterator();
+	     while( it.hasNext() ) {
+	       org.qas.qtest.api.services.project.model.Module module = treeMap.get(it.next());
+           System.out.println("name: " + module.getName());
+           JsonObject jsoModule = new JsonObject();
+           jsoModule.addProperty("name", module.getName());
+           jsoModule.addProperty("id", module.getId());
+           jsoModule.addProperty("pId", module.getPid());
+           jsaModules.add( jsoModule );
+	       observeIterateModule( module, jsoModule );
+	     }
+	     // Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	     // System.out.println( gson.toJson(jsaModules) );
+	     observeSort( jsaModules );
 	}
 	
-	
+	 public static void observeIterateModule(org.qas.qtest.api.services.project.model.Module module, JsonObject jso) {
+	  if( module.getChildren() != null && module.getChildren().size() > 0 ) {
+    	   List<org.qas.qtest.api.services.project.model.Module> modules = module.getChildren();
+    	   JsonArray jsa = new JsonArray();
+    	  jso.add("modules", jsa);
+          modules.forEach( m -> {
+            JsonObject _jso =  new JsonObject();
+            _jso.addProperty("order", m.getOrder());
+            _jso.addProperty("name", m.getName());
+            _jso.addProperty("id", m.getId());
+            jsa.add( _jso );
+            observeIterateModule( m, _jso );
+          });
+        }
+	}
+	  
+	public static void observeSort( JsonArray jsa ) {
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+     Iterator<?> it = jsa.iterator();
+     while( it.hasNext() ) {
+       System.out.println( gson.toJson(it.next() ));
+     }
+	}
+
 	public static long getProjectId(String name) {
 		long pId = -1;
 		ListProjectRequest listProjectRequest = new ListProjectRequest();
