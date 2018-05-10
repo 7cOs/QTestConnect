@@ -964,17 +964,17 @@ function observeOrderAsc ( ms ) {
 }
 
 function observeSort(ms) {
+	observeOrderAsc(ms);
 	ms.forEach( function(o) {
 		for(var k in o ) {
 			if( k == 'modules' ) {
-				observeOrderAsc(ms);
 				observeSort(o.modules);
 			}
 		}
 	});
 }
 
-modules.forEach(function(o) {
+modules.forEach(function(o, i) {
 	for( var k in o ) {
 		if( k == 'modules' ){
 			observeSort(o.modules);

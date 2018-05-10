@@ -3,26 +3,26 @@ package test.conn2qtest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import org.apache.commons.collections.ComparatorUtils;
+import org.qas.api.ApiServiceRequest;
+import org.qas.api.Credentials;
 import org.qas.qtest.api.auth.PropertiesQTestCredentials;
 import org.qas.qtest.api.auth.QTestCredentials;
+import org.qas.qtest.api.internal.model.FieldValue;
+import org.qas.qtest.api.services.authenticate.model.AuthenticateRequest;
 import org.qas.qtest.api.services.design.TestDesignService;
 import org.qas.qtest.api.services.design.TestDesignServiceClient;
+import org.qas.qtest.api.services.design.model.CreateTestCaseRequest;
 import org.qas.qtest.api.services.design.model.ListTestCaseRequest;
 import org.qas.qtest.api.services.design.model.ListTestStepRequest;
 import org.qas.qtest.api.services.design.model.TestCase;
 import org.qas.qtest.api.services.design.model.TestStep;
+import org.qas.qtest.api.services.design.model.UpdateTestCaseRequest;
 import org.qas.qtest.api.services.project.ProjectService;
 import org.qas.qtest.api.services.project.ProjectServiceClient;
 import org.qas.qtest.api.services.project.model.GetModuleRequest;
@@ -33,9 +33,8 @@ import org.qas.qtest.api.services.project.model.Project;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.jayway.jsonpath.JsonPath;
+import com.google.gson.JsonParser;
 
 public class QTestConnect {
 
@@ -163,6 +162,28 @@ public class QTestConnect {
 	     return getFormattedJson(results);
 	}	
 	
+    public static Project observeGetProjectById(long id) {
+      ListProjectRequest listProjectRequest = new ListProjectRequest();
+      List<Project> projects = projectService.listProject(listProjectRequest);
+ 
+      for( Project project : projects ) {
+        if( project.getId() == id ) {
+          return project;
+        }
+      }
+
+      return null;
+  }	
+	
+	public static void observeGetAllProjectTestCases( long pId ) {
+	  
+	  Project project = observeGetProjectById(pId);
+	  
+	  
+      JsonObject result = new JsonObject();
+	}
+	
+	
 	
 	public static void observeDisplayProjectModules( String name ) {
 		
@@ -222,7 +243,7 @@ public class QTestConnect {
 		ListProjectRequest listProjectRequest = new ListProjectRequest();
 		List<Project> projects = projectService.listProject(listProjectRequest);
 		for( Project project : projects ) {
-			if( project.getName().equals( name ) ) {
+			if( project.getName().equals(name)) {
 				pId = project.getId();
 				System.out.println("Located Id ["+pId+"] for project '"+name+"'");
 				break;
@@ -339,10 +360,33 @@ public class QTestConnect {
 	}
 
 	public static void main(String[] args) throws Exception {
-		observeDisplayProjectModules("Compass Portal - Beer ");
+	  
+	  // https://cbrands.qtestnet.com/api/v3/projects/68329
+	  
+	  // observeGetAllProjectTestCases(68329);
+		// observeDisplayProjectModules("Compass Portal - Beer ");
 		// displayProjects();
-		// System.out.println(observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY"));
 		// observeRetrieveTestCasesFromModule("To Be Automated");
 		// System.out.println(observeGetProjects());
+	  
+	    TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
+	    testcase.setDescription( testcase.getDescription() );
+	    System.out.println( getFormattedJson( new JsonParser().parse( testcase.toString()) ) );
+	    try {
+	      
+
+	      TestDesignService testDesignService = new TestDesignServiceClient(getCredentials());
+
+	      UpdateTestCaseRequest testCaseRequest = 
+	          new UpdateTestCaseRequest()
+	          .withProjectId(projectId)
+	          .withTestCase(testcase)
+	          .withTestCaseId(23057777L);
+
+	      testDesignService.updateTestCase((UpdateTestCaseRequest) testCaseRequest);
+	      
+	    }catch(Exception x) {
+	      x.printStackTrace();
+	    }
 	}
 }

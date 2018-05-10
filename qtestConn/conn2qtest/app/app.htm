@@ -10,8 +10,15 @@
 		window.onload = function() { init(); };
 		
 		function build() {
+			
+			// - Cloak ci until app is fully loaded - //
+			// - TODO: Add mask - //
+			ci.hide();
+			
 			var layout = ci.add('layout');
 			layout.id = 'ciLayout';
+			// - Store layout in cI - //
+			ci.layout = layout;
 			layout.add('quadrants');
 			for( var i=0; i<3; i++ ) {
 				var qd = layout.q('quadrants').add('quadrant');	
@@ -28,8 +35,8 @@
 						var cn = p.add( 'navigator' );						
 						var b = cn.add('button');
 						b.id = 'selectProject';
-						b.htm('Projects...');
-						b.add('ico').className = 'fa fa-angle-double-down';
+						b.htm('Projects');
+						// b.add('ico').className = 'fa fa-angle-double-down';
 						b.addEventListener('click', function( e ){
 							applyProgress(true, 'Fetching projects...');
 							xhttp = getXmlHttpReq();
@@ -51,15 +58,33 @@
 							    			p.self = item; 
 							    			p.setAttribute('id', item.id);
 							    			p.className = 'projectItem';
-							    			p.htm(item.name);
+							    			// - Add project item header - //
+							    			var hd = p.add('header');
+							    			hd.htm(item.name);
 							    			with( p.style ) {
-							    				fontSize = '13px';
-							    				padding = '5px';
-							    				fontWeight = 'bold';
-							    				color = 'rgb(41, 61, 61)';
-							    				cursor = 'pointer';
+							    				with( p.q( 'header' ).style) {
+							    					display = 'flex';
+								    				fontSize = '13px';
+								    				padding = '5px';
+								    				fontWeight = 'bold';
+								    				background = 'rgb(51, 77, 77)';
+								    				color = 'rgb(255,255,255)';
+								    				cursor = 'pointer';
+								    				borderBottom = 'solid 2px rgb(0,0,0)';
+								    				marginBottom = '3px';
+								    				alignItem = 'middle';
+												}
 							    			}
 							    			setEvents( p );
+							    			// - Add also project modules container - //
+							    			var pm = p.progen.add( 'projectModules' );
+							    			pm.setAttribute('pid', item.id);
+							    			
+							    			// - Select project; loads modules or folders - //
+							    			q('navigator .projectItem').click();
+							    			
+							    			// - Reveal - //
+								    		ci.show();
 							    		}
 							    	}
 							    }
@@ -94,6 +119,10 @@
 						with(p.style) {
 							display = 'table-cell';
 							verticalAlign = 'middle';
+							
+							// - Hide superfluous quadrant parts - //
+							(i==0 || i==1 || i==2 ) && j==0 ? p.hide() : null;
+							
 							if( i==0 || i==2 ) {
 								width = '11%';
 								background = 'hsl(180, 20%, 20%)';
@@ -131,6 +160,7 @@
 										border = 'none';
 										borderBottom = 'solid 4.9px black';
 										cursor = 'pointer';
+										textAlign = 'center';
 									}
 									if(ic = b.q('ico')) {
 										with( ic.style ) {
@@ -141,10 +171,15 @@
 								}
 							}
 							
+							if(nav = p.q('navigator')) { 
+								width = '11%';
+							}
+							
 							if(p.id == 'cnContents') {
 								width = '45%';
-								verticalAlign = 'center';
-								textAlign = 'center';
+								verticalAlign = 'top';
+								textAlign = 'left';
+								padding = '5px';
 							}
 							
 							if(p.id == 'cnProgress'){
@@ -180,6 +215,7 @@
 		} // - End ci layout build  -//
 		
 		function defaultStartupOptions() {
+			// - Loads all projects from Source - //
 			q('#ci navigator #selectProject').click();
 		}
 
@@ -208,7 +244,7 @@
 			// - Let ci be client-interface - //
 			ci = d.body;
 			ci.id = 'ci';
-	
+
 			Element.prototype.add = function(n) {
 				if(typeof(n)== 'object') {
 					this.appendChild( n ); 
@@ -261,7 +297,6 @@
 		function setEvents( o ) {
 			o.addEventListener( 'click', function( e ) {
 				if( this.className == 'projectItem' ) {
-					console.log( this.self.name );
 					applyProgress(true, 'Fetching project modules...');
 					var json = JSON.stringify({
 						id: this.self.id,
@@ -271,89 +306,13 @@
 					xhttp.onreadystatechange = function() {
 					    if (this.readyState == 4 && this.status == 200) {
 					    	applyProgress(false, 'Modules fetch for project complete!');
-					    	
-					    	var nav = q( 'navigator' );
 
-					    	var res = JSON.parse(this.responseText);
-					    	res.forEach(function(o, i) {
-					    		
-					    		var li = nav.add('ul').add('li');
-					    		li.self = o; 
-					    		li.txt(o.name);
-			    				with(li.style){
-				    				whiteSpace = 'nowrap';
-				    				fontSize = '9pt';
-			    				}
-					    		
-					    		if(i==0)  { 
-						    		for( var k in o ) {
-						    			console.log( k );
-						    			if( k == 'modules' ){
-						    				// - Query progen - //
-						    				var p = getProgen(o[k][0].pId);
-						    				for(var i=0; i<o[k].length; i++) {
-							    				// - Add modules to progen - //
-							    				var li = p.add( 'li' );
-							    				li.id = o[k][i].id;
-							    				li.pId = p.id;
-							    				li.txt(o[k][i].name);
-							    				li.self = o[k][i];
-							    				with(li.style) {
-								    				// border = 'solid';
-							    				}
-						    				}
-						    				observeSort(o.modules);
-						    	        }
-						    	    }
-					    		}
-					    	});
-					    	function observeSort(ms) {
-		    					observeOrderAsc(ms);
-					    		ms.forEach( function(o) {
-					    			for(var k in o ) {
-					    				if( k == 'modules' ) {
-						    				// - Query progen - //
-						    				var p = getProgen(o[k][0].pId);
-						    				for(var i=0; i<o[k].length; i++) {
-							    				// - Add modules to progen - //
-							    				var li = p.add('ul').add('li');
-							    				li.id = o[k][i].id;
-							    				li.pId = p.id;
-							    				li.txt(o[k][i].name);
-							    				li.self = o[k][i];
-							    				with(li.style) {
-								    				// border = 'solid';
-							    				}
-						    				}				    					
-					    					// observeOrderAsc(ms);
-					    					observeSort(o.modules);
-					    				}
-					    			}
-					    		});
-					    	}
-					    	function observeOrderAsc ( ms ) {
-					    		var orderAsc = ms.sort((a, b) => Number(a.order) - Number(b.order));
-					    	}
+					    	var results = JSON.parse(this.responseText);
 					    	
-					    	function getProgen(pId) {
-					    		var os = nav.qs('li');
-					    		for(var i=0; i<os.length; i++) {
-					    			var o = os[i];
-					    			if(o.self.id == pId) {
-					    				console.log('PId ' + pId + ' located for ' + o.textContent);
-					    				return o;
-					    			}
-					    		}
-					    	}
-					    	
-					    	console.log( res );
-					    	
-					    	[].forEach.call( nav.qs('ul'), function(o) {
-					    		with(o.style) {
-					    			padding = '0px';
-					    			paddingLeft = '3px';
-					    			marginLeft = '7px';
-					    		}
+					    	// - Perform sort; build js nav tree - //
+					    	observeJTreeBuilder({
+					    		dat: observeSort(results, 'asc'),
+					    		cn: q('navigator projects projectmodules')
 					    	});
 					    }
 					};
@@ -363,7 +322,150 @@
 			})
 		}
 		
+
+	function observeSort( modules, order ) {
+
+		modules.forEach(function(module) {
+			for( var k in module ) {
+				if( k == 'modules' ){
+					observeSort(module.modules);
+		        }
+		    }
+		});		
 		
+		function observeSort(modules) {
+			sort(modules, order);
+			modules.forEach( function(module) {
+				for(var k in module ) {
+					if( k == 'modules' ) {
+						observeSort(module.modules);
+					}
+				}
+			});
+		}
+
+		function sort( modules, dir ) {
+			switch( dir ) {
+			case 'asc':
+				modules.sort((a, b) => Number(a.order) - Number(b.order));
+				break;
+			}
+		}
 		
+		// - Return sorted modules - //
+		return modules;
+		
+	}
+	
+	function observeJTreeBuilder( cfg ) {
+		
+		// - Set width/height modules container - //
+		with(cfg.cn.style) {
+			height = q('#cnContents').clientHeight;
+			width = '100%';
+			overflow = 'auto';
+		}
+
+		// - Rinse container - //
+		cfg.cn.clear();
+		
+    	cfg.dat.forEach(function(o, i) {
+    		
+    		var li = cfg.cn.add('ul').add('li');
+    		li.self = o; 
+    		li.id = o.id;
+    		var ic = li.add('ico');
+			var name = li.add('_name');
+			name.txt(o.name);
+
+    		for( var k in o ) {
+    			if( k == 'modules' ){
+    				// - Query progen - //
+    				var p = getProgen(o[k][0].pId);
+    				for(var i=0; i<o[k].length; i++) {
+	    				// - Add modules to progen - //
+	    				var li = p.add( 'li' );
+	    				li.self = o[k][i];
+	    				li.id = o[k][i].id;
+	    				li.pId = p.id;
+	    				var ic = li.add('ico');
+	    				var name = li.add('_name');
+	    				name.txt(o[k][i].name);
+    				}
+    				observeSort(o.modules);
+    	        }
+    	    }
+    	});   	
+
+    	function observeSort(ms) {
+			observeOrderAsc(ms);
+    		ms.forEach( function(o) {
+    			for(var k in o ) {
+    				if( k == 'modules' ) {
+	    				// - Query progen - //
+	    				var p = getProgen(o[k][0].pId);
+	    				for(var i=0; i<o[k].length; i++) {
+		    				// - Add modules to progen - //
+		    				var li = p.add('ul').add('li');
+		    				li.self = o[k][i];
+		    				li.id = o[k][i].id;
+		    				li.pId = p.id;
+		    				var ic = li.add('ico');
+		    				var name = li.add('_name');
+		    				name.txt(o[k][i].name);
+	    				}				    					
+    					observeSort(o.modules);
+    				}
+    			}
+    		});
+    	}
+
+    	function observeOrderAsc ( ms ) {
+    		var orderAsc = ms.sort((a, b) => Number(a.order) - Number(b.order));
+    	}
+
+    	function getProgen(pId) {
+    		var os = cfg.cn.qs('li');
+    		for(var i=0; i<os.length; i++) {
+    			var o = os[i];
+    			if(o.self.id == pId) {
+    				return o;
+    			}
+    		}
+    	}
+
+    	// - Set style modules container - //
+    	with(cfg.cn.style) {
+        	[].forEach.call( cfg.cn.qs('ul, li'), function(o, i) {
+        		with(o.style) {
+    	    		fontSize = '9.9px';
+        			if( o.nodeName == 'UL') {
+	        			padding = '0px';
+	        			paddingLeft = '3px';
+	        			marginLeft = '7px';
+	        			marginTop = '3px';
+        			}else if( o.nodeName == 'LI' ) {
+        				cursor = 'pointer';
+        			}
+        		}
+        	});
+        	
+       		// - Reset class and style for icon and name elements - //
+       		[].forEach.call( qs('projectmodules ico, _name'), function(o) {
+       			var nn = o.nodeName.toLowerCase();
+       			nn == 'ico' ? o.className = 'fa fa-folder' : null;
+       			with( o.style ) { 
+       				display = 'inline'; 
+       				if(nn=='ico') {
+       					paddingRight = '3px';
+       					color = 'rgb(51, 77, 77)';
+       				} else if (nn=='_name') {
+       					fontWeight = 'bold';
+       				}
+       			}
+       		});
+    	}
+    	   	
+	}	
 	</script>
 </head>
