@@ -1,9 +1,7 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link 
-		rel="stylesheet" 
-		href="https://cdnjs.cloudflare.com/ajax/libs/
-		font-awesome/4.7.0/css/font-awesome.min.css">	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">	
+	<script type="text/javascript" src="/modules.js"></script>
 	
 	<script type="text/javascript">
 	
@@ -13,6 +11,7 @@
 		
 		function build() {
 			var layout = ci.add('layout');
+			layout.id = 'ciLayout';
 			layout.add('quadrants');
 			for( var i=0; i<3; i++ ) {
 				var qd = layout.q('quadrants').add('quadrant');	
@@ -20,28 +19,59 @@
 					var p = qd.add('part');
 					if( i==0 && j==1) {
 						p.id = 'ciHeader';
-						p.htm('qTestConnect');
+						p.htm('qTestConnect<desc style=\'display:block;font-size:9px;letter-spacing:3px;\'>'+
+							'solution #2575 - observation</desc>');
 					} else if( i==1 && j==1 ) {
 						p.id = 'cnContents';
+						p.htm(p.id);
 					} else if(i==1 && j==2 ) {
-						var cn = p.add( 'cn' );
+						var cn = p.add( 'navigator' );						
 						var b = cn.add('button');
-						b.innerHTML = 'Fetch qTest TestCase...';
+						b.id = 'selectProject';
+						b.htm('Projects...');
+						b.add('ico').className = 'fa fa-angle-double-down';
 						b.addEventListener('click', function( e ){
-							q('#cnProgress _progress_').className = 'fa fa-spinner fa-spin';
-							q('#cnProgress desc').txt('Processing...');
+							applyProgress(true, 'Fetching projects...');
 							xhttp = getXmlHttpReq();
 							xhttp.onreadystatechange = function() {
 							    if (this.readyState == 4 && this.status == 200) {
-							    	q('#cnProgress _progress_').className = 'cmp';
-							    	// q('#cnProgress desc').htm('&nbsp;');
-							    	q('#cnProgress desc').htm(this.responseText);
+							    	applyProgress(false, "Projects results returned!");
+							    	var res = JSON.parse(this.responseText);
+							    	if(res.items) {
+							    		// -Clear project items - //
+							    		q('navigator projects').clear();
+							    		var items = res.items;
+							    		for(var i=0; i<items.length; i++) {
+							    			// - TEMP - //
+							    			if( i==0 ) { continue ; }
+							    			
+							    			var item = items[i];
+							    			// - Reset project item - //
+							    			var p = q('navigator projects').add('project');
+							    			p.self = item; 
+							    			p.setAttribute('id', item.id);
+							    			p.className = 'projectItem';
+							    			p.htm(item.name);
+							    			with( p.style ) {
+							    				fontSize = '13px';
+							    				padding = '5px';
+							    				fontWeight = 'bold';
+							    				color = 'rgb(41, 61, 61)';
+							    				cursor = 'pointer';
+							    			}
+							    			setEvents( p );
+							    		}
+							    	}
 							    }
 							};
-							xhttp.open("GET", "/fetchQtestTestcase", true);
+							xhttp.open("GET", "/fetchProjects", true);
 							xhttp.send();
 						});
-					}	else if(i=='2' && j==1) {
+						
+						// - Container projects - //
+						cn.add('projects');
+						
+					} else if(i=='2' && j==1) {
 						p.id = 'cnProgress';
 						p.add('_progress_');
 						p.add('desc').htm('&nbsp;');
@@ -50,6 +80,7 @@
 			}
 			
 			with(layout.style) {
+				layout.progen.style.margin = '0px';
 				fontFamily = 'arial';
 				display = 'table';
 				height = '100%'; width = height;
@@ -59,41 +90,72 @@
 					with(o.style) {
 						display = 'table-row';
 					}
-					[].forEach.call( o.qs('part'), function(p) {
+					[].forEach.call( o.qs('part'), function(p, j) {
 						with(p.style) {
 							display = 'table-cell';
-							border = 'solid';
 							verticalAlign = 'middle';
 							if( i==0 || i==2 ) {
 								width = '11%';
+								background = 'hsl(180, 20%, 20%)';
 							}
-							else if( i==1 ) {
+							if(j==0) {
+								background = 'hsl(180, 20%, 25%)';
+							}
+							if(i==0 && j==1) {
+								verticalAlign = 'bottom';
+								padding = '7px';
+								fontSize = '27px';
+								fontWeight = 'bold';
+								backgroundColor = 'hsl(180, 20%, 25%)';
+								color = 'white';
+							}
+							if((i==1 && j == 0) || (i==1 && j == 2)) {
+								background = 'hsl(180, 22%, 90%)';
+								if(i==1 && j == 0) {
+									background = 'hsl(255, 100%, 100%)';
+								}
+							}
+							if( i==1 ) {
 								height = '65%';
-								textAlign = 'center';
+								// textAlign = 'center';
 								if(b = p.q('button')) {
 									verticalAlign = 'top';
 									textAlign = 'left';
 									with(b.style) {
 										display = 'inline';
+										color = 'rgb(255,255,255)';
 										fontSize = '17px';
-										// b.progen.progen.style.width = '50%';
-										// height = '55px';
+										width = '100%';
+										height = '45px';
+										background = 'hsl(180, 20%, 25%)';
+										border = 'none';
+										borderBottom = 'solid 4.9px black';
+										cursor = 'pointer';
+									}
+									if(ic = b.q('ico')) {
+										with( ic.style ) {
+											position = 'relative';
+											left = b.clientWidth/5;
+										}
 									}
 								}
 							}
 							
 							if(p.id == 'cnContents') {
-								width = '50%';
-								verticalAlign = 'top';
+								width = '45%';
+								verticalAlign = 'center';
+								textAlign = 'center';
 							}
 							
-							else if(p.id == 'cnProgress'){
+							if(p.id == 'cnProgress'){
 								with(p.style) {
 									textAlign = 'center';
 								}
 								[].forEach.call(p.qs('_progress_, desc'), function(o){
 									with(o.style) {
 										display = 'inline';
+										color = 'white';
+										fontSize = '13px';
 										if( o.nodeName == '_PROGRESS_' ) {
 											display=null;
 											fontSize = '29px';
@@ -103,10 +165,32 @@
 									}
 								});
 							}
+							
+							if(i==2 && j==1) {
+								backgroundColor = 'hsl(180, 20%, 25%)';
+							}
 						}
 					});
 				});
 			}
+			
+			// - Load default start-up options - //
+			defaultStartupOptions( );
+			
+		} // - End ci layout build  -//
+		
+		function defaultStartupOptions() {
+			q('#ci navigator #selectProject').click();
+		}
+
+		function applyProgress( s, d ) {
+			if( d=='undefined' || !d || d==null ) { d = 'Processing...' }
+			if( s ) {
+				q('#cnProgress _progress_').className = 'fa fa-spinner fa-spin';
+			} else {
+				q('#cnProgress _progress_').className = 'cmp';
+			}
+			q('#cnProgress desc').txt( d );
 		}
 		
 		function getXmlHttpReq() {
@@ -116,6 +200,8 @@
 		function init() {
 			
 			d = document;
+			d.title = 'QTestConnect - Observations';
+			
 			q=function( q ) { return d.querySelector( q ); };
 			qs=function( q ) { return d.querySelectorAll( q ); };
 			
@@ -171,5 +257,113 @@
 	
 			build(); // - Build cI - //
 		}	
+
+		function setEvents( o ) {
+			o.addEventListener( 'click', function( e ) {
+				if( this.className == 'projectItem' ) {
+					console.log( this.self.name );
+					applyProgress(true, 'Fetching project modules...');
+					var json = JSON.stringify({
+						id: this.self.id,
+						name: this.self.name
+					});
+					xhttp = getXmlHttpReq();
+					xhttp.onreadystatechange = function() {
+					    if (this.readyState == 4 && this.status == 200) {
+					    	applyProgress(false, 'Modules fetch for project complete!');
+					    	
+					    	var nav = q( 'navigator' );
+
+					    	var res = JSON.parse(this.responseText);
+					    	res.forEach(function(o, i) {
+					    		
+					    		var li = nav.add('ul').add('li');
+					    		li.self = o; 
+					    		li.txt(o.name);
+			    				with(li.style){
+				    				whiteSpace = 'nowrap';
+				    				fontSize = '9pt';
+			    				}
+					    		
+					    		if(i==0)  { 
+						    		for( var k in o ) {
+						    			console.log( k );
+						    			if( k == 'modules' ){
+						    				// - Query progen - //
+						    				var p = getProgen(o[k][0].pId);
+						    				for(var i=0; i<o[k].length; i++) {
+							    				// - Add modules to progen - //
+							    				var li = p.add( 'li' );
+							    				li.id = o[k][i].id;
+							    				li.pId = p.id;
+							    				li.txt(o[k][i].name);
+							    				li.self = o[k][i];
+							    				with(li.style) {
+								    				// border = 'solid';
+							    				}
+						    				}
+						    				observeSort(o.modules);
+						    	        }
+						    	    }
+					    		}
+					    	});
+					    	function observeSort(ms) {
+		    					observeOrderAsc(ms);
+					    		ms.forEach( function(o) {
+					    			for(var k in o ) {
+					    				if( k == 'modules' ) {
+						    				// - Query progen - //
+						    				var p = getProgen(o[k][0].pId);
+						    				for(var i=0; i<o[k].length; i++) {
+							    				// - Add modules to progen - //
+							    				var li = p.add('ul').add('li');
+							    				li.id = o[k][i].id;
+							    				li.pId = p.id;
+							    				li.txt(o[k][i].name);
+							    				li.self = o[k][i];
+							    				with(li.style) {
+								    				// border = 'solid';
+							    				}
+						    				}				    					
+					    					// observeOrderAsc(ms);
+					    					observeSort(o.modules);
+					    				}
+					    			}
+					    		});
+					    	}
+					    	function observeOrderAsc ( ms ) {
+					    		var orderAsc = ms.sort((a, b) => Number(a.order) - Number(b.order));
+					    	}
+					    	
+					    	function getProgen(pId) {
+					    		var os = nav.qs('li');
+					    		for(var i=0; i<os.length; i++) {
+					    			var o = os[i];
+					    			if(o.self.id == pId) {
+					    				console.log('PId ' + pId + ' located for ' + o.textContent);
+					    				return o;
+					    			}
+					    		}
+					    	}
+					    	
+					    	console.log( res );
+					    	
+					    	[].forEach.call( nav.qs('ul'), function(o) {
+					    		with(o.style) {
+					    			padding = '0px';
+					    			paddingLeft = '3px';
+					    			marginLeft = '7px';
+					    		}
+					    	});
+					    }
+					};
+					xhttp.open("POST", "/fetchModules", true)
+					xhttp.send(json);
+				}
+			})
+		}
+		
+		
+		
 	</script>
 </head>
