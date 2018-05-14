@@ -20,6 +20,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.qas.api.ApiServiceRequest;
 import org.qas.api.Credentials;
@@ -371,10 +372,13 @@ public class QTestConnect {
 		return new GsonBuilder().setPrettyPrinting().create().toJson(o);
 	}
 
-  public static WebDriver qTestLaunchAndLogin(String url) throws InterruptedException {
+  public static WebDriver launchLoginQTest(String url, boolean mode ) throws InterruptedException {
     System.setProperty("webdriver.chrome.driver", "./app/chromedriver.exe");
 
-    WebDriver d = new ChromeDriver();
+    ChromeOptions os = new ChromeOptions();
+    os.setHeadless( mode );
+    
+    WebDriver d = new ChromeDriver( os );
     d.navigate().to(url);
     d.manage().window().maximize();
 
@@ -400,7 +404,6 @@ public class QTestConnect {
     String[] fileNames = { "./app/steps_desc.txt", "./app/expected_res.txt" };
 
     List<ArrayList<String>> stepsContainer = new ArrayList<ArrayList<String>>();
-    // ArrayList<String> steps = new ArrayList<String>();
     for (int i = 0; i < fileNames.length; i++) {
       stepsContainer.add(new ArrayList<String>());
       ArrayList<String> steps = stepsContainer.get(i);
@@ -490,12 +493,12 @@ public class QTestConnect {
     // observeRetrieveTestCasesFromModule("To Be Automated");
     // System.out.println(observeGetProjects());
 
-    // TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
-    // System.out.println( testcase.getWebUrl() );
+    TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
+    System.out.println( testcase.getWebUrl() );
 
-    String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
-    // String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
-    WebDriver d = qTestLaunchAndLogin(url);
-    insertStepDescExpectedResultsSteps(d);
+    // String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
+    //String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
+    //WebDriver d = launchLoginQTest(url,false);
+    //insertStepDescExpectedResultsSteps(d);
   }
 }
