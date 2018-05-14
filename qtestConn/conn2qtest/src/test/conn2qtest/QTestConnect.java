@@ -2,6 +2,7 @@ package test.conn2qtest;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -370,109 +371,131 @@ public class QTestConnect {
 		return new GsonBuilder().setPrettyPrinting().create().toJson(o);
 	}
 
-	public static void main(String[] args) throws Exception {
+  public static WebDriver qTestLaunchAndLogin(String url) throws InterruptedException {
+    System.setProperty("webdriver.chrome.driver", "./app/chromedriver.exe");
 
-	  // https://cbrands.qtestnet.com/api/v3/projects/68329
-	  
-	  // observeGetAllProjectTestCases(68329);
-		// observeDisplayProjectModules("Compass Portal - Beer ");
-		// displayProjects();
-		// observeRetrieveTestCasesFromModule("To Be Automated");
-		// System.out.println(observeGetProjects());
-	  
-	    // TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
-	    // System.out.println( testcase.getWebUrl() );
-		
-		
-	    // String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
-		String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
-    	// String fileName = "./app/steps_desc.txt";
-		String fileName = "./app/expected_res.txt";
-		
-    	ArrayList<String> steps = new ArrayList<String>();
-	    try {
-	    	try (Scanner scanner = new Scanner(new File(fileName))) {
-		    	StringBuilder multiliner = new StringBuilder();
-		    	String lastline = null;
-				while (scanner.hasNext()){
-					String line = scanner.nextLine().trim();
-					String num = line.split(" ").length > 0 ? line.split(" ")[0] : "";
-					num = num.replaceAll("[^0-9]", "");
-					if (!num.equals("")) {
-						steps.add(line);
-					} else {
-						if( lastline == null ) { 
-							lastline = steps.get(steps.size() - 1) + line; 
-							multiliner.append( lastline ); 
-							steps.set(steps.size()-1, multiliner.toString());
-						} else {
-							multiliner.append( line ); 
-							steps.set(steps.size()-1, multiliner.toString());
-						}
-					}
-				}
-				System.out.println(steps);
-	    	}
-	    	
-			if(true) return;
-	    	
-	      	System.setProperty("webdriver.chrome.driver", "./app/chromedriver.exe");
-	      	
-	    	WebDriver d = new ChromeDriver();
-	    	d.navigate().to(url);
-	    	d.manage().window().maximize();
-	    	
-	    	// - Wait until page loads - //
-	    	new WebDriverWait(d, 35).until(
-			          webDriver -> ((JavascriptExecutor) webDriver)
-			          .executeScript("return document.readyState").equals("complete"));		
-	    	
-	    	// - Login - //
-	    	d.findElement(By.id("userName")).sendKeys("soko.karnesh@cbrands.com");
-	    	d.findElement(By.id("password")).sendKeys("test1@7197c");
-	    	d.findElement(By.xpath("//*[@class='submit']/a")).click();
-	    	
-	    	// - Wait until page loads - //
-	    	new WebDriverWait(d, 35).until(
-			          webDriver -> ((JavascriptExecutor) webDriver)
-			          .executeScript("return document.readyState").equals("complete"));		    	
-	    	
-	    	// - Update fields; bounce! - //
-	    	Thread.sleep( 1525 );
-            ((JavascriptExecutor) d).executeScript(
-        		   "document.querySelector('#propDescriptionId_editorNode_ifr')"
-        		   + ".contentDocument.querySelector('[data-id] p').textContent='Observation: Parse/Create Test Steps using Selenium';");
-           
-            for( int i=0; i<steps.size(); i++ ) {
-            	
-            	WebElement gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+    WebDriver d = new ChromeDriver();
+    d.navigate().to(url);
+    d.manage().window().maximize();
 
-            	WebElement stepdesc = gridrow.findElements(By.tagName("td")).get(2);          	
-            	stepdesc.click(); 
-            	Thread.sleep( 55 );
-            	gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-            	stepdesc = gridrow.findElements(By.tagName("td")).get(2); 
-            	d.switchTo().frame(stepdesc.findElement(By.tagName("iframe")))
-            		.findElement(By.id("tinymce")).sendKeys( steps.get(i) );
-            	
-            	d.switchTo().defaultContent();
-            	
-            	
-            	WebElement expectedres = gridrow.findElements(By.tagName("td")).get(3);     
-            	expectedres.click();
-            	Thread.sleep( 55 );
-            	gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-            	expectedres = gridrow.findElements(By.tagName("td")).get(3);    
-            	d.switchTo().frame(expectedres.findElement(By.tagName("iframe")))
-            		.findElement(By.id("tinymce")).sendKeys( steps.get(i) );
-            	
-            	d.switchTo().defaultContent();
+    // - Wait until page loads - //
+    new WebDriverWait(d, 35).until(
+        webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
 
-            	d.findElement(By.id("testcaseContentPane")).click();
+    // - Login - //
+    d.findElement(By.id("userName")).sendKeys("soko.karnesh@cbrands.com");
+    d.findElement(By.id("password")).sendKeys("test1@7197c");
+    d.findElement(By.xpath("//*[@class='submit']/a")).click();
+
+    // - Wait until page loads - //
+    new WebDriverWait(d, 35).until(
+        webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+
+    Thread.sleep(1525);
+
+    return d;
+  }
+
+  public static List<ArrayList<String>> parseSteps() throws FileNotFoundException {
+    String[] fileNames = { "./app/steps_desc.txt", "./app/expected_res.txt" };
+
+    List<ArrayList<String>> stepsContainer = new ArrayList<ArrayList<String>>();
+    // ArrayList<String> steps = new ArrayList<String>();
+    for (int i = 0; i < fileNames.length; i++) {
+      stepsContainer.add(new ArrayList<String>());
+      ArrayList<String> steps = stepsContainer.get(i);
+      try (Scanner scanner = new Scanner(new File(fileNames[i]))) {
+        StringBuilder multiliner = new StringBuilder();
+        String lastline = null;
+        while (scanner.hasNext()) {
+          String line = scanner.nextLine().trim();
+          String num = line.split(" ").length > 0 ? line.split(" ")[0] : "";
+          num = num.replaceAll("[^0-9]", "");
+          if (!num.equals("")) {
+            steps.add(line);
+          } else {
+            if (lastline == null) {
+              lastline = steps.get(steps.size() - 1) + line + "\n";
+              multiliner.append(lastline);
+              steps.set(steps.size() - 1, multiliner.toString());
+            } else {
+              multiliner.append(line + "\n");
+              steps.set(steps.size() - 1, multiliner.toString());
             }
-	    	
-	    }catch(Exception x) {
-	      x.printStackTrace();
-	    }
-	}
+          }
+          // - Remove line number - //
+          if ((line.startsWith(num + ". "))) {
+            line = line.replace(num + ". ", "").trim();
+            steps.set(steps.size() - 1, line);
+          }
+        }
+      }
+    }
+
+    // System.out.println( container );
+    return stepsContainer;
+  }
+
+  public static boolean insertStepDescExpectedResultsSteps(WebDriver d)
+      throws FileNotFoundException, InterruptedException {
+
+    List<ArrayList<String>> stepsContainer = parseSteps();
+
+    for (int n = 0; n < stepsContainer.size(); n++) {
+      ArrayList<String> steps = stepsContainer.get(n);
+      for (int i = 0; i < steps.size(); i++) {
+
+        WebElement gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+
+        if (n == 0) {
+          WebElement stepdesc = gridrow.findElements(By.tagName("td")).get(2);
+          stepdesc.click();
+          Thread.sleep(55);
+          gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+          stepdesc = gridrow.findElements(By.tagName("td")).get(2);
+          d.switchTo().frame(stepdesc.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
+              .sendKeys(steps.get(i));
+
+          // d.switchTo().defaultContent();
+        } else if (n == 1) {
+          WebElement expectedres = gridrow.findElements(By.tagName("td")).get(3);
+          expectedres.click();
+          Thread.sleep(55);
+          gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+          expectedres = gridrow.findElements(By.tagName("td")).get(3);
+          d.switchTo().frame(expectedres.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
+              .sendKeys(steps.get(i));
+
+          // d.switchTo().defaultContent();
+        }
+
+        d.switchTo().defaultContent();
+        d.findElement(By.id("testcaseContentPane")).click();
+      }
+    }
+
+    // - Persist TestCase - //
+    d.findElement(By.id("testdesignToolbarSave")).click();
+
+    return false;
+  }
+
+  public static void main(String[] args) throws Exception {
+
+    // https://cbrands.qtestnet.com/api/v3/projects/68329
+
+    // observeGetAllProjectTestCases(68329);
+    // observeDisplayProjectModules("Compass Portal - Beer ");
+    // displayProjects();
+    // observeRetrieveTestCasesFromModule("To Be Automated");
+    // System.out.println(observeGetProjects());
+
+    // TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
+    // System.out.println( testcase.getWebUrl() );
+
+    String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
+    // String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
+    WebDriver d = qTestLaunchAndLogin(url);
+    insertStepDescExpectedResultsSteps(d);
+  }
 }
