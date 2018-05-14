@@ -3,12 +3,23 @@ package test.conn2qtest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.qas.api.ApiServiceRequest;
 import org.qas.api.Credentials;
 import org.qas.qtest.api.auth.PropertiesQTestCredentials;
@@ -38,7 +49,7 @@ import com.google.gson.JsonParser;
 
 public class QTestConnect {
 
-	public static final String QTEST_PROPS_PATH = "./qTestCredentials.properties";
+	public static final String path_qtest_props = "./qTestCredentials.properties";
 	public static Properties qTestProps = null;
 	public static ProjectService projectService = null;
 	public static long projectId;
@@ -57,7 +68,7 @@ public class QTestConnect {
 
 	public static void initialise() throws Exception {
 		qTestProps = new Properties(); 
-		qTestProps.load( new FileInputStream(QTEST_PROPS_PATH) );
+		qTestProps.load( new FileInputStream(path_qtest_props) );
 		
 		// - Establish connection to project end-point - //
 		connectToProjectService();
@@ -74,7 +85,7 @@ public class QTestConnect {
 	
 	public static QTestCredentials getCredentials() throws IOException {
 		QTestCredentials credentials = 
-				new PropertiesQTestCredentials(new File(QTEST_PROPS_PATH));
+				new PropertiesQTestCredentials(new File(path_qtest_props));
 		return credentials;	
 	}
 	
@@ -360,7 +371,7 @@ public class QTestConnect {
 	}
 
 	public static void main(String[] args) throws Exception {
-	  
+
 	  // https://cbrands.qtestnet.com/api/v3/projects/68329
 	  
 	  // observeGetAllProjectTestCases(68329);
@@ -369,22 +380,97 @@ public class QTestConnect {
 		// observeRetrieveTestCasesFromModule("To Be Automated");
 		// System.out.println(observeGetProjects());
 	  
-	    TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
-	    testcase.setDescription( testcase.getDescription() );
-	    System.out.println( getFormattedJson( new JsonParser().parse( testcase.toString()) ) );
+	    // TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
+	    // System.out.println( testcase.getWebUrl() );
+		
+		
+	    // String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
+		String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
+    	// String fileName = "./app/steps_desc.txt";
+		String fileName = "./app/expected_res.txt";
+		
+    	ArrayList<String> steps = new ArrayList<String>();
 	    try {
-	      
+	    	try (Scanner scanner = new Scanner(new File(fileName))) {
+		    	StringBuilder multiliner = new StringBuilder();
+		    	String lastline = null;
+				while (scanner.hasNext()){
+					String line = scanner.nextLine().trim();
+					String num = line.split(" ").length > 0 ? line.split(" ")[0] : "";
+					num = num.replaceAll("[^0-9]", "");
+					if (!num.equals("")) {
+						steps.add(line);
+					} else {
+						if( lastline == null ) { 
+							lastline = steps.get(steps.size() - 1) + line; 
+							multiliner.append( lastline ); 
+							steps.set(steps.size()-1, multiliner.toString());
+						} else {
+							multiliner.append( line ); 
+							steps.set(steps.size()-1, multiliner.toString());
+						}
+					}
+				}
+				System.out.println(steps);
+	    	}
+	    	
+			if(true) return;
+	    	
+	      	System.setProperty("webdriver.chrome.driver", "./app/chromedriver.exe");
+	      	
+	    	WebDriver d = new ChromeDriver();
+	    	d.navigate().to(url);
+	    	d.manage().window().maximize();
+	    	
+	    	// - Wait until page loads - //
+	    	new WebDriverWait(d, 35).until(
+			          webDriver -> ((JavascriptExecutor) webDriver)
+			          .executeScript("return document.readyState").equals("complete"));		
+	    	
+	    	// - Login - //
+	    	d.findElement(By.id("userName")).sendKeys("soko.karnesh@cbrands.com");
+	    	d.findElement(By.id("password")).sendKeys("test1@7197c");
+	    	d.findElement(By.xpath("//*[@class='submit']/a")).click();
+	    	
+	    	// - Wait until page loads - //
+	    	new WebDriverWait(d, 35).until(
+			          webDriver -> ((JavascriptExecutor) webDriver)
+			          .executeScript("return document.readyState").equals("complete"));		    	
+	    	
+	    	// - Update fields; bounce! - //
+	    	Thread.sleep( 1525 );
+            ((JavascriptExecutor) d).executeScript(
+        		   "document.querySelector('#propDescriptionId_editorNode_ifr')"
+        		   + ".contentDocument.querySelector('[data-id] p').textContent='Observation: Parse/Create Test Steps using Selenium';");
+           
+            for( int i=0; i<steps.size(); i++ ) {
+            	
+            	WebElement gridrow = d.findElements(By.className("gridxRowTable")).get(i);
 
-	      TestDesignService testDesignService = new TestDesignServiceClient(getCredentials());
+            	WebElement stepdesc = gridrow.findElements(By.tagName("td")).get(2);          	
+            	stepdesc.click(); 
+            	Thread.sleep( 55 );
+            	gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+            	stepdesc = gridrow.findElements(By.tagName("td")).get(2); 
+            	d.switchTo().frame(stepdesc.findElement(By.tagName("iframe")))
+            		.findElement(By.id("tinymce")).sendKeys( steps.get(i) );
+            	
+            	d.switchTo().defaultContent();
+            	
+            	
+            	WebElement expectedres = gridrow.findElements(By.tagName("td")).get(3);     
+            	expectedres.click();
+            	Thread.sleep( 55 );
+            	gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+            	expectedres = gridrow.findElements(By.tagName("td")).get(3);    
+            	d.switchTo().frame(expectedres.findElement(By.tagName("iframe")))
+            		.findElement(By.id("tinymce")).sendKeys( steps.get(i) );
+            	
+            	d.switchTo().defaultContent();
 
-	      UpdateTestCaseRequest testCaseRequest = 
-	          new UpdateTestCaseRequest()
-	          .withProjectId(projectId)
-	          .withTestCase(testcase)
-	          .withTestCaseId(23057777L);
-
-	      testDesignService.updateTestCase((UpdateTestCaseRequest) testCaseRequest);
-	      
+            	d.findElement(By.id("testcaseContentPane")).click();
+            }
+	    	
 	    }catch(Exception x) {
 	      x.printStackTrace();
 	    }
