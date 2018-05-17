@@ -30,13 +30,40 @@
 							'solution #2575 - observation</desc>');
 					} else if( i==1 && j==1 ) {
 						p.id = 'cnContents';
-						p.htm(p.id);
+						p.add('silos'); // - silos container - //
 						// - Add silos - when loading display default; display automation silos after load complete - //
-						p.loadSilo = function( name ) {
-							console.log( 'loading silo - ' + name );
-							with( this.style ) {
+						p.addSilo = function( name ) {
+							var silos = this.q( 'silos' );
+							if(name=='landing') {
+								['zerlegen','observieren','aufklären'].forEach(function(itm){
+									var silo = silos.add( 'silo' );
+									var hd = silo.add( 'header' );
+									var cn = silo.add( 'contents' );
+									hd.txt(itm);
+								});
+							}
+							with( silos.style ) {
 								display = 'flex';
-								alignItems = 'center';
+								flexDirection = 'row';
+								justifyContent = 'center';
+								/*[].forEach.call(silos.qs('silo'), function(s) {
+									with( s.style ) {
+										display = 'flex';
+										border = 'solid';
+										margin = '11px';
+										fontSize = '35px';
+										width = '55%';
+										height = '557px';
+										justifyContent = 'center';
+										alignItems = 'bottom';
+										with( s.q( 'header' ).style ) {
+											padding = '25px';
+											borderBottom = 'solid';
+											textAlign = 'center';
+										}
+									}
+								});
+								*/
 							}
 						};
 					} else if(i==1 && j==2 ) {
@@ -188,7 +215,7 @@
 							
 							if(p.id == 'cnContents') {
 								width = '45%';
-								verticalAlign = 'top';
+								verticalAlign = 'center';
 								textAlign = 'left';
 								padding = '5px';
 							}
@@ -230,7 +257,7 @@
 			q('#ci navigator #selectProject').click();
 			
 			// - Load container content default silo - //
-			q('#cnContents').loadSilo('landing');
+			q('#cnContents').addSilo('landing');
 		}
 
 		function applyProgress( s, d ) {

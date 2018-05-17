@@ -140,7 +140,7 @@ public class QTestConnect {
 		return getFormattedJson(results) ;
 	}
 	
-	public static String observeGetProjectModules( String name ) throws Exception {
+	public static String observeGetProjectModules(String name) throws Exception {
 		
 		JsonArray results = new JsonArray(); 
 		
@@ -190,6 +190,7 @@ public class QTestConnect {
 				System.out.println("module: " +jso.get("name").getAsString() + 
 						", id: " + jso.get("id").getAsLong());
 				
+				// - Get module test cases - //
 				observeGetTestCases(jso);
 				
 				// - reiterate method - //
