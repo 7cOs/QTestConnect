@@ -33,15 +33,22 @@
 						p.add('silos'); // - silos container - //
 						// - Add silos - when loading display default; display automation silos after load complete - //
 						p.addSilo = function( name ) {
-							var silos = this.q( 'silos' );
-							if(name=='landing') {
-								['zerlegen','observieren','aufklären'].forEach(function(itm){
-									var silo = silos.add( 'silo' );
-									var hd = silo.add( 'header' );
-									var cn = silo.add( 'contents' );
-									hd.txt(itm);
-								});
-							}
+							var silos = this.q('silos');
+							var silosCtx = {
+								landing: ['zerlegen','observieren','aufklären'],
+								modules: ['manual<br />tests','to be<br />automated','automated<br />tests','archived<br />tests']
+							};
+							
+							var ctx = (name == 'landing') ? silosCtx.landing : 
+								(name=='modules') ? silosCtx.modules : null;
+							
+							ctx.forEach(function(itm){
+								var silo = silos.add( 'silo' );
+								var hd = silo.add( 'header' );
+								var cn = silo.add( 'contents' );
+								hd.htm(itm);
+							});
+
 							with( silos.style ) {
 								display = 'flex';
 								flexDirection = 'row';
@@ -50,10 +57,15 @@
 									with( s.style ) {
 										display = 'flex';
 										flexDirection = 'column';
-										border = 'solid 1px rgb(51, 77, 77)';
+										background ='rgb(255, 255, 255)';
+										// background = 'hsl(180, 22%, 90%)';
+										// border = 'solid 1px rgb(51, 77, 77)';
 										margin = '11px';
-										fontSize = '35px';
-										width = '35%';
+										fontSize = '25px';
+										width = '27%';
+										if( name == 'modules' ) {
+											width = '21%';
+										}
 										height = '395px';
 										// justifyContent = 'center';
 										alignItems = 'bottom';
@@ -62,7 +74,6 @@
 											background = 'rgb(51, 77, 77)';
 											padding = '25px';
 											textAlign = 'center';
-											// borderBottom = 'solid';
 										}
 									}
 								});
@@ -213,10 +224,12 @@
 							
 							if(nav = p.q('navigator')) { 
 								width = '11%';
+								background ='rgb(255, 255, 255)';
 							}
 							
 							if(p.id == 'cnContents') {
 								width = '45%';
+								background ='rgb(224, 235, 235)';
 								verticalAlign = 'center';
 								textAlign = 'left';
 								padding = '5px';
@@ -259,7 +272,8 @@
 			q('#ci navigator #selectProject').click();
 			
 			// - Load container content default silo - //
-			q('#cnContents').addSilo('landing');
+			// q('#cnContents').addSilo('landing');
+			q('#cnContents').addSilo('modules');
 		}
 
 		function applyProgress( s, d ) {
