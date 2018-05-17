@@ -36,7 +36,23 @@
 							var silos = this.q('silos');
 							var silosCtx = {
 								landing: ['zerlegen','observieren','aufklären'],
-								modules: ['manual<br />tests','to be<br />automated','automated<br />tests','archived<br />tests']
+								modules: [{
+									name:'manual<br />tests',
+									desc: 'what is...',
+									stats: {tcs: 203, sms: 67}
+								},{
+									name: 'to be<br />automated',
+									desc: 'what was...',
+									stats: {tcs: 14, sms: 8}
+								},{
+									name: 'automated<br />tests',
+									desc: 'what was, is...',
+									stats: {tcs: 33, sms: 15}
+								},{
+									name: 'archived<br />tests',
+									desc: 'what is, was...',
+									stats: {tcs: 53, sms: 18}
+								}]
 							};
 							
 							var ctx = (name == 'landing') ? silosCtx.landing : 
@@ -46,7 +62,9 @@
 								var silo = silos.add( 'silo' );
 								var hd = silo.add( 'header' );
 								var cn = silo.add( 'contents' );
-								hd.htm(itm);
+								var ds = cn.add( 'desc' );
+								var st = cn.add( 'stats' );
+								hd.htm(itm.name);
 							});
 
 							with( silos.style ) {
