@@ -140,7 +140,7 @@ public class QTestConnect {
 		return getFormattedJson(results) ;
 	}
 	
-	public static String observeGetProjectModules( String name ) {
+	public static String observeGetProjectModules( String name ) throws Exception {
 		
 		JsonArray results = new JsonArray(); 
 		
@@ -172,8 +172,56 @@ public class QTestConnect {
 	       observeIterateModule( module, jsoModule );
 	     }
 
+	     // -Set modules test cases - //
+	     // observeGetModuleTestCases(results);
+	     
 	     return getFormattedJson(results);
 	}	
+	
+	public static JsonArray observeGetModuleTestCases(JsonArray modules) throws Exception {
+		// System.out.println( getFormattedJson( modules ) );
+		for(int i=0; i <modules.size(); i++) {
+			JsonObject jso = modules.get(i).getAsJsonObject();
+			if( jso.has("modules") ) {
+				JsonArray _modules = jso.get("modules").getAsJsonArray();
+				System.out.println( getFormattedJson(_modules) );
+				
+				// - check for test cases; add to module if located - //
+				System.out.println("module: " +jso.get("name").getAsString() + 
+						", id: " + jso.get("id").getAsLong());
+				
+				observeGetTestCases(jso);
+				
+				// - reiterate method - //
+				observeGetModuleTestCases( _modules );
+				
+			} else {
+				observeGetTestCases(jso);
+			}
+		}
+		return null;
+	}
+	
+	public static JsonObject observeGetTestCases(JsonObject jso) throws Exception {
+		GetModuleRequest getModuleRequest = 
+				new GetModuleRequest()
+				.withProjectId(projectId)
+				.withModuleId(jso.get("id").getAsLong())
+				.withIncludeDescendants(true);
+		org.qas.qtest.api.services.project.model.Module module;
+		module = projectService.getModule(getModuleRequest);
+
+		TestDesignService testDesignService = new TestDesignServiceClient(getCredentials());
+		ListTestCaseRequest listTestCaseRequest = new ListTestCaseRequest();
+		listTestCaseRequest.setProjectId(projectId);
+		listTestCaseRequest.setModuleId(module.getId());
+		List<TestCase> testcases = testDesignService.listTestCase(listTestCaseRequest);	
+		
+		System.out.println( "totalTestCases [" + testcases.size()+"] for " + jso.get("name").getAsString() );
+		
+		return null;
+	}
+	
 	
     public static Project observeGetProjectById(long id) {
       ListProjectRequest listProjectRequest = new ListProjectRequest();
@@ -384,7 +432,8 @@ public class QTestConnect {
 
     // - Wait until page loads - //
     new WebDriverWait(d, 35).until(
-        webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+        webDriver -> ((JavascriptExecutor) webDriver)
+        	.executeScript("return document.readyState").equals("complete"));
 
     // - Login - //
     d.findElement(By.id("userName")).sendKeys("soko.karnesh@cbrands.com");
@@ -493,12 +542,14 @@ public class QTestConnect {
     // observeRetrieveTestCasesFromModule("To Be Automated");
     // System.out.println(observeGetProjects());
 
-    TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
-    System.out.println( testcase.getWebUrl() );
+    // TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
+    // System.out.println( testcase.getWebUrl() );
 
     // String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
     //String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
     //WebDriver d = launchLoginQTest(url,false);
     //insertStepDescExpectedResultsSteps(d);
+	  
+	 observeGetProjectModules("Compass Portal - Beer ");
   }
 }

@@ -31,6 +31,14 @@
 					} else if( i==1 && j==1 ) {
 						p.id = 'cnContents';
 						p.htm(p.id);
+						// - Add silos - when loading display default; display automation silos after load complete - //
+						p.loadSilo = function( name ) {
+							console.log( 'loading silo - ' + name );
+							with( this.style ) {
+								display = 'flex';
+								alignItems = 'center';
+							}
+						};
 					} else if(i==1 && j==2 ) {
 						var cn = p.add( 'navigator' );						
 						var b = cn.add('button');
@@ -65,12 +73,12 @@
 							    				with( p.q( 'header' ).style) {
 							    					display = 'flex';
 								    				fontSize = '13px';
-								    				padding = '5px';
+								    				padding = '15px';
 								    				fontWeight = 'bold';
 								    				background = 'rgb(51, 77, 77)';
 								    				color = 'rgb(255,255,255)';
 								    				cursor = 'pointer';
-								    				borderBottom = 'solid 2px rgb(0,0,0)';
+								    				// borderBottom = 'solid 2px rgb(0,0,0)';
 								    				marginBottom = '3px';
 								    				alignItem = 'middle';
 												}
@@ -161,6 +169,9 @@
 										borderBottom = 'solid 1.5px black';
 										cursor = 'pointer';
 										textAlign = 'center';
+										
+										// - Suspend - //
+										b.hide();
 									}
 									if(ic = b.q('ico')) {
 										with( ic.style ) {
@@ -217,6 +228,9 @@
 		function defaultStartupOptions() {
 			// - Loads all projects from Source - //
 			q('#ci navigator #selectProject').click();
+			
+			// - Load container content default silo - //
+			q('#cnContents').loadSilo('landing');
 		}
 
 		function applyProgress( s, d ) {
@@ -297,7 +311,7 @@
 		function setEvents( o ) {
 			o.addEventListener( 'click', function( e ) {
 				if( this.className == 'projectItem' ) {
-					applyProgress(true, 'Fetching project modules...');
+					applyProgress(true, 'Fetching modules & test cases for ' + this.self.name + '...');
 					var json = JSON.stringify({
 						id: this.self.id,
 						name: this.self.name
@@ -305,7 +319,7 @@
 					xhttp = getXmlHttpReq();
 					xhttp.onreadystatechange = function() {
 					    if (this.readyState == 4 && this.status == 200) {
-					    	applyProgress(false, 'Modules fetch for project complete!');
+					    	applyProgress(false, 'Modules & test cases fetch for ' + o.self.name + ' complete!');
 
 					    	var results = JSON.parse(this.responseText);
 					    	
@@ -354,7 +368,6 @@
 		
 		// - Return sorted modules - //
 		return modules;
-		
 	}
 	
 	function observeJTreeBuilder( cfg ) {
@@ -370,7 +383,6 @@
 		cfg.cn.clear();
 		
     	cfg.dat.forEach(function(o, i) {
-    		
     		var li = cfg.cn.add('ul').add('li');
     		li.self = o; 
     		li.id = o.id;
@@ -465,7 +477,6 @@
        			}
        		});
     	}
-    	   	
 	}	
 	</script>
 </head>
