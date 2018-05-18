@@ -38,21 +38,23 @@
 								landing: ['zerlegen','observieren','aufklären'],
 								modules: [{
 									name:'manual<br />tests',
-									desc: 'what is...',
+									desc: "<div>Manual test cases and steps consisting of new or pre-existing features of the AUT " 
+									+ "to be tested</div>",
 									stats: {tcs: 203, sms: 67}
 								},{
 									name: 'to be<br />automated',
-									desc: 'what was...',
+									desc: "<div>Test cases considered automatable " +
+									"based on further analyses post break-down of manual test cases and steps</div>",
 									stats: {tcs: 14, sms: 8}
 								},{
 									name: 'automated<br />tests',
-									desc: 'what was, is...',
+									desc: 'Fully automated tests ',
 									stats: {tcs: 33, sms: 15}
-								},{
+								}/*,{
 									name: 'archived<br />tests',
 									desc: 'what is, was...',
 									stats: {tcs: 53, sms: 18}
-								}]
+								}*/]
 							};
 							
 							var ctx = (name == 'landing') ? silosCtx.landing : 
@@ -63,6 +65,7 @@
 								var hd = silo.add( 'header' );
 								var cn = silo.add( 'contents' );
 								var ds = cn.add( 'desc' );
+								ds.htm( itm.desc );
 								var st = cn.add( 'stats' );
 								hd.htm(itm.name);
 							});
@@ -87,12 +90,37 @@
 										height = '395px';
 										// justifyContent = 'center';
 										alignItems = 'bottom';
-										with( s.q( 'header' ).style ) {
+										// - Set header style - //
+										with(s.q('header').style) {
 											color = 'rgb(255, 255, 255)';
 											background = 'rgb(51, 77, 77)';
 											padding = '25px';
 											textAlign = 'center';
 										}
+										// - Set contents style - //
+										if( sc = s.q('contents') ) {
+											with( sc.style ) {
+												flex = '1';
+												// border = 'solid';
+												padding = '7px';
+											}
+											if( ds = sc.q('desc') ) {
+												with(ds.style) {
+													fontSize = '15px';
+													textAlign = 'justify';
+												    textJustify = 'inter-word';
+												}
+											}
+										}
+										/*with(sc = s.q('contents').style) {
+											padding = '3px';
+											border = 'solid';
+											flex = 1;
+											// - Set description style - //
+											with(sc.q('desc').style) {
+												fontSize = '8px';
+											}
+										}*/
 									}
 								});
 							}
