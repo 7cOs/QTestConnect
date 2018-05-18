@@ -2,7 +2,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">	
 	<script type="text/javascript" src="/modules.js"></script>
-	
 	<script type="text/javascript">
 	
 		var d, ci;
@@ -37,24 +36,51 @@
 							var silosCtx = {
 								landing: ['zerlegen','observieren','aufklären'],
 								modules: [{
-									name:'manual<br />tests',
-									desc: "<div>Manual test cases and steps consisting of new or pre-existing features of the AUT " 
-									+ "to be tested</div>",
-									stats: {tcs: 203, sms: 67}
+									name:'Manual<br />Tests',
+									desc: {
+										title: 'description',
+										contents: "<div>Manual test cases and steps prepared by QA; consists of " +
+										"new or pre-existing features of the AUT (Application Under Test) to be tested</div>"
+									},
+									stats: { 
+										title: "statistics",
+										contents: {
+											tcs: {title: 'test cases', total: 203},
+											sms: {title: 'sub modules', total: 67}
+										}
+									}
 								},{
-									name: 'to be<br />automated',
-									desc: "<div>Test cases considered automatable " +
-									"based on further analyses post break-down of manual test cases and steps</div>",
-									stats: {tcs: 14, sms: 8}
+									name: 'To Be<br />Automated',
+									desc: {
+										title: 'description',
+										contents: "<div>Test cases considered 'automatable' by QE " +
+										"based on further analyses post break-down of manual test " +
+										"cases and steps prepared by QA.</div>"
+									},
+									stats: { 
+										title: "statistics",
+										contents: {
+											tcs: {title: 'test cases', total: 14},
+											sms: {title: 'sub modules', total: 8}
+										}
+									}
 								},{
-									name: 'automated<br />tests',
-									desc: 'Fully automated tests ',
-									stats: {tcs: 33, sms: 15}
-								}/*,{
-									name: 'archived<br />tests',
-									desc: 'what is, was...',
-									stats: {tcs: 53, sms: 18}
-								}*/]
+									name: 'Automated<br />Tests',
+									desc: {
+										title: "description",
+										contents: "<div>Automated code for test cases and steps " +
+										"developed by QE. Automation code is automatically executed by " +
+										"<a href='https://circleci.com/gh/ConstellationBrands/compass-portal' target='blank'>" +
+										"C.I. (Continious Integration)</a> process, or may be executed manually.</div>"
+									},
+									stats: { 
+										title: "statistics",
+										contents: {
+											tcs: {title: 'test cases', total: 33},
+											sms: {title: 'sub modules', total: 15}
+										}
+									}
+								}]
 							};
 							
 							var ctx = (name == 'landing') ? silosCtx.landing : 
@@ -63,17 +89,37 @@
 							ctx.forEach(function(itm){
 								var silo = silos.add( 'silo' );
 								var hd = silo.add( 'header' );
-								var cn = silo.add( 'contents' );
-								var ds = cn.add( 'desc' );
-								ds.htm( itm.desc );
-								var st = cn.add( 'stats' );
 								hd.htm(itm.name);
+								var cn = silo.add('contents');
+								var ds = cn.add( 'desc' );
+								var tt = ds.add( 'title' );
+								tt.txt( itm.desc.title );
+								ds.add('contents').htm(itm.desc.contents);
+								var sts = cn.add( 'stats' );
+								tt = sts.add('title');
+								tt.txt(itm.stats.title);
+								if( itm.stats.title=='statistics' ) {
+									for(var n in itm.stats) {
+										if( n != 'title' ) {
+											var p = sts.add(n);
+											if(n=='contents') {
+												for(var m in itm.stats[n]) {
+													p.add(m).htm(itm.stats[n][m].title);
+													var ttl = p.lastChild.add('total');
+													ttl.htm( itm.stats[n][m].total );
+												}
+											}
+										}
+									}
+								}
+								setEvents( silo );
 							});
 
 							with( silos.style ) {
 								display = 'flex';
 								flexDirection = 'row';
 								justifyContent = 'center';
+								// justifyContent = 'space-around';
 								[].forEach.call(silos.qs('silo'), function(s) {
 									with( s.style ) {
 										display = 'flex';
@@ -81,15 +127,16 @@
 										background ='rgb(255, 255, 255)';
 										// background = 'hsl(180, 22%, 90%)';
 										// border = 'solid 1px rgb(51, 77, 77)';
-										margin = '11px';
+										margin = '45px';
 										fontSize = '25px';
+										boxShadow = '5px 5px 5px grey';
 										width = '27%';
 										if( name == 'modules' ) {
 											width = '21%';
 										}
 										height = '395px';
 										// justifyContent = 'center';
-										alignItems = 'bottom';
+										// alignItems = 'bottom';
 										// - Set header style - //
 										with(s.q('header').style) {
 											color = 'rgb(255, 255, 255)';
@@ -100,27 +147,58 @@
 										// - Set contents style - //
 										if( sc = s.q('contents') ) {
 											with( sc.style ) {
+												display = 'flex';
+												flexDirection = 'column';
 												flex = '1';
+												color = 'rgb(51, 77, 77)';
 												// border = 'solid';
 												padding = '7px';
 											}
-											if( ds = sc.q('desc') ) {
-												with(ds.style) {
+											[].forEach.call( sc.qs('desc, stats'), function( o ) {
+												var nn = o.nodeName.toLowerCase();
+												with(o.style) {
 													fontSize = '15px';
-													textAlign = 'justify';
-												    textJustify = 'inter-word';
+													if(tt = o.q('title')){
+														with(tt.style) {
+															fontWeight = 'bold';
+															textTransform = 'capitalize';
+															marginBottom = '7px';
+															textAlign = 'left';
+														}
+													}
+													if(nn=='desc') {
+														textAlign = 'justify';
+													    textJustify = 'inter-word';
+														flex = 1;
+													} else if(nn=='stats') {
+														height = '25%';
+														display = 'flex';
+														flexDirection = 'column';
+														if( cts = o.q('contents')) {
+															with(cts.style) {
+																display = 'flex';
+																flexDirection = 'row';
+																justifyContent = 'space-between';
+																[].forEach.call( cts.qs('*'), function(o) {
+																	var nn = o.nodeName.toLowerCase();
+																	with( o.style ) {
+																		if(nn == 'tcs' || nn == 'sms') {
+																			fontWeight = 'normal';
+																			textTransform = 'capitalize';
+																			fontSize = '13px';
+																		}else if( nn=='total'){
+																			paddingTop = '9px';
+																			fontWeight = 'normal';
+																			fontSize = '19px';
+																		}
+																	}
+																});
+															}
+														}
+													}
 												}
-											}
+											});
 										}
-										/*with(sc = s.q('contents').style) {
-											padding = '3px';
-											border = 'solid';
-											flex = 1;
-											// - Set description style - //
-											with(sc.q('desc').style) {
-												fontSize = '8px';
-											}
-										}*/
 									}
 								});
 							}
@@ -183,6 +261,8 @@
 							    	}
 							    }
 							};
+							
+							// - Retrieve projects - //
 							xhttp.open("GET", "/fetchProjects", true);
 							xhttp.send();
 						});
@@ -231,6 +311,7 @@
 								fontWeight = 'bold';
 								backgroundColor = 'hsl(180, 20%, 25%)';
 								color = 'white';
+								textShadow = '5px 5px 5px rgb(0,0,0)';
 							}
 							if((i==1 && j == 0) || (i==1 && j == 2)) {
 								background = 'hsl(180, 22%, 90%)';
@@ -271,6 +352,9 @@
 							if(nav = p.q('navigator')) { 
 								width = '11%';
 								background ='rgb(255, 255, 255)';
+								// borderLeft = 'solid 1px hsl(180, 20%, 25%)';
+								// - Situation :: scroll - //
+								console.log(nav.style);
 							}
 							
 							if(p.id == 'cnContents') {
@@ -307,13 +391,14 @@
 					});
 				});
 			}
-			
+
 			// - Load default start-up options - //
 			defaultStartupOptions( );
 			
 		} // - End ci layout build  -//
 		
 		function defaultStartupOptions() {
+			
 			// - Loads all projects from Source - //
 			q('#ci navigator #selectProject').click();
 			
@@ -355,10 +440,12 @@
 					return;
 				}
 				var cmp = d.createElement(n);
-				cmp.className = 'cmp';
-				with( cmp.style ) {
-					if ( n != 'ico' ) {
-						display = 'block';
+				if( cmp.nodeName != 'STYLE' ){ 
+					cmp.className = 'cmp';
+					with( cmp.style ) {
+						if ( n != 'ico' ) {
+							display = 'block';
+						}
 					}
 				}
 				// - Store progenitor in child - //
@@ -398,6 +485,8 @@
 		}	
 
 		function setEvents( o ) {
+			var nn = o.nodeName.toLowerCase();
+			
 			o.addEventListener( 'click', function( e ) {
 				if( this.className == 'projectItem' ) {
 					applyProgress(true, 'Fetching modules & test cases for ' + this.self.name + '...');
@@ -422,7 +511,15 @@
 					xhttp.open("POST", "/fetchModules", true)
 					xhttp.send(json);
 				}
-			})
+			});
+			
+			o.addEventListener( 'mouseover', function( e ) {
+				if(nn=='silo') { this.style.boxShadow = null; }
+			});
+			
+			o.addEventListener( 'mouseout', function( e ) {
+				if(nn=='silo') { this.style.boxShadow = '5px 5px 5px grey'; }
+			});			
 		}
 		
 
@@ -566,6 +663,21 @@
        			}
        		});
     	}
-	}	
+    	
+    	// - Customise scrollbar - //
+		customiseNavigatorScrollbar();
+	}
+	
+	function customiseNavigatorScrollbar() {
+		var s = q('head').add('style');
+		var ss = d.styleSheets[d.styleSheets.length-1];
+		ss.insertRule('navigator projects projectModules {overflow: scroll;}', 0);
+		ss.insertRule('navigator projects projectModules::-webkit-scrollbar { width: 9px; }', 1);
+		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-track { box-shadow: grey 0px 0px 5px inset; /*border-radius: 10px;*/ }', 2);
+		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-thumb { background: rgb(51, 77, 77); /*border-radius: 10px;*/ }', 3);
+		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-thumb:hover { background: hsl(36, 100%, 50%); }', 4);
+		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-button:vertical:decrement { background: hsl(36, 100%, 50%); }', 5);
+		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-button:vertical:increment { background: hsl(36, 100%, 50%); }', 5);
+	}
 	</script>
 </head>
