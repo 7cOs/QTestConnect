@@ -1,5 +1,6 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">	
 	<script type="text/javascript" src="/modules.js"></script>
 	<script type="text/javascript">
@@ -40,6 +41,7 @@
 								landing: ['zerlegen','observieren','aufklären'],
 								modules: [{
 									name:'Manual<br />Tests',
+									ico: 'fa fa-wrench',
 									desc: {
 										title: 'description',
 										contents: "<div>Manual test cases and steps prepared by QA; consists of " +
@@ -54,6 +56,7 @@
 									}
 								},{
 									name: 'To Be<br />Automated',
+									ico: 'fa fa-cog',
 									desc: {
 										title: 'description',
 										contents: "<div>Test cases considered 'automatable' by QE " +
@@ -69,12 +72,13 @@
 									}
 								},{
 									name: 'Automated<br />Tests',
+									ico: 'fa fa-cogs',
 									desc: {
 										title: "description",
 										contents: "<div>Automated code for test cases and steps " +
 										"developed by QE. Automation code is automatically executed by " +
 										"<a href='https://circleci.com/gh/ConstellationBrands/compass-portal' target='blank'>" +
-										"C.I. (Continious Integration)</a> process, or may be executed manually.</div>"
+										"C.I. (Continuous Integration)</a> process, or may be executed manually.</div>"
 									},
 									stats: { 
 										title: "statistics",
@@ -112,7 +116,9 @@
 							ctx.forEach(function(itm){
 								var silo = silos.add( 'silo' );
 								var hd = silo.add( 'header' );
-								hd.htm(itm.name);
+								hd.add('ico').className = itm.ico + ' w3-jumbo w3-text-light-green';
+								hd.add('txt').htm(itm.name);
+								// hd.htm();
 								var cn = silo.add('contents');
 								var ds = cn.add( 'desc' );
 								var tt = ds.add( 'title' );
@@ -153,22 +159,27 @@
 										background ='rgb(255, 255, 255)';
 										// background = 'hsl(180, 22%, 90%)';
 										// border = 'solid 1px rgb(51, 77, 77)';
-										margin = '45px';
+										margin = '15px';
 										fontSize = '25px';
 										boxShadow = '5px 5px 5px grey';
 										width = '27%';
 										if( name == 'modules' ) {
-											width = '21%';
+											width = '35%';
 										}
 										height = '395px';
 										// justifyContent = 'center';
 										// alignItems = 'bottom';
 										// - Set header style - //
 										with(s.q('header').style) {
+											display = 'flex';
 											color = 'rgb(255, 255, 255)';
 											background = 'rgb(51, 77, 77)';
 											padding = '25px';
 											textAlign = 'center';
+											with(s.q('header txt').style) {
+												// paddingRight = '25px';
+												flex = 1;
+											}
 										}
 										// - Set contents style - //
 										if( sc = s.q('contents') ) {
@@ -338,7 +349,7 @@
 								fontWeight = 'bold';
 								backgroundColor = 'hsl(180, 20%, 25%)';
 								color = 'white';
-								textShadow = '5px 5px 5px rgb(0,0,0)';
+								// textShadow = '5px 5px 5px rgb(0,0,0)';
 							}
 							if((i==1 && j == 0) || (i==1 && j == 2)) {
 								background = 'hsl(180, 22%, 90%)';
@@ -428,14 +439,23 @@
 		function mask( s ) {
 			if( s ) {
 				if( ! q('mask') ) {
-					console.log( 'creating mask...' );
+
 					var m = q('html').add('mask');
 					var mg = m.add('msg');
 					mg.add( 'ico' ).className = 'fa fa-spinner fa-spin';
 					var tx = mg.add('tx'); tx.style.display = 'inline';
 					tx.txt('Loading...');
+					tx.blink = function() {
+						var tx = q('mask tx');
+						tx.txt( 'Please wait...' );
+						tx.style.visibility = '';
+						setTimeout(function(){
+							tx.style.visibility = 'hidden';
+						}, 515);
+					};
 					
 					with( m.style ) {
+						fontFamily = 'tahoma';
 					    position = 'fixed';
 				    	width = '100%'; height = '100%';
 				    	top ='0'; left='0';
@@ -447,24 +467,29 @@
 				        	top = '50%'; left='50%';
 				        	fontSize='50px'; color='white';
 				        	transform = 'translate(-50%,-50%)';
+				        	with( m.q( 'msg tx' ).style ) {
+				        		display = 'inline';
+				        		paddingLeft = '15px';
+				        	}
 				    	}
 					}
+					
+					// - Express 
+					tx.blinkItrvl = setInterval(tx.blink, 1001);
 				}
 			} else {
-				console.log( 'hiding mask...' );
 				var m = q('mask');
+				clearInterval( m.q('tx').blinkItrvl );
 				m.progen.removeChild(m);
 			}
 		} 
 		
 		function defaultStartupOptions() {
-			
 			// - Load container content default silo - //
 			q('#cnContents').addSilo('modules');
 			
-			// - Loads all projects from Source - //
+			// - Loads projects from Source - //
 			q('#ci navigator #selectProject').click();
-			
 		}
 
 		function applyProgress( s, d ) {
