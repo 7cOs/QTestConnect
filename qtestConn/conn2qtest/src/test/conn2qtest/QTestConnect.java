@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 import org.openqa.selenium.By;
@@ -48,6 +49,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import test.conn2qtest.qtest.ci.QTestCiController;
 
 public class QTestConnect {
 
@@ -238,14 +241,13 @@ public class QTestConnect {
   }	
 	
 	public static void observeGetAllProjectTestCases( long pId ) {
-	  
 	  Project project = observeGetProjectById(pId);
-	  
-	  
       JsonObject result = new JsonObject();
 	}
 	
-	
+	public static void observeGetModuleStatictics(int mId) {
+	  
+	}
 	
 	public static void observeDisplayProjectModules( String name ) {
 		
@@ -421,117 +423,7 @@ public class QTestConnect {
 		return new GsonBuilder().setPrettyPrinting().create().toJson(o);
 	}
 
-  public static WebDriver launchLoginQTest(String url, boolean mode ) throws InterruptedException {
-    System.setProperty("webdriver.chrome.driver", "./app/chromedriver.exe");
 
-    ChromeOptions os = new ChromeOptions();
-    os.setHeadless( mode );
-    
-    WebDriver d = new ChromeDriver( os );
-    d.navigate().to(url);
-    d.manage().window().maximize();
-
-    // - Wait until page loads - //
-    new WebDriverWait(d, 35).until(
-        webDriver -> ((JavascriptExecutor) webDriver)
-        	.executeScript("return document.readyState").equals("complete"));
-
-    // - Login - //
-    d.findElement(By.id("userName")).sendKeys("soko.karnesh@cbrands.com");
-    d.findElement(By.id("password")).sendKeys("test1@7197c");
-    d.findElement(By.xpath("//*[@class='submit']/a")).click();
-
-    // - Wait until page loads - //
-    new WebDriverWait(d, 35).until(
-        webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-
-    Thread.sleep(1525);
-
-    return d;
-  }
-
-  public static List<ArrayList<String>> parseSteps() throws FileNotFoundException {
-    String[] fileNames = { "./app/steps_desc.txt", "./app/expected_res.txt" };
-
-    List<ArrayList<String>> stepsContainer = new ArrayList<ArrayList<String>>();
-    for (int i = 0; i < fileNames.length; i++) {
-      stepsContainer.add(new ArrayList<String>());
-      ArrayList<String> steps = stepsContainer.get(i);
-      try (Scanner scanner = new Scanner(new File(fileNames[i]))) {
-        StringBuilder multiliner = new StringBuilder();
-        String lastline = null;
-        while (scanner.hasNext()) {
-          String line = scanner.nextLine().trim();
-          String num = line.split(" ").length > 0 ? line.split(" ")[0] : "";
-          num = num.replaceAll("[^0-9]", "");
-          if (!num.equals("")) {
-            steps.add(line);
-          } else {
-            if (lastline == null) {
-              lastline = steps.get(steps.size() - 1) + line + "\n";
-              multiliner.append(lastline);
-              steps.set(steps.size() - 1, multiliner.toString());
-            } else {
-              multiliner.append(line + "\n");
-              steps.set(steps.size() - 1, multiliner.toString());
-            }
-          }
-          // - Remove line number - //
-          if ((line.startsWith(num + ". "))) {
-            line = line.replace(num + ". ", "").trim();
-            steps.set(steps.size() - 1, line);
-          }
-        }
-      }
-    }
-
-    // System.out.println( container );
-    return stepsContainer;
-  }
-
-  public static boolean insertStepDescExpectedResultsSteps(WebDriver d)
-      throws FileNotFoundException, InterruptedException {
-
-    List<ArrayList<String>> stepsContainer = parseSteps();
-
-    for (int n = 0; n < stepsContainer.size(); n++) {
-      ArrayList<String> steps = stepsContainer.get(n);
-      for (int i = 0; i < steps.size(); i++) {
-
-        WebElement gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-
-        if (n == 0) {
-          WebElement stepdesc = gridrow.findElements(By.tagName("td")).get(2);
-          stepdesc.click();
-          Thread.sleep(55);
-          gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-          stepdesc = gridrow.findElements(By.tagName("td")).get(2);
-          d.switchTo().frame(stepdesc.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
-              .sendKeys(steps.get(i));
-
-          // d.switchTo().defaultContent();
-        } else if (n == 1) {
-          WebElement expectedres = gridrow.findElements(By.tagName("td")).get(3);
-          expectedres.click();
-          Thread.sleep(55);
-          gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-          expectedres = gridrow.findElements(By.tagName("td")).get(3);
-          d.switchTo().frame(expectedres.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
-              .sendKeys(steps.get(i));
-
-          // d.switchTo().defaultContent();
-        }
-
-        d.switchTo().defaultContent();
-        d.findElement(By.id("testcaseContentPane")).click();
-      }
-    }
-
-    // - Persist TestCase - //
-    d.findElement(By.id("testdesignToolbarSave")).click();
-
-    return false;
-  }
 
   public static void main(String[] args) throws Exception {
 
@@ -545,12 +437,7 @@ public class QTestConnect {
 
     // TestCase testcase = observeGetTestCaseByName("Temp: TestCase - FOR TEST PURPOSES ONLY");
     // System.out.println( testcase.getWebUrl() );
-
-    // String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
-    //String url = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
-    //WebDriver d = launchLoginQTest(url,false);
-    //insertStepDescExpectedResultsSteps(d);
 	  
-	 observeGetProjectModules("Compass Portal - Beer ");
+	 // observeGetProjectModules("Compass Portal - Beer ");
   }
 }

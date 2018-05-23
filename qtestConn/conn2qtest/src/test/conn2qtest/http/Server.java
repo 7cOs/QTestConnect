@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import org.apache.commons.io.IOUtils;
 import org.qas.qtest.api.services.design.model.TestCase;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
@@ -17,6 +18,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import test.conn2qtest.QTestConnect;
+import test.conn2qtest.qtest.ci.QTestCiController;
 
 public class Server {
 	public static void start() {
@@ -29,7 +31,7 @@ public class Server {
 			server.createContext("/fetchProjects", new Fetcher());
 			server.createContext("/fetchProject", new Fetcher());
 			server.createContext("/fetchModules", new Fetcher());
-			server.createContext("/fetchModule", new Fetcher());
+			server.createContext("/fetchModulesStats", new Fetcher());
 			server.createContext("/fetchTestCases", new Fetcher());
 			server.createContext("/fetchTestCase", new Fetcher());
 			server.setExecutor(null);
@@ -62,17 +64,15 @@ public class Server {
 
 				String reqPath = t.getHttpContext().getPath();
 				String reqArgs = IOUtils.toString(t.getRequestBody(), StandardCharsets.UTF_8);
+                JsonObject jso = null;  JsonArray jsa = null;
 				String resp = "";
 
 				switch (reqPath) {
 				case "/fetchProjects":
 					resp = QTestConnect.observeGetProjects();
 					break;
-				case "/fetchProject":
-					resp = QTestConnect.observeGetProjects();
-					break;
 				case "/fetchModules":
-					JsonObject jso = new JsonParser().parse(reqArgs).getAsJsonObject();
+					jso = new JsonParser().parse(reqArgs).getAsJsonObject();
 					resp = QTestConnect.observeGetProjectModules(jso.get("name").getAsString());
 					break;						
 				case "/fetchTestCase":
@@ -85,6 +85,11 @@ public class Server {
 						resp = "Error: TestCase Not Found!";
 					}
 					break;
+				case "/fetchModulesStats":
+                  jso = new JsonParser().parse(reqArgs).getAsJsonObject();
+                  resp = QTestConnect.getFormattedJson(
+                      QTestCiController.getModulesStatistics(jso.get("names").getAsJsonArray()));
+				  break;
 				}
 
 				t.sendResponseHeaders(200, resp.length());

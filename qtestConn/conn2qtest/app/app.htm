@@ -9,9 +9,11 @@
 		window.onload = function() { init(); };
 		
 		function build() {
+		
+			// - TODO: Add mask - //
+			mask(true);
 			
 			// - Cloak ci until app is fully loaded - //
-			// - TODO: Add mask - //
 			ci.hide();
 			
 			var layout = ci.add('layout');
@@ -34,6 +36,7 @@
 						p.addSilo = function( name ) {
 							var silos = this.q('silos');
 							var silosCtx = {
+								projectName: 'Compass Portal - Beer ',
 								landing: ['zerlegen','observieren','aufklären'],
 								modules: [{
 									name:'Manual<br />Tests',
@@ -45,8 +48,8 @@
 									stats: { 
 										title: "statistics",
 										contents: {
-											tcs: {title: 'test cases', total: 203},
-											sms: {title: 'sub modules', total: 67}
+											tcs: {title: 'test cases', total: 0},
+											sms: {title: 'sub modules', total: 0}
 										}
 									}
 								},{
@@ -60,8 +63,8 @@
 									stats: { 
 										title: "statistics",
 										contents: {
-											tcs: {title: 'test cases', total: 14},
-											sms: {title: 'sub modules', total: 8}
+											tcs: {title: 'test cases', total: 0},
+											sms: {title: 'sub modules', total:0}
 										}
 									}
 								},{
@@ -76,16 +79,36 @@
 									stats: { 
 										title: "statistics",
 										contents: {
-											tcs: {title: 'test cases', total: 33},
-											sms: {title: 'sub modules', total: 15}
+											tcs: {title: 'test cases', total: 0},
+											sms: {title: 'sub modules', total: 0}
 										}
 									}
-								}]
+								}],
+								setModulesStatsData: function() {
+									var ns = [];
+									this.modules.forEach( function (m, i){
+										ns.push( m.name.replace('<br />', ' ') );
+									});
+									var json = JSON.stringify({ names: ns });
+									xhttp = getXmlHttpReq();
+									xhttp.onreadystatechange = function() {
+									    if (this.readyState == 4 && this.status == 200) {
+									    	var results = JSON.parse(this.responseText);
+									    	for(var i =0; i<results.length; i++) {
+									    		var o = results[i];
+									    		qs('silo stats contents tcs total')[o.id].txt(o.tcs);
+									    		qs('silo stats contents sms total')[o.id].txt(o.sms);
+									    	}
+									    }
+									};
+									xhttp.open("POST", "/fetchModulesStats", true)
+									xhttp.send(json);
+								}
 							};
 							
 							var ctx = (name == 'landing') ? silosCtx.landing : 
 								(name=='modules') ? silosCtx.modules : null;
-							
+
 							ctx.forEach(function(itm){
 								var silo = silos.add( 'silo' );
 								var hd = silo.add( 'header' );
@@ -115,6 +138,9 @@
 								setEvents( silo );
 							});
 
+							// - Set modules stats data (CI) - //
+							silosCtx.setModulesStatsData();
+							
 							with( silos.style ) {
 								display = 'flex';
 								flexDirection = 'row';
@@ -256,6 +282,7 @@
 							    			q('navigator .projectItem').click();
 							    			
 							    			// - Reveal - //
+							    			mask(false);
 								    		ci.show();
 							    		}
 							    	}
@@ -397,14 +424,47 @@
 			
 		} // - End ci layout build  -//
 		
+		
+		function mask( s ) {
+			if( s ) {
+				if( ! q('mask') ) {
+					console.log( 'creating mask...' );
+					var m = q('html').add('mask');
+					var mg = m.add('msg');
+					mg.add( 'ico' ).className = 'fa fa-spinner fa-spin';
+					var tx = mg.add('tx'); tx.style.display = 'inline';
+					tx.txt('Loading...');
+					
+					with( m.style ) {
+					    position = 'fixed';
+				    	width = '100%'; height = '100%';
+				    	top ='0'; left='0';
+				    	right='0'; bottom='0';
+				    	backgroundColor='rgba(0,0,0,0.5)';
+				    	zIndex='2'; cursor='pointer';
+				    	with( m.q( 'msg' ).style ) {
+				    	    position = 'absolute';
+				        	top = '50%'; left='50%';
+				        	fontSize='50px'; color='white';
+				        	transform = 'translate(-50%,-50%)';
+				    	}
+					}
+				}
+			} else {
+				console.log( 'hiding mask...' );
+				var m = q('mask');
+				m.progen.removeChild(m);
+			}
+		} 
+		
 		function defaultStartupOptions() {
+			
+			// - Load container content default silo - //
+			q('#cnContents').addSilo('modules');
 			
 			// - Loads all projects from Source - //
 			q('#ci navigator #selectProject').click();
 			
-			// - Load container content default silo - //
-			// q('#cnContents').addSilo('landing');
-			q('#cnContents').addSilo('modules');
 		}
 
 		function applyProgress( s, d ) {
@@ -500,7 +560,7 @@
 					    	applyProgress(false, 'Modules & test cases fetch for ' + o.self.name + ' complete!');
 
 					    	var results = JSON.parse(this.responseText);
-					    	
+
 					    	// - Perform sort; build js nav tree - //
 					    	observeJTreeBuilder({
 					    		dat: observeSort(results, 'asc'),
