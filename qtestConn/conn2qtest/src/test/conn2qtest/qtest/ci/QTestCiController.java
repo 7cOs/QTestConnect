@@ -23,9 +23,10 @@ import test.conn2qtest.QTestConnect;
 
 public class QTestCiController {
   
-  public static final String TC_TEMP_URL = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=23057777";
-  public static final String TC_ACTUAL_URL = "https://cbrands.qtestnet.com/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
-  public static WebDriver d;
+  public static final String BASE_URL = "https://cbrands.qtestnet.com";
+  public static final String TC_TEMP_URL = BASE_URL + "--TBD--";
+  public static final String TC_ACTUAL_URL = BASE_URL + "/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
+  public static WebDriver d, controller;
   public static final boolean MODE = true;
   public static final int WAIT = 35;
   public static JavascriptExecutor jse = null;
@@ -36,7 +37,7 @@ public class QTestCiController {
     ChromeOptions os = new ChromeOptions();
     os.setHeadless( mode );
     
-    d = new ChromeDriver( os );
+    d = new ChromeDriver( os ); 
     jse = (JavascriptExecutor) d;
     d.navigate().to(url);
     d.manage().window().maximize();
@@ -64,7 +65,17 @@ public class QTestCiController {
   public static WebElement waitUntilElementAvailable(String xpath) {
     return new WebDriverWait(d, WAIT).until(ExpectedConditions
         .visibilityOfElementLocated(By.xpath(xpath)));
-  }  
+  }
+  
+  public static List<WebElement> waitUntilElementsAvailable(String xpath) {
+    return new WebDriverWait(d, WAIT).until(ExpectedConditions
+        .visibilityOfAllElementsLocatedBy(By.xpath(xpath)));
+  }
+  
+  public static List<WebElement> waitUntilElementsAvailable(String xp, int w) {
+    return new WebDriverWait(d, w).until(ExpectedConditions
+        .visibilityOfAllElementsLocatedBy(By.xpath(xp)));
+  } 
   
   public static boolean logout() {
     jse.executeScript("document.querySelector('#log-out-link').click();");
@@ -165,11 +176,11 @@ public class QTestCiController {
     JsonObject stats = new JsonObject();
     try {
       
-      d = QTestCiController.launchLoginQTest(TC_TEMP_URL, MODE);
+      d = QTestCiController.launchLoginQTest(BASE_URL, true);
       
       // - Module name xpath - //
       String xpath = "//test-design-tree//span[text()='"+name+"']";
-      d.findElement(By.xpath(xpath)).click();
+      waitUntilElementAvailable( xpath ).click();
       // /*
       // - Stats xpath - //
       xpath = "//*[@id='main_pane_testdesign']//span[text()='Statistics']/../../..//table";
@@ -190,7 +201,7 @@ public class QTestCiController {
   public static JsonArray getModulesStatistics(JsonArray names) throws InterruptedException {
     JsonArray stats = new JsonArray();
     try {
-      d = QTestCiController.launchLoginQTest(TC_TEMP_URL, MODE);  
+      d = QTestCiController.launchLoginQTest(BASE_URL, MODE);
       
       for(int i=0; i<names.size(); i++) {
         
@@ -201,7 +212,7 @@ public class QTestCiController {
         
         // - Module name xpath - //
         String xpath = "//test-design-tree//span[text()='"+name+"']";
-        d.findElement(By.xpath(xpath)).click();
+        waitUntilElementAvailable( xpath ).click();
         
         // - Stats xpath - //
         xpath = "//*[@id='main_pane_testdesign']//span[text()='Statistics']/../../..//table";
@@ -220,16 +231,98 @@ public class QTestCiController {
     return stats;
   }  
   
+  public static String expandAllNavTreeNodes() throws InterruptedException {
+    String xp="", gather="", nNodes = "";
+    try {
+      xp = "//*[@id='test-design-tree-content']";
+      gather = "return arguments[0].outerHTML;";
+      d = QTestCiController.launchLoginQTest(BASE_URL, false);
+      expandNavTreeNode();
+      // - Gather - //
+      nNodes = (String)jse.executeScript(gather, waitUntilElementAvailable(xp));
+    }catch( Exception x ) {
+      // - Gather regardless - //
+      nNodes = (String)jse.executeScript(gather, waitUntilElementAvailable(xp));
+      x.printStackTrace();
+    } finally {
+      quit();
+    }
+    
+    return nNodes;
+  } 
+  
+  public static void expandNavTreeNode() {
+    String xp = "//*[@data-expanded='false' and not(contains(@class,'expanded')) and contains(@id, '-expand-0')]";
+    List<WebElement> ns = waitUntilElementsAvailable(xp, 1);
+    System.out.println( "Located [" +ns.size()+ "] node(s) for expansion" );
+    for(WebElement n : ns) {
+      try {
+        String nn = (String)jse.executeScript("return arguments[0].parentNode.textContent;", n);
+        System.out.println("Attempting to expand '" + nn + "'...");
+        jse.executeScript("arguments[0].click();", n);
+      } catch (Exception x) {
+        x.printStackTrace();
+      }
+    }
+    
+    expandNavTreeNode();
+  }
+  
+  
+  public static String collapseAllNavTreeNodes() throws InterruptedException {
+    String nodes = "";
+    try {
+      d = QTestCiController.launchLoginQTest(BASE_URL, false);
+      collapseNavTreeNode();
+      nodes = getNavTreeExpandCollapsedNodes();
+    }catch( Exception x ) {
+      // - Gather regardless - //
+      nodes = getNavTreeExpandCollapsedNodes();
+      x.printStackTrace();
+    } finally {
+      quit();
+    }
+    
+    return nodes;
+  }
+  
+  public static void collapseNavTreeNode() {
+    String xp = "//*[contains(@class,'expanded') and contains(@id, '-expand-0')]";
+    List<WebElement> ns = waitUntilElementsAvailable(xp, 1);
+    System.out.println( "Located [" +ns.size()+ "] collapsible node(s)" );
+    for(WebElement n : ns) {
+      try {
+        String nn = (String)jse.executeScript("return arguments[0].parentNode.textContent;", n);
+        System.out.println("Attempting to collapse '" + nn + "'...");
+        jse.executeScript("arguments[0].click();", n);
+      } catch (Exception x) {
+        x.printStackTrace();
+      }
+    }
+    
+    collapseNavTreeNode();
+  }  
+
+  public static String getNavTreeExpandCollapsedNodes() {
+    String xp = "//*[@id='test-design-tree-content']";
+    return (String)jse.executeScript(
+        "return arguments[0].outerHTML;", waitUntilElementAvailable(xp));
+  }
+  
   public static void main(String[] args) throws Exception {
     // d = QTestCiController.launchLoginQTest(TC_TEMP_URL, MODE);
     // QTestCiController.insertStepDescExpectedResultsSteps();
     // QTestCiController.getModuleStatistics("To Be Automated");
-    /*JsonArray jsa = new JsonArray();
-      jsa.add("Automated Tests"); 
-      jsa.add("To Be Automated"); 
+    /*
+      JsonArray jsa = new JsonArray();
+      //jsa.add("Automated Tests"); 
+      //jsa.add("To Be Automated"); 
       jsa.add("Manual Tests");
     System.out.println( QTestConnect.getFormattedJson( 
         QTestCiController.getModulesStatistics(jsa) ) );
     */
+    // QTestCiController.expandAllNavTreeNodes();
+    // collapseAllNavTreeNodes
+    QTestCiController.collapseAllNavTreeNodes();
   }
 }

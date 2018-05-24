@@ -27,6 +27,7 @@ public class Server {
 			// - Client-interface services - //
 			server.createContext("/", new App());
 			server.createContext("/modules.js", new App());
+			
 			// - QTestConnect Services - //
 			server.createContext("/fetchProjects", new Fetcher());
 			server.createContext("/fetchProject", new Fetcher());
@@ -34,14 +35,50 @@ public class Server {
 			server.createContext("/fetchModulesStats", new Fetcher());
 			server.createContext("/fetchTestCases", new Fetcher());
 			server.createContext("/fetchTestCase", new Fetcher());
+			server.createContext("/getExpandedNavTreeNodes", new CiControllerHandler());
 			server.setExecutor(null);
 			server.start();
 			System.out.println("Web server started on " + server.getAddress());
+			
+			// - Start QTestCiController - //
+			initCiController();
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
 	}
 
+	public static void initCiController() {
+	  try {
+    	  QTestCiController.launchLoginQTest(QTestCiController.BASE_URL, false);
+    	  System.out.println(QTestCiController.class + " started");
+	  }catch( Exception x) {
+	      x.printStackTrace();
+	  }
+	}
+
+    public static class CiControllerHandler implements HttpHandler {
+      @Override
+      public void handle(HttpExchange t) throws IOException {
+        String reqPath = t.getHttpContext().getPath();
+        String resp = "";
+        
+        try {
+          switch (reqPath) {
+          case "/getExpandedNavTreeNodes":
+              resp = QTestCiController.expandAllNavTreeNodes();
+              break;
+          }
+        } catch(Exception x) {
+          x.printStackTrace();
+        }
+        
+        t.sendResponseHeaders(200, resp.length());
+        try (OutputStream os = t.getResponseBody()) {
+            os.write(resp.getBytes());
+        }
+      }
+  }	
+	
 	public static class App implements HttpHandler {
 		@Override
 		public void handle(HttpExchange t) throws IOException {
