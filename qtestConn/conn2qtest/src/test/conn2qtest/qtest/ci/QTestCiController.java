@@ -236,7 +236,7 @@ public class QTestCiController {
     try {
       xp = "//*[@id='test-design-tree-content']";
       gather = "return arguments[0].outerHTML;";
-      d = QTestCiController.launchLoginQTest(BASE_URL, false);
+      d = QTestCiController.launchLoginQTest(BASE_URL, true);
       expandNavTreeNode();
       // - Gather - //
       nNodes = (String)jse.executeScript(gather, waitUntilElementAvailable(xp));
@@ -272,7 +272,7 @@ public class QTestCiController {
   public static String collapseAllNavTreeNodes() throws InterruptedException {
     String nodes = "";
     try {
-      d = QTestCiController.launchLoginQTest(BASE_URL, false);
+      d = QTestCiController.launchLoginQTest(BASE_URL, true);
       collapseNavTreeNode();
       nodes = getNavTree();
     }catch( Exception x ) {
