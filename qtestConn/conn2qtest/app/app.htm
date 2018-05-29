@@ -5,15 +5,54 @@
 	<script type="text/javascript" src="/modules.js"></script>
 	<script type="text/javascript">
 	
-	var d, ci;
+		var d, ci;
+		
+		window.onload = function() { init(); };
 	
-	window.onload = function() { init(); };
+		function addCi() {
+			// - Let ci be client-interface - //
+			ci = d.head.parentNode.insertBefore(d.head.parentNode.add('ci'), d.body);
+			ci.id = 'ci'; 
+			ci.add('layout');
+			ci.q('layout').add('contents').add('header').add('contents');
+			ci.q('layout contents').add('footer').add('contents');
+			ci.q('layout').add('navigator').add('header').add('contents');
+			
+			//ci.q('layout contents').txt( 'ci.contents' );
+			//ci.q('layout navigator').txt( 'ci.navigator' );
+			// setStyle(ci);
+		}
+	
+		function setStyle(o) {
+			console.log( o == cts );
+			if( o && o.style ) {
+				with( o.style ) {
+					fontFamily = 'arial';
+					fontSize = '11px';
+					if( o == ci ) {
+						[].forEach.call(ci.qs('contents, navigator'), function(c) {
+							setStyle( c );
+						});
+					} else if(o == ci.layout.contents) {
+						console.log( o );
+						height = '100%';
+						border = 'solid';
+					}
+				}
+			}
+		}
+	
+	
 	
 	function build() {
 	
-		// - TODO: Add mask - //
-		mask(true);
+		// mask(true);
 		
+		addCi();
+		
+		// - Deterministic Pause - //
+		return;
+	
 		// - Cloak ci until app is fully loaded - //
 		ci.hide();
 		
@@ -594,14 +633,10 @@
 		
 	function init() {
 		d = document;
-		d.title = 'QTestConnect - Observations';
+		d.title = 'QTestConn - Observations';
 		
 		q=function( q ) { return d.querySelector( q ); };
 		qs=function( q ) { return d.querySelectorAll( q ); };
-		
-		// - Let ci be client-interface - //
-		ci = d.body;
-		ci.id = 'ci';
 
 		Element.prototype.add = function(n) {
 			if(typeof(n)== 'object') {
