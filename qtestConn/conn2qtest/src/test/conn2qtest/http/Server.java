@@ -36,12 +36,14 @@ public class Server {
 			server.createContext("/fetchTestCases", new Fetcher());
 			server.createContext("/fetchTestCase", new Fetcher());
 			server.createContext("/getExpandedNavTreeNodes", new CiControllerHandler());
+			server.createContext("/getCollapsedNavTree", new CiControllerHandler());
 			server.setExecutor(null);
 			server.start();
 			System.out.println("Web server started on " + server.getAddress());
 			
 			// - Start QTestCiController - //
-			initCiController();
+			// initCiController();
+			
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
@@ -66,6 +68,9 @@ public class Server {
           switch (reqPath) {
           case "/getExpandedNavTreeNodes":
               resp = QTestCiController.expandAllNavTreeNodes();
+              break;
+          case "/getCollapsedNavTree":
+              resp = QTestCiController.collapseAllNavTreeNodes();
               break;
           }
         } catch(Exception x) {

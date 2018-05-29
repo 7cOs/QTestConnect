@@ -274,10 +274,10 @@ public class QTestCiController {
     try {
       d = QTestCiController.launchLoginQTest(BASE_URL, false);
       collapseNavTreeNode();
-      nodes = getNavTreeExpandCollapsedNodes();
+      nodes = getNavTree();
     }catch( Exception x ) {
       // - Gather regardless - //
-      nodes = getNavTreeExpandCollapsedNodes();
+      nodes = getNavTree();
       x.printStackTrace();
     } finally {
       quit();
@@ -303,7 +303,7 @@ public class QTestCiController {
     collapseNavTreeNode();
   }  
 
-  public static String getNavTreeExpandCollapsedNodes() {
+  public static String getNavTree() {
     String xp = "//*[@id='test-design-tree-content']";
     return (String)jse.executeScript(
         "return arguments[0].outerHTML;", waitUntilElementAvailable(xp));
@@ -323,6 +323,6 @@ public class QTestCiController {
     */
     // QTestCiController.expandAllNavTreeNodes();
     // collapseAllNavTreeNodes
-    QTestCiController.collapseAllNavTreeNodes();
+    System.out.println( QTestCiController.collapseAllNavTreeNodes() );
   }
 }
