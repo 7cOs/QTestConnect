@@ -192,10 +192,10 @@
 						
 						with( silos.style ) {
 							display = 'flex';
-							// display = 'none';
 							flexDirection = 'row';
 							justifyContent = 'center';
-							// justifyContent = 'space-around';
+							alignItems = 'center';
+							justifyContent = 'space-around';
 							[].forEach.call(silos.qs('silo'), function(s) {
 								with( s.style ) {
 									display = 'flex';
@@ -208,7 +208,7 @@
 									boxShadow = '5px 5px 5px grey';
 									width = '27%';
 									if( name == 'modules' ) {
-										width = '35%';
+										width = '375px';
 									}
 									height = '395px';
 									// justifyContent = 'center';
@@ -360,7 +360,7 @@
 						    			pm.setAttribute('pid', item.id);
 						    			
 							    		p.fetchModules = fetchModules;
-							    		// q('navigator .projectItem').fetchModules();
+							    		q('navigator .projectItem').fetchModules();
 
 						    			// - Reveal - //
 							    		ci.show();
@@ -458,7 +458,7 @@
 						}
 						
 						if(nav = p.q('navigator')) { 
-							width = '11%';
+							width = '15%';
 							background ='rgb(255, 255, 255)';
 						}
 						
@@ -497,14 +497,17 @@
 			});
 		}
 			
-		// - Client-interface revision and adjustment - //
+		// - Define collapsible regions for certain components - //
+		defineCollapsibleRegion('nav');
+		
+		// - Client-interface revision and adjustment(s) - //
 		reviseMainCnContents();
 
-		// - Add main actions and search - //
+		// - Add main actions and search toolbar - //
 		addCiMainActions();
 		
 		// - Load default start-up options - //
-		defaultStartupOptions( );
+		defaultStartupOptions();
 			
 	} // - End ci layout build  -//
 
@@ -559,6 +562,15 @@
 		}
 	} 
 
+	function defineCollapsibleRegion(n) {
+		switch(n){
+		case 'nav':		
+			[].forEach.call(qs('#quadrantsLayout > quadrant > part:last-child'), function(o){
+				o.setAttribute('region', 'nav-collapsible');
+			} );
+			break;
+		}
+	}
 	
 	function reviseMainCnContents() {
 		// - Add 3 part quadrant to main cnContents - //	
@@ -589,11 +601,12 @@
 			flexDirection = 'column';
 			[].forEach.call(qds.qs('quadrant'), function(o, i) {
 				with(o.style) {
-					border = 'solid';
+					// border = 'solid';
 					if(o.q('#cnSilos') ) {
+						flex = 1;
 						display = 'flex';
 						alignItems = 'center';
-						flex = 1;
+						justifyContent = 'space-around';
 					}
 				}
 			});
@@ -612,7 +625,6 @@
 	function defaultStartupOptions() {
 		// - Load container content default silo - //
 		q('#cnContents').addSilo('modules');
-		
 		// - Loads projects from Source - //
 		q('#ci navigator #selectProject').click();
 	}
@@ -686,7 +698,7 @@
 			this.innerHTML = h;
 		};			
 
-		build(); // - Build cI - //
+		// build(); // - Build cI - //
 	}	
 
 	function setEvents( o ) {
@@ -892,7 +904,8 @@
 	}
 	
 	function showHideNavPane() {
-		[].forEach.call(qs('quadrant part:last-child'), function(o) {
+		[].forEach.call(qs('#quadrantsLayout > quadrant > part:last-child'), function(o) {
+			console.log( o );
 			o.hide();
 			// - Add collapsed indicator - //
 			var pn = o.progen;
@@ -919,11 +932,16 @@
 				backgroundColor = o.style.backgroundColor;
 				if( hd = o.q( 'navigator header' ) ) {
 					backgroundColor = 'hsl(180, 20%, 30%)';
-					p.q('cn').style.cssText = hd.style.cssText;
 					with( p.q('cn').style ) {
-						justifyContent = 'center';
-						with( p.q('cn ico').style ) {
+						textAlign = 'center';
+						// border = 'solid 1px';
+						height = '51px';
+						background = 'rgb(51, 77, 77)';
+						with( p.q('cn > ico').style ) {
 							fontWeight = 'bold';
+							// position = 'relative';
+							// top = '11px';
+							cursor = 'pointer';
 						}
 					}
 				}
