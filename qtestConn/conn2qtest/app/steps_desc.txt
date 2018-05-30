@@ -1,18 +1,9 @@
-1. Click the icon with the plus sign on a light bulb, located as the first icon in the group of icons at the page header's rightmost end. 
-2. Enter the first three letters of a valid store name in the "Account" field. 
-3. Hit enter on the keyboard. 
-4. Select a search result. 
-5. Select "Other" under Opportunity Type. 
-6. Enter a custom type in the "Input type" text field. 
-7. Enter the first three letters of a valid package or SKU in the "Recommended Package/SKU" field. 
-8. Hit enter on the keyboard. 
-9. Select the desired search result. 
-10. See the "Rationale" field. It should have a downward-pointing carat icon to indicate that it is clickable and a dropdown is available. Click anywhere on the "Rationale" field. 
-11. Select "+ Add Other Rationale". 
-12. Enter text into the "Add Other Rationale" field. 
-13. See the "Impact" field. It should have a downward-pointing carat icon to indicate that it is clickable and a dropdown is available. Click anywhere on the "Impact" field. 
-14. See the "Add to target list" radio button. It should default to unchecked. Select the radio button. 
-15. Click anywhere on the "Select a target list" field. 
-16. Select the desired Target List. 
-17. Click the Add button to submit the form. 
-18. Navigate to the Target List page and open the Target List to which you added the Opportunity.
+1. Login with a user - Carrie Reid
+2. Go to Opportunities
+3. Search for Chicago Bev for Distributor and select it
+4. Click Apply Filters
+5. Select 1 Opportunity
+6. Click Download 
+7. Select with Rationale
+8. Open download
+9. Select all Opportunities on page and download without rationale

@@ -3,16 +3,40 @@
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">	
 	<script type="text/javascript" src="/modules.js"></script>
+	
 	<script type="text/javascript">
-		var d, ci;
+		var d, doc, ci;
 		
 		var data = {
 			header: {
-				title: 'QTestConn',
+				ico: 'fa fa-database',
+				_title: 'QTestConn',
 				desc: 'aufklären #: 2575 - observieren'
 			},
+			navigator: {
+				header: {
+					ico: 'fa fa-navicon w3-large'
+				},
+				actions:[{
+					id: 'expand_all',
+					ico: 'fa fa-plus',
+					type: 'nav_action',
+					desc: 'Expand All'
+				},{
+					id: 'collapse_all',
+					ico: 'fa fa-minus',
+					type: 'nav_action',
+					desc:'Collapse All'
+				},{
+					id: 'nav_search',
+					ico: 'fa fa-search',
+					type: 'nav_action',
+					desc: 'Search'
+				}]
+			},
+			actionSeparator: '&nbsp;&nbsp;|&nbsp;&nbsp;',
 			footer: {
-				company: 'rege-it solutions, professional llc &copy; 7012'
+				company: 'rege-it solutions, professional llc &copy;7012'
 			}
 		};
 		
@@ -20,10 +44,22 @@
 	
 		function addCi() {
 			ci = d.head.parentNode.insertBefore(d.head.parentNode.add('ci'), d.body);
+			// ci.hide();
+			
 			ci.id = 'ci'; 
 			ci.add('layout');
+			ci.q('layout').add('contents').add('header').add('quadrants');
+			ci.q('layout contents header quadrants').add('quadrant').id = 'headerQuadrant';
+			ci.q('layout contents header quadrants').add('quadrant');
+			/*
 			ci.q('layout').add('contents').add('header').add('contents');
-			ci.q('layout contents header contents').add('_title').txt(data.header.title);
+			ci.q('layout contents header contents').add('_title').txt(data.header._title);
+			// - Insert header icon - //
+			ci.q('layout contents header contents _title').insertBefore(
+					ci.q('layout contents header contents _title').add('ico'),
+						ci.q('layout contents header contents _title').firstChild);
+			ci.q('layout contents header contents _title ico').className = data.header.ico;
+			
 			ci.q('layout contents header contents').add('desc').txt(data.header.desc);
 			ci.q('layout contents').add('info').txt('ci.contents.info');
 			ci.q('layout contents').add('_progress').add('contents').txt('progress');
@@ -31,31 +67,48 @@
 			ci.q('layout contents').add('footer').add('contents');
 			ci.q('layout contents footer contents').htm(data.footer.company);
 			
-			ci.q('layout').add('navigator').add('header').add('contents');
-			ci.q('layout navigator header contents').txt('navigator-header');
+			ci.q('layout').add('navigator').add('header').add('ico').className = data.navigator.header.ico;
+			ci.q('layout navigator header ico').id = 'icoNavHeader';
+			setEvents( ci.q('layout navigator header ico') );
+			ci.q('layout navigator header').add('contents');
 			ci.q('layout navigator').add('contents').add('info').txt('navigator.contents.info');
 			ci.q('layout navigator').add('footer').add('contents').txt('navigator.footer');
+			*/
 			
-			setStyle();
+			// - Blast... - //
+			// services.addQTestNavTree();
+			
+			setStyles();
 		}
 	
-		function setStyle() {
+		function setStyles() {
 			var s = q('head').add('style');
 			var ss = d.styleSheets[d.styleSheets.length-1];
 			ss.insertRule('ci {font-family:arial; font-size:11px;}');
-			ss.insertRule('ci layout {height:100%; display:flex; border:solid;}');
+			ss.insertRule('ci layout {height:100%; display:flex; /*border:solid;*/}');
 			ss.insertRule('ci layout contents {display:flex; flex-direction:column;flex:1;}');
 			ss.insertRule('ci layout info {flex:1;}');
-			ss.insertRule('ci layout contents _progress contents {text-align:center;padding:7px;}');
-			ss.insertRule('ci layout contents footer contents {text-align:center;padding:7px;}');
-			ss.insertRule('ci layout navigator {width:21%;border:solid;display:flex;flex-direction:column;}');
-			ss.insertRule('ci layout navigator contents info {overflow: scroll;}');
-			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar { width: 9px; }', 1);
-			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-track { box-shadow: grey 0px 0px 5px inset; /*border-radius: 10px;*/ }', 2);
-			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-thumb { background: rgb(51, 77, 77); /*border-radius: 10px;*/ }', 3);
-			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-thumb:hover { background: hsl(36, 100%, 50%); }', 4);
-			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:vertical:decrement { background: #8bc34a!important; }', 5);
-			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:vertical:increment { background: #8bc34a!important; }', 6);
+			ss.insertRule('ci layout navigator {width:21%; display:flex; flex-direction:column; /*border-left:solid 1px hsl(180, 22%, 90%);*/ /*display:none;*/ }');
+			ss.insertRule('ci layout navigator contents info {overflow: scroll; white-space: nowrap;}');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar { width: 9px; }');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-track { box-shadow: grey 0px 0px 5px inset; /*border-radius: 10px;*/ }');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-thumb { background: rgb(51, 77, 77); /*border-radius: 10px;*/ }');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-thumb:hover { background: hsl(180, 20%, 25%); }');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:vertical:decrement { background: #8bc34a!important; }');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:vertical:increment { background: #8bc34a!important; }');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:horizontal:decrement { background: #8bc34a!important; }');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:horizontal:increment { background: #8bc34a!important; }');
+			ss.insertRule('ci layout header {background-color: hsl(180, 20%, 30%); padding:7px; color: rgb(255,255,255);}');
+			ss.insertRule('ci layout header _title {font-size:27px; font-weight:bold;}');
+			ss.insertRule('ci layout header _title ico {margin-right:7px; color:hsl(120, 60%, 40%);}');
+			ss.insertRule('ci layout header contents desc {letter-spacing: 2.1px;}');
+			ss.insertRule('ci layout contents info { /*padding:7px;*/ border-left:solid 1px hsl(180, 22%, 90%); }');
+			ss.insertRule('ci layout navigator header > ico {padding: 7px; text-align:right;cursor:pointer;}');
+			ss.insertRule('ci layout navigator contents info {font-family: tahoma; font-size: 11px;}');
+			ss.insertRule('ci layout contents _progress {background-color: hsl(180, 20%, 25%);}');
+			ss.insertRule('ci layout contents _progress contents {text-align:center; color: rgb(255,255,255); padding:7px;}');
+			ss.insertRule('ci layout contents footer {background-color: hsl(180, 20%, 20%);}');
+			ss.insertRule('ci layout contents footer contents {text-align:center; padding:7px; color:rgb(255,255,255);}');
 		}
 
 		function build() {
@@ -63,8 +116,8 @@
 		}
 		
 		function init() {
-			d = document;
-			d.title = 'QTestConn - Observations';
+			d = document, doc = d;
+			d.title = data.header._title+' - '+data.header.desc;
 			
 			q=function( q ) { return d.querySelector( q ); };
 			qs=function( q ) { return d.querySelectorAll( q ); };
@@ -110,7 +163,11 @@
 			
 			Element.prototype.hide = function( ) {
 				this.style.display = 'none';
-			};	
+			};
+			
+			Element.prototype.isDisplayed = function( ) {
+				return this.style.display == '';
+			};
 			
 			Element.prototype.txt = function( t ) {
 				this.textContent = t;
@@ -120,7 +177,156 @@
 				this.innerHTML = h;
 			};			
 
-			build(); // - Build cI - //
-		}			
+			// - Build cI - //
+			build();
+		}
+		
+		var services = {
+			addQTestNavTree: function() {
+				var xhr = this.getXhr();
+				xhr.onreadystatechange = function() {
+				    if (this.readyState == 4 && this.status == 200) {
+				    	var results = this.responseText;
+				    	ci.q('layout navigator contents info').htm(results);
+				    	
+				    	// - Refurbish - //
+				    	setStyleNavTree();
+				    	
+				    	// - Reveal - //
+				    	ci.show();
+				    }
+				};
+				xhr.open("GET", "/getExpandedNavTreeNodes", true);
+				xhr.send();
+			},
+			getXhr: function() {
+				return new XMLHttpRequest();
+			}
+		};
+		
+		function setStyleNavTree() {
+			var ns = qs("[id*='test-design-tree'] [class*='tree-row removable']");
+			[].forEach.call(ns, function( n ) {
+				with(n.style) {
+					cursor = 'pointer';
+					// - Style root node - //
+					if( rn = n.querySelector("[class*='root-node']") ) {
+						// - Insert icon - //
+						var ico = rn.insertBefore( doc.createElement('ico'), rn.firstChild );
+						ico.className = 'fa fa-home';
+						with( rn.style ) {
+							fontWeight = 'bold';
+							backgroundColor = 'hsl(180, 20%, 25%)';
+							color = 'rgb(255,255,255)';
+							padding = '9.797px';
+							with(rn.querySelector('ico').style){
+								// color = 'darkgreen';
+								marginRight = '5px';
+							}
+						}
+					}
+					// - Hide object type element - //
+					if(ot = n.querySelector("[class*='object-type']") ) {
+						ot.style.display = 'none'; // - Hide object type indicator - //						
+						// - Prepend object type icons - //
+						var ico = ot.parentNode.insertBefore(doc.createElement('ico'), ot.nextSibling); 
+						if(ot.textContent.indexOf('MD')>-1) {
+							ico.className = 'fa fa-cogs module';
+						} else if( ot.textContent.indexOf('TC')>-1) {
+							ico.className = 'fa fa-cog testcase';
+						}
+						// - Style ot icons - //
+						with(ico.style) {
+							marginRight = '3px';
+							if( ico.className.indexOf('module') > -1 ) {
+								color = 'darkgreen';
+							}else {
+								color = 'lightgreen';
+							}
+						}						
+						// - Style links - //
+						if( a = n.querySelector('a') ) {
+							with( a.style ) {
+								textDecoration = 'none';
+								color = 'rgb(0,0,0)';
+							}
+						}
+					}
+				}
+				// - Tree node listener - //
+				n.addEventListener('click', function(e) {
+					var n = this.querySelector('a');
+					!n ? n = this.querySelector('div') : null;
+					if( n.className.indexOf('root-node') > -1 ) { return; }
+					// - Query child nodes - //
+					var ns = qs( '#'+n.id+'-children' );
+					[].forEach.call(ns, function(n){
+						with(n.style){
+							display != 'none' ? display = 'none' : display = '';
+						}
+					});
+				});
+				// - Add navigator actions - //
+				if( rn = n.querySelector("[class*='root-node']") ) {
+					rn.style.display = 'flex';
+					// - Refurbish - //
+					var cn = doc.createElement('cn');
+					[].forEach.call(rn.qs('*'), function(c) { cn.add( c ); });
+					rn.add( cn );
+					cn.style.flex = 1;
+					// - Add actions container - //
+					cn = rn.add( 'cn' );
+					cn.id = 'cnNavActs';
+					data.navigator.actions.forEach(function(o, i) {
+						var ico = cn.add('ico');
+						ico.id = o.id;
+						ico.className = o.ico;
+						ico.type = o.type;
+						ico.title = o.desc;
+						(o.id == 'expand_all') ? cn.add('sep').htm(data.actionSeparator) : null;
+						with( ico.style ) {
+							cursor = 'pointer';
+							(ico.id == 'nav_search') ? marginLeft = '17px' : null;
+						}
+						setEvents(ico);
+					});
+					// - Fix nav tree root - //
+					q('ci layout navigator').insertBefore(
+							doc.createElement('cnRootNode'), q('ci layout navigator > contents'));
+					q('ci layout navigator cnRootNode').add(rn.parentNode);
+				}
+			});		
+		}
+		
+		function setEvents(o) {
+			o.addEventListener('click', function(e) {
+				if( o.type && o.type == 'nav_action' ) {
+					if( o.id=='expand_all' || o.id == 'collapse_all' ) {
+						expandCollapseNavTree(this);
+					}
+				}
+				else if( o.id == 'icoNavHeader' ) {
+					showHideNavigator();
+				}
+			});
+		}
+		
+		function showHideNavigator() {
+			var nav = q('ci navigator');
+			// nav.isDisplayed() ? nav.hide() : nav.show();
+			// nav.q('cnRootNode').hide();
+			nav.q('contents > info').hide();
+			nav.q('footer').hide();
+			nav.style.width = '55px';
+		}
+		
+		function expandCollapseNavTree(act) {
+			var actId = act.id;
+			var ns = qs("[id*='test-design-tree'] [class*='tree-row removable'] [class*='object-type-0']");
+			[].forEach.call(ns, function(n){
+				var id = n.parentNode.id+'-children';
+				actId == 'expand_all' ? q( '#'+id ).style.display = '' : q( '#'+id ).style.display = 'none';
+			});
+		}
 	</script>
 </head>

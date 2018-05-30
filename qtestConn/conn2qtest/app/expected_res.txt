@@ -1,23 +1,9 @@
-1. The "Add Opportunity" modal should appear. 
-2. A search icon should appear for the "Account field" after the third character has been entered. 
-3. A dropdown should appear and load the search results. 
-4. The dropdown should disappear and the selected store name should appear in the Account entry field. 
-5. "Other" should become highlighted. 
-6. Text should replace the placeholder text in the field 
-7. A search icon should appear in the "Recommended Package/SKU" field. 
-8. A dropdown should appear and load the search results. 
-9. The dropdown should disappear and the selected search result should appear in the "Recommended Package/SKU" field. 
-10. A dropdown should appear with rationale options to select from. 
-11. The dropdown should disappear. A new "Add Other Rationale" field should appear under the "Rationale" field. 
-12. Placeholder text should be replaced by the entered text. 
-13. A dropdown should appear with the following options:
-- High
-- Medium
-- Low
-
-They should have bar-chart icons with highlighted bars indicating their respective level. 
-14. The radio button should become highlighted when checked. A dropdown field with a downwards-facing carat should appear to the right of the radio button when it is checked. 
-15. A dropdown should appear with existing Target Lists to choose from. 
-16. The dropdown should disappear and the selected Target List should display in the field. 
-17. The modal should close, and a green bar should appear at the top of the screen with the text "Opportunity Added!" before fading away. 
-18. The created opportunity should be visible as one of the Opportunities added to the Target List.
+1. Carrie Reid Opens
+2. Opportunities page loads
+3. Distributor is selected
+4. Apply Filters is applied and search results display
+5. Opportunity Selected
+6. Rationale dropdown appears
+7. CSV Downloads
+8. Opportunity that was selected was added
+9. CSV Downloads with Opportunities that were selected was added

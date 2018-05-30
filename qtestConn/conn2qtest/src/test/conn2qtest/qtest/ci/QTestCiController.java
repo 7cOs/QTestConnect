@@ -24,8 +24,11 @@ import test.conn2qtest.QTestConnect;
 public class QTestCiController {
   
   public static final String BASE_URL = "https://cbrands.qtestnet.com";
+  public static final String COMPASS_PORTAL_PATH = "/p/68329/portal/project";
+  public static final String TEST_DESIGN_PATH = "#tab=testdesign&object=";
+  public static final String COMPASS_PORTAL_URL = BASE_URL + COMPASS_PORTAL_PATH + TEST_DESIGN_PATH + "6&id=3936439";
   public static final String TC_TEMP_URL = BASE_URL + "--TBD--";
-  public static final String TC_ACTUAL_URL = BASE_URL + "/p/68329/portal/project#tab=testdesign&object=1&id=22986021";
+  public static final String TC_ACTUAL_URL = BASE_URL + COMPASS_PORTAL_PATH + TEST_DESIGN_PATH + "1&id=23730628";
   public static WebDriver d, controller;
   public static final boolean MODE = true;
   public static final int WAIT = 35;
@@ -92,45 +95,51 @@ public class QTestCiController {
   public static boolean insertStepDescExpectedResultsSteps()
       throws FileNotFoundException, InterruptedException {
 
-    List<ArrayList<String>> stepsContainer = parseSteps();
-
-    for (int n = 0; n < stepsContainer.size(); n++) {
-      ArrayList<String> steps = stepsContainer.get(n);
-      for (int i = 0; i < steps.size(); i++) {
-
-        WebElement gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-
-        if (n == 0) {
-          WebElement stepdesc = gridrow.findElements(By.tagName("td")).get(2);
-          stepdesc.click();
-          Thread.sleep(55);
-          gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-          stepdesc = gridrow.findElements(By.tagName("td")).get(2);
-          d.switchTo().frame(stepdesc.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
-              .sendKeys(steps.get(i));
-
-          // d.switchTo().defaultContent();
-        } else if (n == 1) {
-          WebElement expectedres = gridrow.findElements(By.tagName("td")).get(3);
-          expectedres.click();
-          Thread.sleep(55);
-          gridrow = d.findElements(By.className("gridxRowTable")).get(i);
-          expectedres = gridrow.findElements(By.tagName("td")).get(3);
-          d.switchTo().frame(expectedres.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
-              .sendKeys(steps.get(i));
-
-          // d.switchTo().defaultContent();
+    try {
+      List<ArrayList<String>> stepsContainer = parseSteps();
+  
+      d = QTestCiController.launchLoginQTest(TC_ACTUAL_URL, false);
+      
+      for (int n = 0; n < stepsContainer.size(); n++) {
+        ArrayList<String> steps = stepsContainer.get(n);
+        for (int i = 0; i < steps.size(); i++) {
+  
+          WebElement gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+  
+          if (n == 0) {
+            WebElement stepdesc = gridrow.findElements(By.tagName("td")).get(2);
+            stepdesc.click();
+            Thread.sleep(55);
+            gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+            stepdesc = gridrow.findElements(By.tagName("td")).get(2);
+            d.switchTo().frame(stepdesc.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
+                .sendKeys(steps.get(i));
+  
+            // d.switchTo().defaultContent();
+          } else if (n == 1) {
+            WebElement expectedres = gridrow.findElements(By.tagName("td")).get(3);
+            expectedres.click();
+            Thread.sleep(55);
+            gridrow = d.findElements(By.className("gridxRowTable")).get(i);
+            expectedres = gridrow.findElements(By.tagName("td")).get(3);
+            d.switchTo().frame(expectedres.findElement(By.tagName("iframe"))).findElement(By.id("tinymce"))
+                .sendKeys(steps.get(i));
+  
+            // d.switchTo().defaultContent();
+          }
+  
+          d.switchTo().defaultContent();
+          d.findElement(By.id("testcaseContentPane")).click();
         }
-
-        d.switchTo().defaultContent();
-        d.findElement(By.id("testcaseContentPane")).click();
       }
+      
+      // - Persist TestCase - //
+      d.findElement(By.id("testdesignToolbarSave")).click();
+      return true;
     }
-
-    // - Persist TestCase - //
-    d.findElement(By.id("testdesignToolbarSave")).click();
-
-    return false;
+    finally {
+      quit();
+    } 
   }
   
   public static List<ArrayList<String>> parseSteps() throws FileNotFoundException {
@@ -231,13 +240,14 @@ public class QTestCiController {
     return stats;
   }  
   
-  public static String expandAllNavTreeNodes() throws InterruptedException {
+  public static String getExpandedNavTreeNodes() throws InterruptedException {
     String xp="", gather="", nNodes = "";
     try {
       xp = "//*[@id='test-design-tree-content']";
       gather = "return arguments[0].outerHTML;";
-      d = QTestCiController.launchLoginQTest(BASE_URL, true);
+      d = QTestCiController.launchLoginQTest(COMPASS_PORTAL_URL, true);
       expandNavTreeNode();
+      
       // - Gather - //
       nNodes = (String)jse.executeScript(gather, waitUntilElementAvailable(xp));
     }catch( Exception x ) {
@@ -310,7 +320,7 @@ public class QTestCiController {
   }
   
   public static void main(String[] args) throws Exception {
-    // d = QTestCiController.launchLoginQTest(TC_TEMP_URL, MODE);
+    // d = QTestCiController.launchLoginQTest(TC_ACTUAL_URL, false);
     // QTestCiController.insertStepDescExpectedResultsSteps();
     // QTestCiController.getModuleStatistics("To Be Automated");
     /*
@@ -323,6 +333,6 @@ public class QTestCiController {
     */
     // QTestCiController.expandAllNavTreeNodes();
     // collapseAllNavTreeNodes
-    System.out.println( QTestCiController.collapseAllNavTreeNodes() );
+    // System.out.println( QTestCiController.collapseAllNavTreeNodes() );
   }
 }

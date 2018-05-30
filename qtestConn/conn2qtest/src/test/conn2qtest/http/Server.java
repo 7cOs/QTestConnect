@@ -67,10 +67,7 @@ public class Server {
         try {
           switch (reqPath) {
           case "/getExpandedNavTreeNodes":
-              resp = QTestCiController.expandAllNavTreeNodes();
-              break;
-          case "/getCollapsedNavTree":
-              resp = QTestCiController.collapseAllNavTreeNodes();
+              resp = QTestCiController.getExpandedNavTreeNodes();
               break;
           }
         } catch(Exception x) {
