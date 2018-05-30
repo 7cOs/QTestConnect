@@ -4,949 +4,123 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">	
 	<script type="text/javascript" src="/modules.js"></script>
 	<script type="text/javascript">
-	
 		var d, ci;
+		
+		var data = {
+			header: {
+				title: 'QTestConn',
+				desc: 'aufklären #: 2575 - observieren'
+			},
+			footer: {
+				company: 'rege-it solutions, professional llc &copy; 7012'
+			}
+		};
 		
 		window.onload = function() { init(); };
 	
 		function addCi() {
-			// - Let ci be client-interface - //
 			ci = d.head.parentNode.insertBefore(d.head.parentNode.add('ci'), d.body);
 			ci.id = 'ci'; 
 			ci.add('layout');
 			ci.q('layout').add('contents').add('header').add('contents');
+			ci.q('layout contents header contents').add('_title').txt(data.header.title);
+			ci.q('layout contents header contents').add('desc').txt(data.header.desc);
+			ci.q('layout contents').add('info').txt('ci.contents.info');
+			ci.q('layout contents').add('_progress').add('contents').txt('progress');
+			
 			ci.q('layout contents').add('footer').add('contents');
+			ci.q('layout contents footer contents').htm(data.footer.company);
+			
 			ci.q('layout').add('navigator').add('header').add('contents');
+			ci.q('layout navigator header contents').txt('navigator-header');
+			ci.q('layout navigator').add('contents').add('info').txt('navigator.contents.info');
+			ci.q('layout navigator').add('footer').add('contents').txt('navigator.footer');
 			
-			//ci.q('layout contents').txt( 'ci.contents' );
-			//ci.q('layout navigator').txt( 'ci.navigator' );
-			// setStyle(ci);
+			setStyle();
 		}
 	
-		function setStyle(o) {
-			console.log( o == cts );
-			if( o && o.style ) {
-				with( o.style ) {
-					fontFamily = 'arial';
-					fontSize = '11px';
-					if( o == ci ) {
-						[].forEach.call(ci.qs('contents, navigator'), function(c) {
-							setStyle( c );
-						});
-					} else if(o == ci.layout.contents) {
-						console.log( o );
-						height = '100%';
-						border = 'solid';
-					}
-				}
-			}
+		function setStyle() {
+			var s = q('head').add('style');
+			var ss = d.styleSheets[d.styleSheets.length-1];
+			ss.insertRule('ci {font-family:arial; font-size:11px;}');
+			ss.insertRule('ci layout {height:100%; display:flex; border:solid;}');
+			ss.insertRule('ci layout contents {display:flex; flex-direction:column;flex:1;}');
+			ss.insertRule('ci layout info {flex:1;}');
+			ss.insertRule('ci layout contents _progress contents {text-align:center;padding:7px;}');
+			ss.insertRule('ci layout contents footer contents {text-align:center;padding:7px;}');
+			ss.insertRule('ci layout navigator {width:21%;border:solid;display:flex;flex-direction:column;}');
+			ss.insertRule('ci layout navigator contents info {overflow: scroll;}');
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar { width: 9px; }', 1);
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-track { box-shadow: grey 0px 0px 5px inset; /*border-radius: 10px;*/ }', 2);
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-thumb { background: rgb(51, 77, 77); /*border-radius: 10px;*/ }', 3);
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-thumb:hover { background: hsl(36, 100%, 50%); }', 4);
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:vertical:decrement { background: #8bc34a!important; }', 5);
+			ss.insertRule('ci layout navigator contents info::-webkit-scrollbar-button:vertical:increment { background: #8bc34a!important; }', 6);
 		}
-	
-	
-	
-	function build() {
-	
-		// mask(true);
-		
-		addCi();
-		
-		// - Deterministic Pause - //
-		return;
-	
-		// - Cloak ci until app is fully loaded - //
-		ci.hide();
-		
-		var layout = ci.add('layout');
-		layout.id = 'ciLayout';
-		// - Store layout in cI - //
-		ci.layout = layout;
-		layout.add('quadrants');
-		for( var i=0; i<3; i++ ) {
-			var qd = layout.q('quadrants').add('quadrant');	
-			layout.q('quadrants').id = 'quadrantsLayout';
-			for(var j=0; j<3; j++) {
-				var p = qd.add('part');
-				if( i==0 && j==1) {
-					p.id = 'ciHeader';
-					p.htm('QTestConn<desc style=\'display:block;font-size:9px;letter-spacing:2.7px;\'>'+
-						'aufklären #2575 - observieren</desc>');
-					p.insertBefore(p.add('ico'), p.childNodes[0]);
-					p.q('ico').className = 'fa fa-database w3-xxxlarge w3-text-light-green';
-					p.q('ico').style.paddingRight = '7px';
-				} else if( i==1 && j==1 ) {
-					p.id = 'cnContents';
-					p.add('silos'); // - silos container - //
-					// - Add silos - when loading display default; display automation silos after load complete - //
-					p.addSilo = function( name ) {
-						var silos = this.q('silos');
-						var silosCtx = {
-							projectName: 'Compass Portal - Beer ',
-							landing: ['zerlegen','observieren','aufklären'],
-							modules: [{
-								name:'Manual<br />Tests',
-								ico: 'fa fa-wrench',
-								desc: {
-									title: 'description',
-									contents: "<div>Manual test cases and steps prepared by QA; consists of " +
-									"new or pre-existing features of the AUT (Application Under Test) to be tested</div>"
-								},
-								stats: { 
-									title: "statistics",
-									contents: {
-										tcs: {title: 'test cases', total: 0},
-										sms: {title: 'sub modules', total: 0}
-									}
-								}
-							},{
-								name: 'To Be<br />Automated',
-								ico: 'fa fa-cog',
-								desc: {
-									title: 'description',
-									contents: "<div>Test cases considered 'automatable' by QE " +
-									"based on further analyses post break-down of manual test " +
-									"cases and steps prepared by QA</div>"
-								},
-								stats: { 
-									title: "statistics",
-									contents: {
-										tcs: {title: 'test cases', total: 0},
-										sms: {title: 'sub modules', total:0}
-									}
-								}
-							},{
-								name: 'Automated<br />Tests',
-								ico: 'fa fa-cogs',
-								desc: {
-									title: "description",
-									contents: "<div>Automated code for test cases and steps " +
-									"developed by QE. Automation code is automatically executed by " +
-									"<a href='https://circleci.com/gh/ConstellationBrands/compass-portal' target='blank'>" +
-									"C.I. (Continuous Integration)</a> process, or may be executed manually</div>"
-								},
-								stats: { 
-									title: "statistics",
-									contents: {
-										tcs: {title: 'test cases', total: 0},
-										sms: {title: 'sub modules', total: 0}
-									}
-								}
-							}],
-							setModulesStatsData: function() {
-								var ns = [];
-								this.modules.forEach( function (m, i){
-									ns.push( m.name.replace('<br />', ' ') );
-								});
-								var json = JSON.stringify({ names: ns });
-								xhttp = getXmlHttpReq();
-								xhttp.onreadystatechange = function() {
-								    if (this.readyState == 4 && this.status == 200) {
-								    	var results = JSON.parse(this.responseText);
-								    	for(var i =0; i<results.length; i++) {
-								    		var o = results[i];
-								    		qs('silo stats contents tcs total')[o.id].txt(o.tcs);
-								    		qs('silo stats contents sms total')[o.id].txt(o.sms);
-								    	}
-								    }
-								};
-								xhttp.open("POST", "/fetchModulesStats", true)
-								xhttp.send(json);
-							}
-						};
-						
-						var ctx = (name == 'landing') ? silosCtx.landing : 
-							(name=='modules') ? silosCtx.modules : null;
 
-						ctx.forEach(function(itm){
-							var silo = silos.add( 'silo' );
-							var hd = silo.add( 'header' );
-							hd.add('ico').className = itm.ico + ' w3-jumbo w3-text-light-green';
-							hd.add('txt').htm(itm.name);
-							// hd.htm();
-							var cn = silo.add('contents');
-							var ds = cn.add( 'desc' );
-							var tt = ds.add( 'title' );
-							tt.txt( itm.desc.title );
-							ds.add('contents').htm(itm.desc.contents);
-							var sts = cn.add( 'stats' );
-							tt = sts.add('title');
-							tt.txt(itm.stats.title);
-							if( itm.stats.title=='statistics' ) {
-								for(var n in itm.stats) {
-									if( n != 'title' ) {
-										var p = sts.add(n);
-										if(n=='contents') {
-											for(var m in itm.stats[n]) {
-												p.add(m).htm(itm.stats[n][m].title);
-												var ttl = p.lastChild.add('total');
-												ttl.htm( itm.stats[n][m].total );
-											}
-										}
-									}
-								}
-							}
-							setEvents( silo );
-						});
-
-						// - Set modules stats data (CI) - //
-						silosCtx.setModulesStatsData();
-						
-						with( silos.style ) {
-							display = 'flex';
-							flexDirection = 'row';
-							justifyContent = 'center';
-							alignItems = 'center';
-							justifyContent = 'space-around';
-							[].forEach.call(silos.qs('silo'), function(s) {
-								with( s.style ) {
-									display = 'flex';
-									flexDirection = 'column';
-									background ='rgb(255, 255, 255)';
-									// background = 'hsl(180, 22%, 90%)';
-									// border = 'solid 1px rgb(51, 77, 77)';
-									margin = '15px';
-									fontSize = '25px';
-									boxShadow = '5px 5px 5px grey';
-									width = '27%';
-									if( name == 'modules' ) {
-										width = '375px';
-									}
-									height = '395px';
-									// justifyContent = 'center';
-									// alignItems = 'bottom';
-									// - Set header style - //
-									with(s.q('header').style) {
-										display = 'flex';
-										color = 'rgb(255, 255, 255)';
-										background = 'rgb(51, 77, 77)';
-										padding = '25px';
-										textAlign = 'center';
-										with(s.q('header txt').style) {
-											// paddingRight = '25px';
-											flex = 1;
-										}
-									}
-									// - Set contents style - //
-									if( sc = s.q('contents') ) {
-										with( sc.style ) {
-											display = 'flex';
-											flexDirection = 'column';
-											flex = '1';
-											color = 'rgb(51, 77, 77)';
-											// border = 'solid';
-											padding = '7px';
-										}
-										[].forEach.call( sc.qs('desc, stats'), function( o ) {
-											var nn = o.nodeName.toLowerCase();
-											with(o.style) {
-												fontSize = '15px';
-												if(tt = o.q('title')){
-													with(tt.style) {
-														fontWeight = 'bold';
-														textTransform = 'capitalize';
-														marginBottom = '7px';
-														textAlign = 'left';
-													}
-												}
-												if(nn=='desc') {
-													textAlign = 'justify';
-												    textJustify = 'inter-word';
-													flex = 1;
-												} else if(nn=='stats') {
-													height = '25%';
-													display = 'flex';
-													flexDirection = 'column';
-													if( cts = o.q('contents')) {
-														with(cts.style) {
-															display = 'flex';
-															flexDirection = 'row';
-															justifyContent = 'space-between';
-															[].forEach.call( cts.qs('*'), function(o) {
-																var nn = o.nodeName.toLowerCase();
-																with( o.style ) {
-																	if(nn == 'tcs' || nn == 'sms') {
-																		fontWeight = 'normal';
-																		textTransform = 'capitalize';
-																		fontSize = '13px';
-																	}else if( nn=='total'){
-																		paddingTop = '9px';
-																		fontWeight = 'normal';
-																		fontSize = '19px';
-																	}
-																}
-															});
-														}
-													}
-												}
-											}
-										});
-									}
-								}
-							});
-						}
-					};
-				} else if( i==0 && j==2 ) {
-					p.add( 'ico' ).className += '';
-					
-				} else if(i==1 && j==2 ) {
-					// console.log( p.outerHTML );
-					var cn = p.add( 'navigator' );						
-					var b = cn.add('button');
-					b.id = 'selectProject';
-					b.htm('Projects');
-					b.addEventListener('click', function( e ){
-						applyProgress(true, 'Fetching projects...');
-						xhttp = getXmlHttpReq();
-						xhttp.onreadystatechange = function() {
-						    if (this.readyState == 4 && this.status == 200) {
-						    	applyProgress(false, "Projects results returned!");
-						    	var res = JSON.parse(this.responseText);
-						    	if(res.items) {
-						    		// -Clear project items - //
-						    		q('navigator projects').clear();
-						    		var items = res.items;
-						    		for(var i=0; i<items.length; i++) {
-						    			// - TEMP - Ignore 1st project - //
-						    			if( i==0 ) { continue ; }
-						    			
-						    			var item = items[i];
-						    			// - Reset project item - //
-						    			var p = q('navigator projects').add('project');
-						    			p.self = item; 
-						    			p.setAttribute('id', item.id);
-						    			p.className = 'projectItem';
-						    			// - Add project item header - //
-						    			var hd = p.add('header');
-						    			 // - Project Icon - //
-						    			hd.add('ico').className += ' fa fa-laptop w3-large';
-						    			hd.q('ico').id = 'icoProj';
-						    			hd.add('desc').htm(item.name);
-						    			// - Hide/show nav - //
-						    			hd.add('ico').id = 'icoHdShNav';
-						    			hd.q('#icoHdShNav').className += ' fa fa-angle-double-right w3-large';
-						    			hd.q('#icoHdShNav').title = 'Collapse Modules';
-						    			hd.q('#icoHdShNav').showHideNavPane = showHideNavPane;
-						    			// - Set events - hide/show nav icon - //
-						    			setEvents( hd.q('#icoHdShNav') );
-						    			with( p.style ) {
-						    				with( p.q( 'header' ).style) {
-						    					display = 'flex';
-							    				fontSize = '13px';
-							    				padding = '15px';
-							    				fontWeight = 'bold';
-							    				background = 'rgb(51, 77, 77)';
-							    				color = 'rgb(255,255,255)';
-							    				cursor = 'pointer';
-							    				// borderBottom = 'solid 2px rgb(0,0,0)';
-							    				marginBottom = '3px';
-							    				alignItem = 'middle';
-							    				with(p.q('header desc').style) {
-							    					flex = 1;
-							    				}
-							    				[].forEach.call(p.qs('header ico'), function(o){
-							    					o.className += ' w3-text-light-green';
-							    					with( o.style ) {
-							    						fontWeight = 'bold';
-							    						if(o.id == 'icoProj') {
-							    							paddingRight = '7px';
-							    							position = 'relative';
-							    							top = '1.3px';
-							    						}
-							    					}
-							    				})
-											}
-						    			}
-						    			
-						    			var pm = p.progen.add( 'projectModules' );
-						    			pm.setAttribute('pid', item.id);
-						    			
-							    		p.fetchModules = fetchModules;
-							    		q('navigator .projectItem').fetchModules();
-
-						    			// - Reveal - //
-							    		ci.show();
-							    		mask(false);
-						    		}
-						    	}
-						    }
-						};
-						
-						// - Retrieve projects - //
-						xhttp.open("GET", "/fetchProjects", true);
-						xhttp.send();
-					});
-					
-					// - Container projects - //
-					cn.add('projects');
-					
-				} else if(i=='2' && j==1) {
-					p.id = 'cnProgress';
-					p.add('_progress_');
-					p.add('desc').htm('&nbsp;');
-				}
-			}
+		function build() {
+			addCi();
 		}
 		
-		with(layout.style) {
-			layout.progen.style.margin = '0px';
-			fontFamily = 'arial';
-			display = 'table';
-			height = '100%'; width = height;
-			// border = 'solid';
-			layout.q('#quadrantsLayout').style.display = 'table-row-group';
-			[].forEach.call(layout.qs('#quadrantsLayout > quadrant'), function(o, i) {
-				with(o.style) {
-					display = 'table-row';
-				}
-				[].forEach.call( o.qs('part'), function(p, j) {
-					with(p.style) {
-						display = 'table-cell';
-						verticalAlign = 'middle';
-						
-						// - Hide superfluous quadrant parts - //
-						(i==0 || i==1 || i==2 ) && j==0 ? p.hide() : null;
-						
-						if( i==0 || i==2 ) {
-							width = '11%';
-							background = 'hsl(180, 20%, 20%)';
-						}
-						if(j==0) {
-							background = 'hsl(180, 20%, 25%)';
-						}
-						if(i==0 && j==1) {
-							verticalAlign = 'bottom';
-							padding = '7px';
-							fontSize = '27px';
-							fontWeight = 'bold';
-							backgroundColor = 'hsl(180, 20%, 25%)';
-							color = 'white';
-							// textShadow = '5px 5px 5px rgb(0,0,0)';
-						}
-						if((i==1 && j == 0) || (i==1 && j == 2)) {
-							background = 'hsl(180, 22%, 90%)';
-							if(i==1 && j == 0) {
-								background = 'hsl(255, 100%, 100%)';
-							}
-						}
-						if( i==1 ) {
-							height = '65%';
-							// textAlign = 'center';
-							if(b = p.q('button')) {
-								verticalAlign = 'top';
-								textAlign = 'left';
-								with(b.style) {
-									display = 'inline';
-									color = 'rgb(255,255,255)';
-									fontSize = '17px';
-									width = '100%';
-									height = '45px';
-									background = 'hsl(180, 20%, 25%)';
-									border = 'none';
-									borderBottom = 'solid 1.5px black';
-									cursor = 'pointer';
-									textAlign = 'center';
-									
-									// - Suspend - //
-									b.hide();
-								}
-								if(ic = b.q('ico')) {
-									with( ic.style ) {
-										position = 'relative';
-										left = b.clientWidth/5;
-									}
-								}
-							}
-						}
-						
-						if(nav = p.q('navigator')) { 
-							width = '15%';
-							background ='rgb(255, 255, 255)';
-						}
-						
-						if(p.id == 'cnContents') {
-							width = '45%';
-							background ='rgb(224, 235, 235)';
-							verticalAlign = 'center';
-							textAlign = 'left';
-							padding = '5px';
-						}
-						
-						if(p.id == 'cnProgress'){
-							with(p.style) {
-								textAlign = 'center';
-							}
-							[].forEach.call(p.qs('_progress_, desc'), function(o){
-								with(o.style) {
-									display = 'inline';
-									color = 'white';
-									fontSize = '13px';
-									if( o.nodeName == '_PROGRESS_' ) {
-										display=null;
-										fontSize = '29px';
-									}else {
-										paddingLeft = '7px';
-									}
-								}
-							});
-						}
-						
-						if(i==2 && j==1) {
-							backgroundColor = 'hsl(180, 20%, 25%)';
-						}
-					}
-				});
-			});
-		}
+		function init() {
+			d = document;
+			d.title = 'QTestConn - Observations';
 			
-		// - Define collapsible regions for certain components - //
-		defineCollapsibleRegion('nav');
-		
-		// - Client-interface revision and adjustment(s) - //
-		reviseMainCnContents();
+			q=function( q ) { return d.querySelector( q ); };
+			qs=function( q ) { return d.querySelectorAll( q ); };
 
-		// - Add main actions and search toolbar - //
-		addCiMainActions();
-		
-		// - Load default start-up options - //
-		defaultStartupOptions();
+			// - Hide document body - //
+			d.body.style.display = 'none';
 			
-	} // - End ci layout build  -//
-
-	
-	function mask( s ) {
-		if( s ) {
-			if( ! q('mask') ) {
-
-				var m = q('html').add('mask');
-				var mg = m.add('msg');
-				mg.add( 'ico' ).className = 'fa fa-spinner fa-spin';
-				var tx = mg.add('tx'); tx.style.display = 'inline';
-				tx.txt('Loading...');
-				tx.blink = function() {
-					var tx = q('mask tx');
-					tx.txt( 'Please wait...' );
-					tx.style.visibility = '';
-					setTimeout(function(){
-						tx.style.visibility = 'hidden';
-					}, 515);
-				};
-				m.className += ' w3-text-light-green';
-				with( m.style ) {
-					fontFamily = 'tahoma';
-				    position = 'fixed';
-			    	width = '100%'; height = '100%';
-			    	top ='0'; left='0';
-			    	right='0'; bottom='0';
-			    	backgroundColor='rgba(0,0,0,0.5)';
-			    	zIndex='2'; cursor='pointer';
-			    	with( m.q( 'msg' ).style ) {
-			    	    position = 'absolute';
-			        	top = '50%'; left='50%';
-			        	fontSize='50px'; color='#ffffff'; // color='#8bc34a';
-			        	transform = 'translate(-50%,-50%)';
-			        	with( m.q( 'msg tx' ).style ) {
-			        		display = 'inline';
-			        		paddingLeft = '15px';
-			        	}
-			    	}
+			Element.prototype.add = function(n) {
+				if(typeof(n)== 'object') {
+					this.appendChild( n ); 
+					n.progen = this;
+					return;
 				}
-				
-				// - Set bink interval - //
-				tx.blinkItrvl = setInterval(tx.blink, 1001);
-			}
-		} else {
-			var m = q('mask');
-			setTimeout( function() {
-				clearInterval( m.q('tx').blinkItrvl );
-				m.progen.removeChild(m);
-			}, 1735);
-		}
-	} 
-
-	function defineCollapsibleRegion(n) {
-		switch(n){
-		case 'nav':		
-			[].forEach.call(qs('#quadrantsLayout > quadrant > part:last-child'), function(o){
-				o.setAttribute('region', 'nav-collapsible');
-			} );
-			break;
-		}
-	}
-	
-	function reviseMainCnContents() {
-		// - Add 3 part quadrant to main cnContents - //	
-		var qds = q('#cnContents').insertBefore(q(
-				'#cnContents').add('quadrants'), q('#cnContents').firstChild);
-		
-		for(var i=0; i<3; i++) {
-			var qd = qds.add('quadrant');
-			qd.add('part');
-			if( i==0 ) {
-				qd.id = 'quadrantActions';
-				qd.q('part').id = 'cnActions';
-				qd.q('part').htm( 'actions' );
-			} else if( i==1 ) {
-				qd.id = 'quadrantSilos';
-				qd.q('part').id = 'cnSilos';
-				// - Adjust silos - //
-				qd.q('part').add( q('#cnContents silos') );
-			} else {
-				qd.id = 'quadrantProgress';
-				qd.q('part').id = 'cnProgress';
-				qd.q('part').htm( '<i>movement - 7197</i>' );
-			}
-		}
-		with( qds.style ) {
-			height = '100%';
-			display = 'flex';
-			flexDirection = 'column';
-			[].forEach.call(qds.qs('quadrant'), function(o, i) {
-				with(o.style) {
-					// border = 'solid';
-					if(o.q('#cnSilos') ) {
-						flex = 1;
-						display = 'flex';
-						alignItems = 'center';
-						justifyContent = 'space-around';
+				var cmp = d.createElement(n);
+				if( cmp.nodeName != 'STYLE' ){ 
+					cmp.className = 'cmp';
+					with( cmp.style ) {
+						if ( n != 'ico' ) {
+							// display = 'block';
+						}
 					}
 				}
-			});
-		}
-		// - Re-style cnContents - //
-		with(q('#cnContents').style) {
-			verticalAlign = null;
-			padding = '0px';
-		}
-	}
-	
-	function addCiMainActions() {
-		
-	}
-
-	function defaultStartupOptions() {
-		// - Load container content default silo - //
-		q('#cnContents').addSilo('modules');
-		// - Loads projects from Source - //
-		q('#ci navigator #selectProject').click();
-	}
-
-	function applyProgress( s, d ) {
-		if( d=='undefined' || !d || d==null ) { d = 'Processing...' }
-		if( s ) {
-			q('#cnProgress _progress_').className = 'fa fa-spinner fa-spin';
-		} else {
-			q('#cnProgress _progress_').className = 'cmp';
-		}
-		q('#cnProgress desc').txt( d );
-	}
-		
-	function getXmlHttpReq() {
-		return new XMLHttpRequest();
-	}
-		
-	function init() {
-		d = document;
-		d.title = 'QTestConn - Observations';
-		
-		q=function( q ) { return d.querySelector( q ); };
-		qs=function( q ) { return d.querySelectorAll( q ); };
-
-		Element.prototype.add = function(n) {
-			if(typeof(n)== 'object') {
-				this.appendChild( n ); 
-				n.progen = this;
-				return;
-			}
-			var cmp = d.createElement(n);
-			if( cmp.nodeName != 'STYLE' ){ 
-				cmp.className = 'cmp';
-				with( cmp.style ) {
-					if ( n != 'ico' ) {
-						display = 'block';
-					}
-				}
-			}
-			// - Store progenitor in child - //
-			cmp.progen = this;
-			return this.appendChild(cmp);
-		};
-		
-		Element.prototype.q = function( q ) {
-			return this.querySelector( q );
-		};
-		
-		Element.prototype.qs = function( q ) {
-			return this.querySelectorAll( q );
-		};
-		
-		Element.prototype.clear = function() {
-			this.textContent = '';
-		};
-		
-		Element.prototype.show = function( ) {
-			this.style.display = '';
-		};
-		
-		Element.prototype.hide = function( ) {
-			this.style.display = 'none';
-		};	
-		
-		Element.prototype.txt = function( t ) {
-			this.textContent = t;
-		};	
-		
-		Element.prototype.htm = function( h ) {
-			this.innerHTML = h;
-		};			
-
-		// build(); // - Build cI - //
-	}	
-
-	function setEvents( o ) {
-		var nn = o.nodeName.toLowerCase();
-	
-		o.addEventListener( 'click', function( e ) {
-			if( this.id == 'icoHdShNav' ) {
-				this.showHideNavPane();
-			}
-		});
-	
-		o.addEventListener( 'mouseover', function( e ) {
-			if(nn=='silo') { this.style.boxShadow = null; }
-		});
-		
-		o.addEventListener( 'mouseout', function( e ) {
-			if(nn=='silo') { this.style.boxShadow = '5px 5px 5px grey'; }
-		});			
-	}
-
-	function fetchModules() {
-		if( this.className == 'projectItem' ) {
-			var o = this; // - Whom - //
-			applyProgress(true, 'Fetching modules & test cases for ' + this.self.name + '...');
-			var json = JSON.stringify({
-				id: this.self.id,
-				name: this.self.name
-			});
-			xhttp = getXmlHttpReq();
-			xhttp.onreadystatechange = function() {
-			    if (this.readyState == 4 && this.status == 200) {
-			    	applyProgress(false, 'Modules & test cases fetch for ' + o.self.name + ' complete!');
-
-			    	var results = JSON.parse(this.responseText);
-
-			    	// - Perform sort; build js nav tree - //
-			    	observeJTreeBuilder({
-			    		dat: observeSort(results, 'asc'),
-			    		cn: q('navigator projects projectmodules')
-			    	});
-			    }
+				// - Store progenitor in child - //
+				cmp.progen = this;
+				return this.appendChild(cmp);
 			};
-			xhttp.open("POST", "/fetchModules", true)
-			xhttp.send(json);
-		}
-	}
+			
+			Element.prototype.q = function( q ) {
+				return this.querySelector( q );
+			};
+			
+			Element.prototype.qs = function( q ) {
+				return this.querySelectorAll( q );
+			};
+			
+			Element.prototype.clear = function() {
+				this.textContent = '';
+			};
+			
+			Element.prototype.show = function( ) {
+				this.style.display = '';
+			};
+			
+			Element.prototype.hide = function( ) {
+				this.style.display = 'none';
+			};	
+			
+			Element.prototype.txt = function( t ) {
+				this.textContent = t;
+			};	
+			
+			Element.prototype.htm = function( h ) {
+				this.innerHTML = h;
+			};			
 
-	function observeSort( modules, order ) {
-
-		modules.forEach(function(module) {
-			for( var k in module ) {
-				if( k == 'modules' ){
-					observeSort(module.modules);
-		        }
-		    }
-		});		
-		
-		function observeSort(modules) {
-			sort(modules, order);
-			modules.forEach( function(module) {
-				for(var k in module ) {
-					if( k == 'modules' ) {
-						observeSort(module.modules);
-					}
-				}
-			});
-		}
-
-		function sort( modules, dir ) {
-			switch( dir ) {
-			case 'asc':
-				modules.sort((a, b) => Number(a.order) - Number(b.order));
-				break;
-			}
-		}
-		
-		// - Return sorted modules - //
-		return modules;
-	}
-	
-	function observeJTreeBuilder( cfg ) {
-		
-		// - Set width/height modules container - //
-		with(cfg.cn.style) {
-			height = q('#cnContents').clientHeight;
-			width = '100%';
-			overflow = 'auto';
-		}
-
-		// - Rinse container - //
-		cfg.cn.clear();
-		
-    	cfg.dat.forEach(function(o, i) {
-    		var li = cfg.cn.add('ul').add('li');
-    		li.self = o; 
-    		li.id = o.id;
-    		var ic = li.add('ico');
-			var name = li.add('_name');
-			name.txt(o.name);
-
-    		for( var k in o ) {
-    			if( k == 'modules' ){
-    				// - Query progen - //
-    				var p = getProgen(o[k][0].pId);
-    				for(var i=0; i<o[k].length; i++) {
-	    				// - Add modules to progen - //
-	    				var li = p.add( 'li' );
-	    				li.self = o[k][i];
-	    				li.id = o[k][i].id;
-	    				li.pId = p.id;
-	    				var ic = li.add('ico');
-	    				var name = li.add('_name');
-	    				name.txt(o[k][i].name);
-    				}
-    				observeSort(o.modules);
-    	        }
-    	    }
-    	});   	
-
-    	function observeSort(ms) {
-			observeOrderAsc(ms);
-    		ms.forEach( function(o) {
-    			for(var k in o ) {
-    				if( k == 'modules' ) {
-	    				// - Query progen - //
-	    				var p = getProgen(o[k][0].pId);
-	    				for(var i=0; i<o[k].length; i++) {
-		    				// - Add modules to progen - //
-		    				var li = p.add('ul').add('li');
-		    				li.self = o[k][i];
-		    				li.id = o[k][i].id;
-		    				li.pId = p.id;
-		    				var ic = li.add('ico');
-		    				var name = li.add('_name');
-		    				name.txt(o[k][i].name);
-	    				}				    					
-    					observeSort(o.modules);
-    				}
-    			}
-    		});
-    	}
-
-    	function observeOrderAsc ( ms ) {
-    		var orderAsc = ms.sort((a, b) => Number(a.order) - Number(b.order));
-    	}
-
-    	function getProgen(pId) {
-    		var os = cfg.cn.qs('li');
-    		for(var i=0; i<os.length; i++) {
-    			var o = os[i];
-    			if(o.self.id == pId) {
-    				return o;
-    			}
-    		}
-    	}
-
-    	// - Set style modules container - //
-    	with(cfg.cn.style) {
-        	[].forEach.call( cfg.cn.qs('ul, li'), function(o, i) {
-        		with(o.style) {
-    	    		fontSize = '9.9px';
-        			if( o.nodeName == 'UL') {
-	        			padding = '0px';
-	        			paddingLeft = '3px';
-	        			marginLeft = '7px';
-	        			marginTop = '3px';
-        			}else if( o.nodeName == 'LI' ) {
-        				cursor = 'pointer';
-        			}
-        		}
-        	});
-        	
-       		// - Reset class and style for icon and name elements - //
-       		[].forEach.call( qs('projectmodules ico, _name'), function(o) {
-       			var nn = o.nodeName.toLowerCase();
-       			nn == 'ico' ? o.className = 'fa fa-folder' : null;
-       			with( o.style ) { 
-       				display = 'inline'; 
-       				if(nn=='ico') {
-       					paddingRight = '3px';
-       					color = 'rgb(51, 77, 77)';
-       				} else if (nn=='_name') {
-       					fontWeight = 'bold';
-       				}
-       			}
-       		});
-    	}
-    	
-    	// - Customise scrollbar - //
-		customiseNavigatorScrollbar();
-	}
-	
-	function customiseNavigatorScrollbar() {
-		var s = q('head').add('style');
-		var ss = d.styleSheets[d.styleSheets.length-1];
-		ss.insertRule('navigator projects projectModules {overflow: scroll;}', 0);
-		ss.insertRule('navigator projects projectModules::-webkit-scrollbar { width: 9px; }', 1);
-		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-track { box-shadow: grey 0px 0px 5px inset; /*border-radius: 10px;*/ }', 2);
-		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-thumb { background: rgb(51, 77, 77); /*border-radius: 10px;*/ }', 3);
-		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-thumb:hover { background: hsl(36, 100%, 50%); }', 4);
-		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-button:vertical:decrement { background: #8bc34a!important; }', 5);
-		ss.insertRule('navigator projects projectModules::-webkit-scrollbar-button:vertical:increment { background: #8bc34a!important; }', 6);
-	}
-	
-	function showHideNavPane() {
-		[].forEach.call(qs('#quadrantsLayout > quadrant > part:last-child'), function(o) {
-			console.log( o );
-			o.hide();
-			// - Add collapsed indicator - //
-			var pn = o.progen;
-			var p = pn.add( 'part' );
-			// p.htm( '&nbsp;' );
-			p.className = 'navHide';
-			if( hd = o.q( 'navigator header' ) ) {
-				var cn = p.add( "cn" );
-				var ic = cn.add('ico');
-				ic.className += ' fa fa-angle-double-left '+
-					'w3-large w3-text-light-green';
-				ic.title = 'Expand Modules';
-				ic.addEventListener( 'click', function(e) {
-					[].forEach.call(qs('.navHide'), function(o) {
-						var pn = o.progen;
-						pn.removeChild( o ); // - wrest - //
-						pn.lastChild.style.display = 'table-cell';
-					});
-				});
-			}
-			with(p.style) {
-				display = 'table-cell';
-				width = '1%';
-				backgroundColor = o.style.backgroundColor;
-				if( hd = o.q( 'navigator header' ) ) {
-					backgroundColor = 'hsl(180, 20%, 30%)';
-					with( p.q('cn').style ) {
-						textAlign = 'center';
-						// border = 'solid 1px';
-						height = '51px';
-						background = 'rgb(51, 77, 77)';
-						with( p.q('cn > ico').style ) {
-							fontWeight = 'bold';
-							// position = 'relative';
-							// top = '11px';
-							cursor = 'pointer';
-						}
-					}
-				}
-			}
-		});
-	}
+			build(); // - Build cI - //
+		}			
 	</script>
 </head>
