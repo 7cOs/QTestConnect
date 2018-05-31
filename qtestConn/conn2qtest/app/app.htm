@@ -9,9 +9,13 @@
 		
 		var data = {
 			header: {
-				ico: 'fa fa-database',
+				ico: 'fa fa-database w3-xxlarge',
 				_title: 'QTestConn',
-				desc: 'aufklären #: 2575 - observieren'
+				desc: 'aufklären #: 2575 - observieren',
+				actions: [{
+					id: 'ico_DisplayNav',
+					ico: 'fa fa-navicon w3-large'
+				}]
 			},
 			navigator: {
 				header: {
@@ -48,12 +52,40 @@
 			
 			ci.id = 'ci'; 
 			ci.add('layout');
-			ci.q('layout').add('contents').add('header').add('quadrants');
-			ci.q('layout contents header quadrants').add('quadrant').id = 'header';
-			ci.q('layout contents header quadrants').add('quadrant').id = 'actions';
+			ci.q('layout').add('header').add('quadrants');
+			ci.q('layout header quadrants').add('quadrant');
+			ci.q('layout header quadrants quadrant').add('ico').className = data.header.ico;
+			ci.q('layout header quadrants quadrant').add('_title').htm(data.header._title);
+			ci.q('layout header quadrants quadrant').add('desc').htm(data.header.desc);
+			
+			ci.q('layout').add('main');
+			ci.q('layout main').add('actions').add('quadrants').htm('actions-quadrants');
+			ci.q('layout main').add('quadrant');
+			ci.q('layout main quadrant').add('contents').add('quadrants').htm('contents-quadrants');
+			ci.q('layout main quadrant').add('navigator').add('quadrants').htm('navigator-quadrants');
+			ci.q('layout').add('_progress').add('quadrants').htm('progress-quadrants');
+			ci.q('layout').add('footer').add('quadrants').htm('footer-quadrants');
+
+			//ci.q('layout header quadrants').add('quadrant').id = 'header';
+			//ci.q('layout contents header quadrants').add('quadrant').id = 'actions';
+			/*
 			var qd = ci.q('layout contents header quadrants #header');
 			qd.add('contents').add('ico').className = data.header.ico;
-			qd.add('contents').add('_title').htm(data.header._title);
+			qd.q('contents').add('_title').htm(data.header._title);
+			qd.q('contents').add('desc').htm(data.header.desc);
+			// - Add header actions - //
+			data.header.actions.forEach( function(o) {
+				var act = ci.q('layout contents header quadrants #actions').add('action');
+				act.add('ico').className = o.ico;
+				act.q('ico').id = o.id;
+			});
+			ci.q('layout contents').add('quadrants');
+			
+			ci.q('layout contents').add('_progress').add('contents').txt('progress');
+			
+			ci.q('layout contents').add('footer').add('contents');
+			ci.q('layout contents footer contents').htm(data.footer.company);
+			
 			/*
 			ci.q('layout').add('contents').add('header').add('contents');
 			ci.q('layout contents header contents').add('_title').txt(data.header._title);

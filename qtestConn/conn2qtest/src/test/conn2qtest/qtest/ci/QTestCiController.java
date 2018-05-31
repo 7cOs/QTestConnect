@@ -321,7 +321,7 @@ public class QTestCiController {
   
   public static void main(String[] args) throws Exception {
     // d = QTestCiController.launchLoginQTest(TC_ACTUAL_URL, false);
-    // QTestCiController.insertStepDescExpectedResultsSteps();
+    QTestCiController.insertStepDescExpectedResultsSteps();
     // QTestCiController.getModuleStatistics("To Be Automated");
     /*
       JsonArray jsa = new JsonArray();
