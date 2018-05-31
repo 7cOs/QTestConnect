@@ -26,7 +26,7 @@ public class Server {
 			HttpServer server = HttpServer.create(new InetSocketAddress(7199), 0);
 			// - Client-interface services - //
 			server.createContext("/", new App());
-			server.createContext("/modules.js", new App());
+			server.createContext("/styles.js", new App());
 			
 			// - QTestConnect Services - //
 			server.createContext("/fetchProjects", new Fetcher());
@@ -85,7 +85,7 @@ public class Server {
 		@Override
 		public void handle(HttpExchange t) throws IOException {
 			String p = "./app/app.htm";
-			if (t.getHttpContext().getPath().equals("/modules.js")) {
+			if (t.getHttpContext().getPath().equals("/styles.js")) {
 				p = "./app" + t.getHttpContext().getPath();
 			}
 			String r = new String(Files.readAllBytes(Paths.get(p)));
