@@ -14,7 +14,7 @@
 				desc: 'aufklären #: 2575 - observieren',
 				actions: [{
 					id: 'ico_DisplayNav',
-					ico: 'fa fa-navicon w3-large'
+					ico: 'fa fa-navicon w3-xlarge'
 				}]
 			},
 			navigator: {
@@ -53,10 +53,18 @@
 			ci.id = 'ci'; 
 			ci.add('layout');
 			ci.q('layout').add('header').add('quadrants');
-			ci.q('layout header quadrants').add('quadrant');
+			ci.q('layout header quadrants').add('quadrant').id = 'header';
 			ci.q('layout header quadrants quadrant').add('ico').className = data.header.ico;
 			ci.q('layout header quadrants quadrant').add('_title').htm(data.header._title);
 			ci.q('layout header quadrants quadrant').add('desc').htm(data.header.desc);
+			ci.q('layout header quadrants').add('quadrant').add('actions');
+			ci.q('layout header quadrants quadrant actions').progen.id = 'actions';
+			var acts = ci.q('layout header quadrants quadrant actions');
+			data.header.actions.forEach( function(o) {
+				var act = acts.add('action');
+				act.add('ico').className = o.ico;
+				act.q('ico').id = o.id;
+			});
 			
 			ci.q('layout').add('main');
 			ci.q('layout main').add('actions').add('quadrants').htm('actions-quadrants');

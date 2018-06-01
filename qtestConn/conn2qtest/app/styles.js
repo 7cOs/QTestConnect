@@ -2,10 +2,14 @@
 function setStyles() {
 	var s = q('head').add('style');
 	var ss = d.styleSheets[d.styleSheets.length-1];
-	ss.insertRule('ci layout {height: 100%; display: flex; flex-direction: column; font-family:arial; font-size:11px; border: solid;}');
-	ss.insertRule('ci layout header {padding: 7px;}');
+	ss.insertRule('ci layout {height: 100%; display: flex; flex-direction: column; font-family:arial; font-size:11px; /*border: solid;*/}');
+	ss.insertRule('ci layout header {padding: 7px; background-color: hsl(180, 20%, 30%); color: rgb(255,255,255);}');
+	ss.insertRule('ci layout header > quadrants {display: flex; flex-direction: row; align-items: center;}');
+	ss.insertRule('ci layout quadrant#header {flex: 1px;}');
 	ss.insertRule('ci layout header ico {margin-right: 5px;}');
 	ss.insertRule('ci layout header _title {font-weight: bold; font-size: 29px;}');
+	ss.insertRule('ci layout header desc {display: block; letter-spacing: 2.1px;}');
+	ss.insertRule('ci layout quadrant#actions {cursor: pointer;}');
 	ss.insertRule('ci layout main {display: flex; flex: 1; border:solid; flex-direction: column;}');
 	ss.insertRule('ci layout main > actions {border:solid;}');
 	ss.insertRule('ci layout main > quadrant {display: flex; flex: 1; flex-direction: row; border: solid;}');
