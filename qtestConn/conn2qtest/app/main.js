@@ -1,0 +1,210 @@
+
+var d, doc, ci;
+
+function init() {
+	d = document, doc = d;
+	d.title = data.header._title+' - '+data.header.desc;
+	
+	q=function( q ) { return d.querySelector( q ); };
+	qs=function( q ) { return d.querySelectorAll( q ); };
+	
+	// - Hide document body - //
+	d.body.style.display = 'none';
+	
+	Element.prototype.add = function(n) {
+		if(typeof(n)== 'object') {
+			this.appendChild( n ); 
+			n.progen = this;
+			return;
+		}
+		var cmp = d.createElement(n);
+		if( cmp.nodeName != 'STYLE' ){ 
+			cmp.className = 'cmp';
+			with( cmp.style ) {
+				if ( n != 'ico' ) {
+					// display = 'block';
+				}
+			}
+		}
+		// - Store progenitor in child - //
+		cmp.progen = this;
+		return this.appendChild(cmp);
+	};
+	
+	Element.prototype.q = function( q ) {
+		return this.querySelector( q );
+	};
+	
+	Element.prototype.qs = function( q ) {
+		return this.querySelectorAll( q );
+	};
+	
+	Element.prototype.clear = function() {
+		this.textContent = '';
+	};
+	
+	Element.prototype.show = function( ) {
+		this.style.display = '';
+	};
+	
+	Element.prototype.hide = function( ) {
+		this.style.display = 'none';
+	};
+	
+	Element.prototype.isDisplayed = function( ) {
+		return this.style.display == '';
+	};
+	
+	Element.prototype.txt = function( t ) {
+		this.textContent = t;
+	};	
+	
+	Element.prototype.htm = function( h ) {
+		this.innerHTML = h;
+	};			
+	
+	// - Build cI - //
+	build();
+}
+
+function build() {
+	// - Optional BLoF here ;-) - //
+	addCi();
+}
+
+function addCi() {
+	ci = d.head.parentNode.insertBefore(d.head.parentNode.add('ci'), d.body);
+	// ci.hide();
+	
+	ci.id = 'ci'; 
+	ci.add('layout');
+	ci.q('layout').add('header').add('quadrants');
+	ci.q('layout header quadrants').add('quadrant').id = 'header';
+	ci.q('layout header quadrants quadrant').add('ico').className = data.header.ico;
+	ci.q('layout header quadrants quadrant').add('_title').htm(data.header._title);
+	ci.q('layout header quadrants quadrant').add('desc').htm(data.header.desc);
+	ci.q('layout header quadrants').add('quadrant').add('actions');
+	ci.q('layout header quadrants quadrant actions').progen.id = 'actions';
+	var acts = ci.q('layout header quadrants quadrant actions');
+	data.header.actions.forEach( function(o) {
+		var act = acts.add('action');
+		act.add('ico').className = o.ico;
+		act.q('ico').id = o.id;
+	});
+	
+	ci.q('layout').add('main');
+	ci.q('layout main').add('actions').add('quadrants').htm('actions-quadrants');
+	ci.q('layout main').add('quadrant');
+	ci.q('layout main quadrant').add('contents').add('quadrants').htm('contents-quadrants');
+	ci.q('layout main quadrant').add('navigator').add('quadrants');
+	ci.q('layout main quadrant navigator quadrants').add('header').htm('navigator-header');
+	ci.q('layout main quadrant navigator quadrants').add('contents');
+	
+	ci.q('layout').add('_progress').add('quadrants').htm('progress-quadrants');
+	ci.q('layout').add('footer').add('quadrants').htm('footer-quadrants');
+	
+	services.addQTestNavTree();
+	
+	style.setStyles();
+}
+
+function addNavigatorRootNode() {
+	// - Make tree root node child of navigator header - //
+	if( rn = q( "[class*='root-node']" ) ) {
+		ci.q('main quadrant navigator quadrants > header').htm('');
+	    ci.q('main quadrant navigator quadrants > header').add( rn );
+	    
+		// - Insert icon before node name - //
+		var ico = rn.insertBefore( doc.createElement('ico'), rn.firstChild );
+		ico.className = 'fa fa-home';
+		
+		with( rn.style ) {
+			display = 'flex';
+			fontWeight = 'bold';
+			color = 'rgb(255,255,255)';
+			with(rn.querySelector('ico').style){
+				marginRight = '5px';
+			}
+			with(rn.querySelector('.text').style){
+				flex = '1';
+				border = 'solid';
+			}
+		}
+		
+		return rn;
+	} 	
+}
+
+function refurbishNavTree() {
+	// - Make tree root node returned by service a child of navigator header - //
+	var rn = addNavigatorRootNode();
+	
+	// - Refurbish remaining nodes - //
+	var ns = qs("[id*='test-design-tree'] [class*='tree-row removable']");
+	[].forEach.call(ns, function( n ) {
+		with(n.style) {
+			cursor = 'pointer';
+			// - Hide object type elements - //
+			if(ot = n.querySelector("[class*='object-type']") ) {
+				ot.style.display = 'none'; // - Hide object type indicator - //						
+				// - Prepend object type icons - //
+				var ico = ot.parentNode.insertBefore(doc.createElement('ico'), ot.nextSibling); 
+				if(ot.textContent.indexOf('MD')>-1) {
+					ico.className = 'fa fa-cogs module';
+				} else if( ot.textContent.indexOf('TC')>-1) {
+					ico.className = 'fa fa-cog testcase';
+				}
+				// - Style ot icons - //
+				with(ico.style) {
+					marginRight = '3px';
+					if( ico.className.indexOf('module') > -1 ) {
+						color = 'darkgreen';
+					}else {
+						color = 'lightgreen';
+					}
+				}						
+				// - Style links - //
+				if( a = n.querySelector('a') ) {
+					with( a.style ) {
+						textDecoration = 'none';
+						color = 'rgb(0,0,0)';
+					}
+				}
+			}
+		}    			
+		// - Add Tree node listeners - //
+		n.addEventListener('click', function(e) {
+			var n = this.querySelector('a');
+			!n ? n = this.querySelector('div') : null;
+			// - Query child nodes - //
+			var ns = qs( '#'+n.id+'-children' );
+			[].forEach.call(ns, function(n){
+				with(n.style){
+					display != 'none' ? display = 'none' : display = '';
+				}
+			});
+		});
+		// Add navigator header actions - //
+		data.navigator.actions.forEach(function(item){
+			rn.aadd('')
+		});
+	});
+}
+
+function showHideNavigator() {
+	var nav = q('ci navigator');
+	// nav.isDisplayed() ? nav.hide() : nav.show();
+	// nav.q('cnRootNode').hide();
+	nav.q('contents > info').hide();
+	nav.q('footer').hide();
+	nav.style.width = '55px';
+}
+
+function expandCollapseNavTree(act) {
+	var actId = act.id;
+	var ns = qs("[id*='test-design-tree'] [class*='tree-row removable'] [class*='object-type-0']");
+	[].forEach.call(ns, function(n){
+		var id = n.parentNode.id+'-children';
+		actId == 'expand_all' ? q( '#'+id ).style.display = '' : q( '#'+id ).style.display = 'none';
+	});
+}

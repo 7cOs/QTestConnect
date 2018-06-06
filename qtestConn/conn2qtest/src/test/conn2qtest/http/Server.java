@@ -26,7 +26,11 @@ public class Server {
 			HttpServer server = HttpServer.create(new InetSocketAddress(7199), 0);
 			// - Client-interface services - //
 			server.createContext("/", new App());
-			server.createContext("/styles.js", new App());
+			server.createContext("/main.js", new App());
+			server.createContext("/data.js", new App());
+			server.createContext("/style.js", new App());
+			server.createContext("/events.js", new App());
+			server.createContext("/services.js", new App());
 			
 			// - QTestConnect Services - //
 			server.createContext("/fetchProjects", new Fetcher());
@@ -84,11 +88,11 @@ public class Server {
 	public static class App implements HttpHandler {
 		@Override
 		public void handle(HttpExchange t) throws IOException {
-			String p = "./app/app.htm";
-			if (t.getHttpContext().getPath().equals("/styles.js")) {
-				p = "./app" + t.getHttpContext().getPath();
-			}
-			String r = new String(Files.readAllBytes(Paths.get(p)));
+			String dir = "./app";
+			String p = t.getHttpContext().getPath();
+			p = p.equals("/") ? (dir + "/ci.htm") : (dir + p);
+			
+			String r = new String( Files.readAllBytes(Paths.get(p)), "UTF-8" );
 			t.sendResponseHeaders(200, r.length());
 			try (OutputStream os = t.getResponseBody()) {
 				os.write(r.getBytes());
