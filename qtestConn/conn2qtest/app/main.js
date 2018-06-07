@@ -113,23 +113,35 @@ function addNavigatorRootNode() {
 	if( rn = q( "[class*='root-node']" ) ) {
 		ci.q('main quadrant navigator quadrants > header').htm('');
 	    ci.q('main quadrant navigator quadrants > header').add( rn );
-	    
 		// - Insert icon before node name - //
 		var ico = rn.insertBefore( doc.createElement('ico'), rn.firstChild );
 		ico.className = 'fa fa-home';
-		
 		with( rn.style ) {
 			display = 'flex';
 			fontWeight = 'bold';
 			color = 'rgb(255,255,255)';
+			alignItems = 'center';
 			with(rn.querySelector('ico').style){
-				marginRight = '5px';
+				marginRight = '11px';
 			}
 			with(rn.querySelector('.text').style){
 				flex = '1';
-				border = 'solid';
+				// border = 'solid';
 			}
 		}
+		// Add navigator header actions after text - //
+		data.navigator.actions.forEach(function(o, n){
+			var ic = rn.add('ico');
+			for(var i in o) {
+				var attr = (i == 'cls' ? attr = 'class' : i);
+				ic.setAttribute(attr, o[i]);
+			}
+			with( ic.style ) { 
+				cursor = 'pointer';
+				marginLeft = '3px';
+				ic.id == 'nav_search' ? marginLeft = '15px' : null;
+			}
+		});
 		
 		return rn;
 	} 	
@@ -183,10 +195,6 @@ function refurbishNavTree() {
 					display != 'none' ? display = 'none' : display = '';
 				}
 			});
-		});
-		// Add navigator header actions - //
-		data.navigator.actions.forEach(function(item){
-			rn.aadd('')
 		});
 	});
 }

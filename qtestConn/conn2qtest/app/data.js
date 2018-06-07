@@ -15,22 +15,22 @@ var data = {
 		},
 		actions:[{
 			id: 'expand_all',
-			ico: 'fa fa-plus',
+			cls: 'fa fa-plus',
 			type: 'nav_action',
-			desc: 'Expand All'
+			title: 'Expand All'
 		},{
 			id: 'collapse_all',
-			ico: 'fa fa-minus',
+			cls: 'fa fa-minus',
 			type: 'nav_action',
-			desc:'Collapse All'
+			title:'Collapse All'
 		},{
 			id: 'nav_search',
-			ico: 'fa fa-search',
+			cls: 'fa fa-search',
 			type: 'nav_action',
-			desc: 'Search'
+			title: 'Search'
 		}]
 	},
-	actionSeparator: '&nbsp;&nbsp;|&nbsp;&nbsp;',
+	actionSeparator: '|&nbsp;',
 	footer: {
 		company: 'rege-it solutions, professional llc &copy;7012'
 	}

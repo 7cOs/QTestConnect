@@ -27,7 +27,10 @@ var style = {
 		ss.insertRule('::-webkit-scrollbar-track { background: #f1f1f1; }');
 		ss.insertRule('::-webkit-scrollbar-thumb { background: #888;}');
 		ss.insertRule('::-webkit-scrollbar-thumb:hover { background: #555; }');
-		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:vertical:decrement { background: #8bc34a!important; }');
-		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:horizontal:increment { background: #8bc34a!important; }');
+		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:vertical:decrement {background: #8bc34a!important;}');
+		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:horizontal:increment {background: #8bc34a!important;}');
+		
+		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:vertical:increment {background: #8bc34a!important;}');
+		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:horizontal:decrement {background: #8bc34a!important;}');
 	}
 }
