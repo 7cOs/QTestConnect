@@ -32,6 +32,8 @@ public class QTestCiController {
   public static WebDriver d, controller;
   public static final boolean MODE = true;
   public static final int WAIT = 35;
+  public static boolean ciControllerStarted = false;
+  
   public static JavascriptExecutor jse = null;
   
   public static WebDriver launchLoginQTest(String url, boolean mode) throws InterruptedException {
@@ -245,7 +247,9 @@ public class QTestCiController {
     try {
       xp = "//*[@id='test-design-tree-content']";
       gather = "return arguments[0].outerHTML;";
-      d = QTestCiController.launchLoginQTest(COMPASS_PORTAL_URL, true);
+      if( ! ciControllerStarted ) {
+    	  d = QTestCiController.launchLoginQTest(COMPASS_PORTAL_URL, true);
+      }
       expandNavTreeNode();
       
       // - Gather - //
@@ -255,7 +259,7 @@ public class QTestCiController {
       nNodes = (String)jse.executeScript(gather, waitUntilElementAvailable(xp));
       x.printStackTrace();
     } finally {
-      quit();
+      // quit();
     }
     
     return nNodes;

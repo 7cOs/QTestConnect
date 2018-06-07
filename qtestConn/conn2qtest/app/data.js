@@ -1,11 +1,13 @@
 
 var data = {
 	header: {
-		ico: 'fa fa-database w3-xxlarge',
+		logo: {
+			ico: 'fa fa-database w3-xxlarge',
+		},
 		_title: 'QTestConn',
 		desc: 'aufklärung: 2575 - observieren',
 		actions: [{
-			id: 'ico_DisplayNav',
+			id: 'icoDisplayNav',
 			ico: 'fa fa-navicon w3-xlarge'
 		}]
 	},
@@ -24,14 +26,22 @@ var data = {
 			type: 'nav_action',
 			title:'Collapse All'
 		},{
+			id: 'nav_refresh',
+			cls: 'fa fa-refresh',
+			type: 'nav_action',
+			title: 'Refresh'
+		},{
 			id: 'nav_search',
 			cls: 'fa fa-search',
 			type: 'nav_action',
 			title: 'Search'
 		}]
 	},
-	actionSeparator: '|&nbsp;',
+	_progress: {
+		ico: 'fa fa-spinner fa-spin',
+		msg: 'Loading...'
+	},
 	footer: {
-		company: 'rege-it solutions, professional llc &copy;7012'
+		companyInfo: 'rege-it solutions, professional llc &copy;7012'
 	}
 };

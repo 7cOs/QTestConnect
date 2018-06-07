@@ -46,7 +46,7 @@ public class Server {
 			System.out.println("Web server started on " + server.getAddress());
 			
 			// - Start QTestCiController - //
-			// initCiController();
+			initCiController();
 			
 		} catch (Exception x) {
 			x.printStackTrace();
@@ -55,7 +55,8 @@ public class Server {
 
 	public static void initCiController() {
 	  try {
-    	  QTestCiController.launchLoginQTest(QTestCiController.BASE_URL, false);
+    	  QTestCiController.launchLoginQTest(QTestCiController.COMPASS_PORTAL_URL, true);
+    	  QTestCiController.ciControllerStarted = true;
     	  System.out.println(QTestCiController.class + " started");
 	  }catch( Exception x) {
 	      x.printStackTrace();

@@ -8,14 +8,15 @@ var style = {
 		ss.insertRule('ci layout header {padding: 7px; background-color: hsl(180, 20%, 30%); color: rgb(255,255,255);}');
 		ss.insertRule('ci layout header > quadrants {display: flex; flex-direction: row; align-items: center;}');
 		ss.insertRule('ci layout quadrant#header {flex: 1px;}');
-		ss.insertRule('ci layout header ico {margin-right: 5px;}');
+		ss.insertRule('ci layout quadrant#header logo {margin-left: 5px; margin-right: 7px;}');
 		ss.insertRule('ci layout header _title {font-weight: bold; font-size: 29px;}');
 		ss.insertRule('ci layout header desc {display: block; letter-spacing: 2.1px;}');
+		ss.insertRule('ci layout header actions {}' );
+		ss.insertRule('ci layout header action {margin-right: 5px; cursor: pointer;}');
 		
-		ss.insertRule('ci layout quadrant#actions {cursor: pointer;}');
+		ss.insertRule('ci layout main > actions {border:solid; display: none;}');
 		
 		ss.insertRule('ci layout main {display: flex; flex: 1; border:solid; flex-direction: column;}');
-		ss.insertRule('ci layout main > actions {border:solid;}');
 		ss.insertRule('ci layout main > quadrant {display: flex; flex: 1; flex-direction: row; border: solid;}');
 		ss.insertRule('ci layout main > quadrant > contents {display: flex; flex: 1; flex-direction: column; border: solid;}');
 		
@@ -29,8 +30,14 @@ var style = {
 		ss.insertRule('::-webkit-scrollbar-thumb:hover { background: #555; }');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:vertical:decrement {background: #8bc34a!important;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:horizontal:increment {background: #8bc34a!important;}');
-		
 		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:vertical:increment {background: #8bc34a!important;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents::-webkit-scrollbar-button:horizontal:decrement {background: #8bc34a!important;}');
+		
+		ss.insertRule('ci layout _progress {background-color: hsl(180, 20%, 25%); color: rgb(255,255,255); padding: 7px;}');
+		ss.insertRule('ci layout _progress > quadrants quadrant#progressInfo {display: none; text-align: center; font-size: 11.979px;}');
+		ss.insertRule('ci layout _progress > quadrants quadrant#progressInfo > ico {font-size: 17px; margin-right: 5px;}');
+		
+		ss.insertRule('ci layout footer {background-color: hsl(180, 20%, 30%); color: rgb(255,255,255); padding: 7px;}');
+		ss.insertRule('ci layout footer  quadrant#footerContents {display:block; text-align: center;}');
 	}
 }

@@ -51,7 +51,7 @@ function init() {
 		this.style.display = 'none';
 	};
 	
-	Element.prototype.isDisplayed = function( ) {
+	Element.prototype.isDisplayed = function() {
 		return this.style.display == '';
 	};
 	
@@ -80,7 +80,7 @@ function addCi() {
 	ci.add('layout');
 	ci.q('layout').add('header').add('quadrants');
 	ci.q('layout header quadrants').add('quadrant').id = 'header';
-	ci.q('layout header quadrants quadrant').add('ico').className = data.header.ico;
+	ci.q('layout header quadrants quadrant').add('logo').add('ico').className = data.header.logo.ico;
 	ci.q('layout header quadrants quadrant').add('_title').htm(data.header._title);
 	ci.q('layout header quadrants quadrant').add('desc').htm(data.header.desc);
 	ci.q('layout header quadrants').add('quadrant').add('actions');
@@ -88,8 +88,10 @@ function addCi() {
 	var acts = ci.q('layout header quadrants quadrant actions');
 	data.header.actions.forEach( function(o) {
 		var act = acts.add('action');
+		act.id = o.id;
 		act.add('ico').className = o.ico;
-		act.q('ico').id = o.id;
+		// - Set action events - //
+		setEvents( act );
 	});
 	
 	ci.q('layout').add('main');
@@ -100,8 +102,13 @@ function addCi() {
 	ci.q('layout main quadrant navigator quadrants').add('header').htm('navigator-header');
 	ci.q('layout main quadrant navigator quadrants').add('contents');
 	
-	ci.q('layout').add('_progress').add('quadrants').htm('progress-quadrants');
-	ci.q('layout').add('footer').add('quadrants').htm('footer-quadrants');
+	ci.q('layout').add('_progress').add('quadrants');
+	ci.q('layout _progress > quadrants').add('quadrant').id = 'progressInfo';
+	ci.q('layout _progress quadrant#progressInfo').add('ico').className = data._progress.ico;
+	ci.q('layout _progress quadrant#progressInfo').add('msg').htm(data._progress.msg);
+	
+	ci.q('layout').add('footer').add('quadrants').add('quadrant').id = 'footerContents';
+	ci.q('layout footer quadrant#footerContents').htm(data.footer.companyInfo);
 	
 	services.addQTestNavTree();
 	
@@ -129,22 +136,71 @@ function addNavigatorRootNode() {
 				// border = 'solid';
 			}
 		}
-		// Add navigator header actions after text - //
+		// Add navigator header actions after header text - //
 		data.navigator.actions.forEach(function(o, n){
 			var ic = rn.add('ico');
 			for(var i in o) {
 				var attr = (i == 'cls' ? attr = 'class' : i);
 				ic.setAttribute(attr, o[i]);
+				setEvents( ic );
 			}
 			with( ic.style ) { 
-				cursor = 'pointer';
-				marginLeft = '3px';
+				marginLeft = '7px';
 				ic.id == 'nav_search' ? marginLeft = '15px' : null;
+				cursor = 'pointer';
 			}
 		});
 		
 		return rn;
 	} 	
+}
+
+function addNavigatorTreeNodes() {
+	var ns = qs("[id*='test-design-tree'] [class*='tree-row removable']");
+	[].forEach.call(ns, function( n ) {
+		with(n.style) {
+			cursor = 'pointer';
+			// - Hide object type elements - //
+			if(ot = n.querySelector("[class*='object-type']") ) {
+				ot.style.display = 'none'; // - Hide object type indicator - //						
+				// - Prepend object type icons - //
+				var ico = ot.parentNode.insertBefore(doc.createElement('ico'), ot.nextSibling); 
+				if(ot.textContent.indexOf('MD')>-1) {
+					ico.className = 'fa fa-cogs module';
+				} else if( ot.textContent.indexOf('TC')>-1) {
+					ico.className = 'fa fa-cog testcase';
+				}
+				// - Style ot icons - //
+				with(ico.style) {
+					marginRight = '3px';
+					if( ico.className.indexOf('module') > -1 ) {
+						color = 'darkgreen';
+					}else {
+						color = 'lightgreen';
+					}
+				}						
+				// - Style links - //
+				if( a = n.querySelector('a') ) {
+					with( a.style ) {
+						textDecoration = 'none';
+						color = 'rgb(0,0,0)';
+					}
+				}
+			}
+		}    			
+		// - Add Tree node listeners - //
+		n.addEventListener('click', function(e) {
+			var n = this.querySelector('a');
+			!n ? n = this.querySelector('div') : null;
+			// - Query child nodes - //
+			var ns = qs( '#'+n.id+'-children' );
+			[].forEach.call(ns, function(n){
+				with(n.style){
+					display != 'none' ? display = 'none' : display = '';
+				}
+			});
+		});
+	});
 }
 
 function refurbishNavTree() {
@@ -200,12 +256,12 @@ function refurbishNavTree() {
 }
 
 function showHideNavigator() {
-	var nav = q('ci navigator');
-	// nav.isDisplayed() ? nav.hide() : nav.show();
-	// nav.q('cnRootNode').hide();
-	nav.q('contents > info').hide();
-	nav.q('footer').hide();
-	nav.style.width = '55px';
+	var nav = q('ci main navigator');
+	nav.isDisplayed() ? nav.hide() : nav.show();
+	
+	//	nav.q('quadrants > contents').hide();
+	//	nav.q('footer').hide();
+	//	nav.style.width = '55px';
 }
 
 function expandCollapseNavTree(act) {
