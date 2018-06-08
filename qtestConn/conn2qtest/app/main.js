@@ -74,7 +74,7 @@ function build() {
 
 function addCi() {
 	ci = d.head.parentNode.insertBefore(d.head.parentNode.add('ci'), d.body);
-	// ci.hide();
+	ci.hide();
 	
 	ci.id = 'ci'; 
 	ci.add('layout');

@@ -24,22 +24,22 @@ import test.conn2qtest.QTestConnect;
 
 public class QTestCiController {
   
-  public static final String BASE_URL = "https://cbrands.qtestnet.com";
-  public static final String COMPASS_PORTAL_PATH = "/p/68329/portal/project";
-  public static final String TEST_DESIGN_PATH = "#tab=testdesign&object=";
-  public static final String COMPASS_PORTAL_URL = BASE_URL + COMPASS_PORTAL_PATH + TEST_DESIGN_PATH + "6&id=3936439";
-  public static final String TC_TEMP_URL = BASE_URL + "--TBD--";
-  public static final String TC_ACTUAL_URL = BASE_URL + COMPASS_PORTAL_PATH + TEST_DESIGN_PATH + "1&id=23730628";
+  public static final String BASE_URL = QTestCiData.getString(QTestCiData.get("baseURL"));
+  public static final String TEST_DESIGN_URL = QTestCiData.getString(QTestCiData.get("compassPortalTestDesignURL"));
+  public static final String TEST_CASE_URL = QTestCiData.getString(QTestCiData.get("compassPortalTestCaseURL"));
+  public static final boolean MODE = QTestCiData.getBoolean(QTestCiData.get("isSilentMode"));
+  public static final int WAIT = QTestCiData.getInt(QTestCiData.get("wait"));
   
   public static WebDriver d, controller;
-  public static final boolean MODE = true;
-  public static final int WAIT = 35;
-  public static boolean ciControllerStarted = false;
-  
   public static JavascriptExecutor jse = null;
   
-  public static WebDriver launchLoginQTest(String url, boolean mode) throws InterruptedException {
-    System.setProperty("webdriver.chrome.driver", "./app/chromedriver.exe");
+  public static boolean ciControllerStarted = false;
+  public static boolean sessionsTerminated = false;
+  
+  public static WebDriver launchLoginQTest(String url, boolean mode) 
+		  throws InterruptedException {
+	JsonObject dps = QTestCiData.getJso(QTestCiData.get("driverProps"));
+    System.setProperty(dps.get("name").getAsString(), dps.get("path").getAsString());
 
     ChromeOptions os = new ChromeOptions();
     os.setHeadless( mode );
@@ -59,28 +59,47 @@ public class QTestCiController {
     waitUntilPageLoadComplete();
     
     // - Terminate existing sessions if applicable - //
-    terminateSessions();
-    
-    Thread.sleep(1525);
+    terminateSessions(url, mode);
 
-    // launchLoginQTest(url, mode);
-    
+    pause(1525);
+
     return d;
   }
 
-  public static void terminateSessions() {
+  public static void terminateSessions(String url, boolean mode) {
 	  String xpath = "//*[@id='activeSessionTable']//a[@title='Remove']//span";
 	  try {
 		  List<WebElement> icos = waitUntilElementsAvailable(xpath, 1);
 		  for( int i=0; i<icos.size(); i++ ) {
 			  icos.get(i).click();
-			  terminateSessions();
+			  sessionsTerminated = true;
+			  pause(325); // - make it soak... - //
+			  terminateSessions(url, mode);
 		  }
 	  } catch( Exception x ) {
-		  x.printStackTrace();
+		  // x.printStackTrace();
+		  if( sessionsTerminated ) {
+			  System.out.println("Terminated sessions detected "
+			  		+ "- intiating re-login process...");
+			  reLogin();
+			  return;
+		  }
 	  }
   }
+  
+  public static void reLogin() {
+	  String xpath = "//*[@id='activeSessionDialog']//button[@id='reloginBtn']";
+	  try {
+		  waitUntilElementAvailable(xpath, 1).click();
+		  waitUntilPageLoadComplete();
+		  System.out.println("Re-login process initiated!!");
+	  } catch ( Exception x ) {}
+  }
 
+  public static void pause(int t) throws InterruptedException {
+	  Thread.sleep(t);
+  }
+  
   public static void waitUntilPageLoadComplete() {
     new WebDriverWait(d, WAIT).until(
         webDriver -> ((JavascriptExecutor) webDriver)
@@ -88,19 +107,46 @@ public class QTestCiController {
   }
 
   public static WebElement waitUntilElementAvailable(String xpath) {
-    return new WebDriverWait(d, WAIT).until(ExpectedConditions
-        .visibilityOfElementLocated(By.xpath(xpath)));
+	  try {
+		    return new WebDriverWait(d, WAIT).until(ExpectedConditions
+		        .visibilityOfElementLocated(By.xpath(xpath)));
+	  } catch( Exception x ) {}
+	  
+	  return null;
   }
+
+  public static WebElement waitUntilElementAvailable(String xp, int w) {
+	  try {
+	    return new WebDriverWait(d, w).until(ExpectedConditions
+	        .visibilityOfElementLocated(By.xpath(xp)));
+	  } catch( Exception x ) {}
+	  
+	  return null;
+  } 
   
   public static List<WebElement> waitUntilElementsAvailable(String xpath) {
-    return new WebDriverWait(d, WAIT).until(ExpectedConditions
-        .visibilityOfAllElementsLocatedBy(By.xpath(xpath)));
+	  try {
+		    return new WebDriverWait(d, WAIT).until(ExpectedConditions
+		        .visibilityOfAllElementsLocatedBy(By.xpath(xpath)));
+	  } catch( Exception x ) {}
+	  
+	  return null;
   }
   
   public static List<WebElement> waitUntilElementsAvailable(String xp, int w) {
-    return new WebDriverWait(d, w).until(ExpectedConditions
-        .visibilityOfAllElementsLocatedBy(By.xpath(xp)));
+	  try {
+		    return new WebDriverWait(d, w).until(ExpectedConditions
+		            .visibilityOfAllElementsLocatedBy(By.xpath(xp)));
+	  } catch( Exception x ) {}
+	  
+	  return null;
   } 
+  
+  public static void click(String name) {
+	  
+	  jse.executeScript("arguments[0].click();", 
+			  waitUntilElementAvailable(name, 5) );
+  }
   
   public static boolean logout() {
     jse.executeScript("document.querySelector('#log-out-link').click();");
@@ -120,7 +166,7 @@ public class QTestCiController {
     try {
       List<ArrayList<String>> stepsContainer = parseSteps();
   
-      d = QTestCiController.launchLoginQTest(TC_ACTUAL_URL, false);
+      d = QTestCiController.launchLoginQTest(TEST_CASE_URL, false);
       
       for (int n = 0; n < stepsContainer.size(); n++) {
         ArrayList<String> steps = stepsContainer.get(n);
@@ -262,39 +308,12 @@ public class QTestCiController {
     return stats;
   }  
   
-  public static String getExpandedNavTreeNodes() throws InterruptedException {
-    String xp="", gather="", nNodes = "";
-    try {
-      xp = "//*[@id='test-design-tree-content']";
-      gather = "return arguments[0].outerHTML;";
-      if( ! ciControllerStarted ) {
-    	  d = QTestCiController.launchLoginQTest(COMPASS_PORTAL_URL, true);
-      }
-      expandNavTreeNode();
-      
-      // - Gather - //
-      nNodes = (String)jse.executeScript(gather, waitUntilElementAvailable(xp));
-    }catch( Exception x ) {
-      // - Gather regardless - //
-      nNodes = (String)jse.executeScript(gather, waitUntilElementAvailable(xp));
-      x.printStackTrace();
-    } finally {
-      // quit();
-    }
-    
-    return nNodes;
-  } 
-  
   public static void expandNavTreeNode() {
     String xp = "//*[@data-expanded='false' and not(contains(@class,'expanded')) and contains(@id, '-expand-0')]";
     List<WebElement> ns = waitUntilElementsAvailable(xp, 1);
-    System.out.println( "Located [" +ns.size()+ "] node(s) for expansion" );
     for(WebElement n : ns) {
       try {
-        String nn = (String)jse.executeScript("return arguments[0].parentNode.textContent;", n);
-        System.out.println("Attempting to expand '" + nn + "'...");
         jse.executeScript("arguments[0].click();", n);
-        System.out.println("Expand '" + nn + "'");
       } catch (Exception x) {
         x.printStackTrace();
       }
@@ -302,50 +321,43 @@ public class QTestCiController {
     
     expandNavTreeNode();
   }
-  
-  public static String collapseAllNavTreeNodes() throws InterruptedException {
-    String nodes = "";
-    try {
-      d = QTestCiController.launchLoginQTest(BASE_URL, true);
-      collapseNavTreeNode();
-      nodes = getNavTree();
-    }catch( Exception x ) {
-      // - Gather regardless - //
-      nodes = getNavTree();
-      x.printStackTrace();
-    } finally {
-      quit();
-    }
-    
-    return nodes;
+
+  public static String getExpandedNavTreeNodes() {
+	 
+	  expandAllNavTreeNodes();	// - Expand all navigator tree nodes - //
+	  
+      String xp = "//*[@id='test-design-tree-content']";
+      String cmd = "return arguments[0].outerHTML;";
+      String res = (String)jse.executeScript(cmd, waitUntilElementAvailable(xp));
+      
+      System.out.println("Nav Tree nodes expansion complete!");
+      
+      return res;
   }
   
-  public static void collapseNavTreeNode() {
-    String xp = "//*[contains(@class,'expanded') and contains(@id, '-expand-0')]";
-    List<WebElement> ns = waitUntilElementsAvailable(xp, 1);
-    System.out.println( "Located [" +ns.size()+ "] collapsible node(s)" );
-    for(WebElement n : ns) {
-      try {
-        String nn = (String)jse.executeScript("return arguments[0].parentNode.textContent;", n);
-        System.out.println("Attempting to collapse '" + nn + "'...");
-        jse.executeScript("arguments[0].click();", n);
-      } catch (Exception x) {
-        x.printStackTrace();
-      }
-    }
-    
-    collapseNavTreeNode();
-  }  
-
-  public static String getNavTree() {
-    String xp = "//*[@id='test-design-tree-content']";
-    return (String)jse.executeScript(
-        "return arguments[0].outerHTML;", waitUntilElementAvailable(xp));
+  public static void expandAllNavTreeNodes() {
+	  try {
+		  // - Click Test Design tab - //
+		  click("//*[@id='working-tab']//*[text()='Test Design']");
+		  
+		  // - Begin tree nodes expansion - //
+		  System.out.println("Expanding all nav tree nodes...");
+		  
+		  expandNavTreeNode();
+	  } catch( Exception x ) { }
+  }
+  
+  public static void getModuleSynopsis( String name ) throws InterruptedException {
+	  try {
+		  
+	  }catch( Exception x ) {
+		  x.printStackTrace();
+	  }
   }
   
   public static void main(String[] args) throws Exception {
     // d = QTestCiController.launchLoginQTest(TC_ACTUAL_URL, false);
-    QTestCiController.insertStepDescExpectedResultsSteps();
+    // QTestCiController.insertStepDescExpectedResultsSteps();
     // QTestCiController.getModuleStatistics("To Be Automated");
     /*
       JsonArray jsa = new JsonArray();
@@ -358,5 +370,25 @@ public class QTestCiController {
     // QTestCiController.expandAllNavTreeNodes();
     // collapseAllNavTreeNodes
     // System.out.println( QTestCiController.collapseAllNavTreeNodes() );
+	  
+	  /*
+	  // - Test testminateSessions and reLogin methods - //
+	  for(int i=0; i<4; i++) {
+		  System.out.println( "Launch/log in user..." );
+		  launchLoginQTest(QTestCiController.COMPASS_PORTAL_URL, true);
+		  System.out.println( "Launched and user logged in!\nClosing browser..." );
+		  d.close();
+		  System.out.println( "Browser closed!\n" );
+	  }
+	  */
+	  try {
+		  d = QTestCiController.launchLoginQTest(TEST_DESIGN_URL, false);
+		  System.out.println( getExpandedNavTreeNodes() );
+//		  System.out.println( jse.executeScript("return arguments[0].outerHTML", 
+//				  waitUntilElementAvailable("//*[@id='main_pane_testdesign']", 5)) );
+		  
+	  } catch(Exception x) {
+		  x.printStackTrace();
+	  }
   }
 }

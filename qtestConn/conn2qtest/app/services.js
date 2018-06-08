@@ -24,6 +24,11 @@ var services = {
 		xhr.open("GET", "/getExpandedNavTreeNodes", true);
 		xhr.send();
 	},
+	
+	getSynopsis: function() {
+		
+	},
+	
 	getXhr: function() {
 		return new XMLHttpRequest();
 	}
