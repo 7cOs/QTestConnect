@@ -3,6 +3,7 @@ package test.conn2qtest.qtest.ci;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,6 +30,7 @@ public class QTestCiController {
   public static final String COMPASS_PORTAL_URL = BASE_URL + COMPASS_PORTAL_PATH + TEST_DESIGN_PATH + "6&id=3936439";
   public static final String TC_TEMP_URL = BASE_URL + "--TBD--";
   public static final String TC_ACTUAL_URL = BASE_URL + COMPASS_PORTAL_PATH + TEST_DESIGN_PATH + "1&id=23730628";
+  
   public static WebDriver d, controller;
   public static final boolean MODE = true;
   public static final int WAIT = 35;
@@ -55,18 +57,36 @@ public class QTestCiController {
     d.findElement(By.xpath("//*[@class='submit']/a")).click();
 
     waitUntilPageLoadComplete();
-
+    
+    // - Terminate existing sessions if applicable - //
+    terminateSessions();
+    
     Thread.sleep(1525);
 
+    // launchLoginQTest(url, mode);
+    
     return d;
   }
-  
+
+  public static void terminateSessions() {
+	  String xpath = "//*[@id='activeSessionTable']//a[@title='Remove']//span";
+	  try {
+		  List<WebElement> icos = waitUntilElementsAvailable(xpath, 1);
+		  for( int i=0; i<icos.size(); i++ ) {
+			  icos.get(i).click();
+			  terminateSessions();
+		  }
+	  } catch( Exception x ) {
+		  x.printStackTrace();
+	  }
+  }
+
   public static void waitUntilPageLoadComplete() {
     new WebDriverWait(d, WAIT).until(
         webDriver -> ((JavascriptExecutor) webDriver)
         .executeScript("return document.readyState").equals("complete"));    
   }
-  
+
   public static WebElement waitUntilElementAvailable(String xpath) {
     return new WebDriverWait(d, WAIT).until(ExpectedConditions
         .visibilityOfElementLocated(By.xpath(xpath)));
@@ -274,6 +294,7 @@ public class QTestCiController {
         String nn = (String)jse.executeScript("return arguments[0].parentNode.textContent;", n);
         System.out.println("Attempting to expand '" + nn + "'...");
         jse.executeScript("arguments[0].click();", n);
+        System.out.println("Expand '" + nn + "'");
       } catch (Exception x) {
         x.printStackTrace();
       }
@@ -281,7 +302,6 @@ public class QTestCiController {
     
     expandNavTreeNode();
   }
-  
   
   public static String collapseAllNavTreeNodes() throws InterruptedException {
     String nodes = "";

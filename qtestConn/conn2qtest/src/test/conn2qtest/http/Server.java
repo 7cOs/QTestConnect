@@ -55,9 +55,10 @@ public class Server {
 
 	public static void initCiController() {
 	  try {
-    	  QTestCiController.launchLoginQTest(QTestCiController.COMPASS_PORTAL_URL, true);
-    	  QTestCiController.ciControllerStarted = true;
-    	  System.out.println(QTestCiController.class + " started");
+    	  System.out.println("Starting " + QTestCiController.class + "...");
+	    	  QTestCiController.launchLoginQTest(QTestCiController.COMPASS_PORTAL_URL, false);
+	    	  QTestCiController.ciControllerStarted = true;
+    	  System.out.println(QTestCiController.class + " started!");
 	  }catch( Exception x) {
 	      x.printStackTrace();
 	  }

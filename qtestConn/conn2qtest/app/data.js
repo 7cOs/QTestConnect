@@ -2,13 +2,14 @@
 var data = {
 	header: {
 		logo: {
-			ico: 'fa fa-database w3-xxlarge',
+			ico: 'fa fa-database w3-xxlarge'
 		},
 		_title: 'QTestConn',
 		desc: 'aufklärung: 2575 - observieren',
 		actions: [{
 			id: 'icoDisplayNav',
-			ico: 'fa fa-navicon w3-xlarge'
+			ico: 'fa fa-navicon w3-xlarge',
+			title: 'Show/Hide Navigatior'
 		}]
 	},
 	navigator: {
