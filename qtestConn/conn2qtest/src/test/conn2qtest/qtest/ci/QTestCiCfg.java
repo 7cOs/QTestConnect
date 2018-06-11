@@ -2,7 +2,7 @@ package test.conn2qtest.qtest.ci;
 
 import com.google.gson.JsonObject;
 
-public final class QTestCiData {
+public final class QTestCiCfg {
 	
 	public static Object get(String key) {
 		Object data = null;
@@ -18,14 +18,14 @@ public final class QTestCiData {
 			break;
 		case "compassPortalTestDesignURL":
 			data = String.format("%s%s%s", 
-					QTestCiData.get("baseURL"), 
-					QTestCiData.get("compassPortalPath"),
-					QTestCiData.get("testDesignPath"));
+					QTestCiCfg.get("baseURL"), 
+					QTestCiCfg.get("compassPortalPath"),
+					QTestCiCfg.get("testDesignPath"));
 			break;
 		case "compassPortalTestCaseURL":
 			String tcId = "18084088";
 			data = String.format("%s%s%s", 
-					QTestCiData.get("compassPortalTestDesignURL"),"1&id=", tcId);
+					QTestCiCfg.get("compassPortalTestDesignURL"),"1&id=", tcId);
 			break;
 		case "isSilentMode":
 			data = true;
@@ -35,6 +35,7 @@ public final class QTestCiData {
 			break;			
 		case "wait":
 			data = 35;
+			break;
 		case "driverProps":
 			data = new JsonObject();
 			((JsonObject) data).addProperty("name", "webdriver.chrome.driver");
@@ -67,11 +68,11 @@ public final class QTestCiData {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(QTestCiData.get("compassPortalTestDesignURL"));
-		System.out.println(QTestCiData.get("compassPortalTestCaseURL"));
-		System.out.println(QTestCiData.get("credentials"));
-		System.out.println(QTestCiData.getJso(QTestCiData.get("driverProps")));
-		JsonObject dps = QTestCiData.getJso(QTestCiData.get("driverProps"));
+		System.out.println(QTestCiCfg.get("compassPortalTestDesignURL"));
+		System.out.println(QTestCiCfg.get("compassPortalTestCaseURL"));
+		System.out.println(QTestCiCfg.get("credentials"));
+		System.out.println(QTestCiCfg.getJso(QTestCiCfg.get("driverProps")));
+		JsonObject dps = QTestCiCfg.getJso(QTestCiCfg.get("driverProps"));
 	    System.out.format("fission.driver:\nname = %s, path = %s", dps.get("name").getAsString(), dps.get("path").getAsString());
 	}
 }

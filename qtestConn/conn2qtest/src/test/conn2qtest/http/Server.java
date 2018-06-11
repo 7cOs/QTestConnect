@@ -19,7 +19,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import test.conn2qtest.QTestConnect;
 import test.conn2qtest.qtest.ci.QTestCiController;
-import test.conn2qtest.qtest.ci.QTestCiData;
+import test.conn2qtest.qtest.ci.QTestCiCfg;
 
 public class Server {
 	public static void start() {
@@ -58,7 +58,7 @@ public class Server {
 	  try {
     	  System.out.println("Starting " + QTestCiController.class + "...");
 	    	  QTestCiController.launchLoginQTest(
-	    			  (String)QTestCiData.get("compassPortalTestDesignURL"), true);
+	    			  (String)QTestCiCfg.get("compassPortalTestDesignURL"), true);
 	    	  QTestCiController.ciControllerStarted = true;
     	  System.out.println(QTestCiController.class + " started!");
 	  }catch( Exception x) {

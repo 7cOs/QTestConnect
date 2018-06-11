@@ -19,16 +19,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minidev.json.JSONArray;
 import test.conn2qtest.QTestConnect;
+import test.conn2qtest.utils.QTestCiUtils;
 
 public class QTestCiController {
   
-  public static final String BASE_URL = QTestCiData.getString(QTestCiData.get("baseURL"));
-  public static final String TEST_DESIGN_URL = QTestCiData.getString(QTestCiData.get("compassPortalTestDesignURL"));
-  public static final String TEST_CASE_URL = QTestCiData.getString(QTestCiData.get("compassPortalTestCaseURL"));
-  public static final boolean MODE = QTestCiData.getBoolean(QTestCiData.get("isSilentMode"));
-  public static final int WAIT = QTestCiData.getInt(QTestCiData.get("wait"));
+  public static final String BASE_URL = QTestCiUtils.getString(QTestCiCfg.get("baseURL"));
+  public static final String TEST_DESIGN_URL = QTestCiUtils.getString(QTestCiCfg.get("compassPortalTestDesignURL"));
+  public static final String TEST_CASE_URL = QTestCiUtils.getString(QTestCiCfg.get("compassPortalTestCaseURL"));
+  public static final boolean MODE = QTestCiUtils.getBoolean(QTestCiCfg.get("isSilentMode"));
+  public static final int WAIT = QTestCiUtils.getInt(QTestCiCfg.get("wait"));
   
   public static WebDriver d, controller;
   public static JavascriptExecutor jse = null;
@@ -36,11 +36,20 @@ public class QTestCiController {
   public static boolean ciControllerStarted = false;
   public static boolean sessionsTerminated = false;
   
-  public static WebDriver launchLoginQTest(String url, boolean mode) 
-		  throws InterruptedException {
-	JsonObject dps = QTestCiData.getJso(QTestCiData.get("driverProps"));
+  public static WebDriver launchLoginQTest(String url, boolean mode) throws InterruptedException {
+	launch(url, mode);
+	login();
+	// - Terminate existing sessions
+	terminateSessions(url, mode);
+	pause(1525);
+    return d;
+  }
+  
+  public static void launch(String url, boolean mode) {
+	// - Get driver properties - //
+	JsonObject dps = QTestCiUtils.getJso(QTestCiCfg.get("driverProps"));
     System.setProperty(dps.get("name").getAsString(), dps.get("path").getAsString());
-
+    
     ChromeOptions os = new ChromeOptions();
     os.setHeadless( mode );
     
@@ -48,24 +57,25 @@ public class QTestCiController {
     jse = (JavascriptExecutor) d;
     d.navigate().to(url);
     d.manage().window().maximize();
-
+	    
     waitUntilPageLoadComplete();
-
-    // - Login - //
-    d.findElement(By.id("userName")).sendKeys("soko.karnesh@cbrands.com");
-    d.findElement(By.id("password")).sendKeys("test1@7197c");
-    d.findElement(By.xpath("//*[@class='submit']/a")).click();
-
-    waitUntilPageLoadComplete();
-    
-    // - Terminate existing sessions if applicable - //
-    terminateSessions(url, mode);
-
-    pause(1525);
-
-    return d;
+  }
+  
+  public static void login() {
+	enterCredentials();
   }
 
+  public static void enterCredentials() {
+	JsonObject cs = QTestCiUtils.getJso(QTestCiCfg.get("credentials"));
+	cs.keySet().forEach(k -> {
+		jse.executeScript("arguments[0].value='"+cs.get(k).getAsString()+"';", 
+				  waitUntilElementAvailable(QTestCiComponent.getXpath(k), 5));
+	});
+	
+	click("Log In");
+	waitUntilPageLoadComplete();
+  }
+  
   public static void terminateSessions(String url, boolean mode) {
 	  String xpath = "//*[@id='activeSessionTable']//a[@title='Remove']//span";
 	  try {
@@ -142,10 +152,13 @@ public class QTestCiController {
 	  return null;
   } 
   
+  public static void enter(String data) {
+	  // - get component xpath - //
+  }
+  
   public static void click(String name) {
-	  
 	  jse.executeScript("arguments[0].click();", 
-			  waitUntilElementAvailable(name, 5) );
+			  waitUntilElementAvailable(QTestCiComponent.getXpath(name), 5) );
   }
   
   public static boolean logout() {
@@ -338,13 +351,18 @@ public class QTestCiController {
   public static void expandAllNavTreeNodes() {
 	  try {
 		  // - Click Test Design tab - //
-		  click("//*[@id='working-tab']//*[text()='Test Design']");
+		  click("Test Design");
 		  
 		  // - Begin tree nodes expansion - //
 		  System.out.println("Expanding all nav tree nodes...");
 		  
 		  expandNavTreeNode();
-	  } catch( Exception x ) { }
+		  
+	  } catch( Exception x ) {
+		  
+		  // x.printStackTrace();
+		  
+	  }
   }
   
   public static void getModuleSynopsis( String name ) throws InterruptedException {
@@ -375,12 +393,13 @@ public class QTestCiController {
 	  // - Test testminateSessions and reLogin methods - //
 	  for(int i=0; i<4; i++) {
 		  System.out.println( "Launch/log in user..." );
-		  launchLoginQTest(QTestCiController.COMPASS_PORTAL_URL, true);
+		  launchLoginQTest(QTestCiController.BASE_URL, false);
 		  System.out.println( "Launched and user logged in!\nClosing browser..." );
-		  d.close();
-		  System.out.println( "Browser closed!\n" );
+//		  d.close();
+//		  System.out.println( "Browser closed!\n" );
 	  }
 	  */
+	  /*
 	  try {
 		  d = QTestCiController.launchLoginQTest(TEST_DESIGN_URL, false);
 		  System.out.println( getExpandedNavTreeNodes() );
@@ -390,5 +409,11 @@ public class QTestCiController {
 	  } catch(Exception x) {
 		  x.printStackTrace();
 	  }
+	  */
+	  
+	  // - Test enterCredentials and enter methods - //
+	  d = QTestCiController.launchLoginQTest(BASE_URL, false);
+	  getExpandedNavTreeNodes();
+	  
   }
 }

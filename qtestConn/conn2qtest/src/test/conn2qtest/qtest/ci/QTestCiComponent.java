@@ -5,13 +5,13 @@ public final class QTestCiComponent {
 	public static String getXpath(String name) {
 		String xp = null;
 		switch( name ) {
-		case "userName":
-			xp = "//*[@id='"+name+"']";
+		case "username":
+			xp = "//*[@id='userName']";
 			break;
 		case "password":
 			xp = "//*[@id='"+name+"']";
 			break;	
-		case "log in":
+		case "Log In":
 			xp = "//*[@class='submit']/a";
 			break;
 		case "Test Design":
