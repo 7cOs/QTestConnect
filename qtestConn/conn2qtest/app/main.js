@@ -97,7 +97,7 @@ function addCi() {
 	ci.q('layout').add('main');
 	ci.q('layout main').add('actions').add('quadrants').htm('actions-quadrants');
 	ci.q('layout main').add('quadrant');
-	ci.q('layout main quadrant').add('contents').add('quadrants').htm('contents-quadrants');
+	ci.q('layout main quadrant').add('contents').add('quadrants').add('info').htm('contents-info-quadrant');
 	ci.q('layout main quadrant').add('navigator').add('quadrants');
 	ci.q('layout main quadrant navigator quadrants').add('header').htm('navigator-header');
 	ci.q('layout main quadrant navigator quadrants').add('contents');

@@ -19,7 +19,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import test.conn2qtest.QTestConnect;
 import test.conn2qtest.qtest.ci.QTestCiController;
-import test.conn2qtest.qtest.ci.QTestCiCfg;
+import test.conn2qtest.qtest.ci.QTestCiCfgData;
 
 public class Server {
 	public static void start() {
@@ -40,8 +40,10 @@ public class Server {
 			server.createContext("/fetchModulesStats", new Fetcher());
 			server.createContext("/fetchTestCases", new Fetcher());
 			server.createContext("/fetchTestCase", new Fetcher());
+			
 			server.createContext("/getExpandedNavTreeNodes", new CiControllerHandler());
-			server.createContext("/getCollapsedNavTree", new CiControllerHandler());
+			server.createContext("/getModuleSynopsis", new CiControllerHandler());
+			
 			server.setExecutor(null);
 			server.start();
 			System.out.println("Web server started on " + server.getAddress());
@@ -58,7 +60,7 @@ public class Server {
 	  try {
     	  System.out.println("Starting " + QTestCiController.class + "...");
 	    	  QTestCiController.launchLoginQTest(
-	    			  (String)QTestCiCfg.get("compassPortalTestDesignURL"), true);
+	    			  (String)QTestCiCfgData.get("compassPortalTestDesignURL"), true);
 	    	  QTestCiController.ciControllerStarted = true;
     	  System.out.println(QTestCiController.class + " started!");
 	  }catch( Exception x) {
@@ -70,12 +72,16 @@ public class Server {
       @Override
       public void handle(HttpExchange t) throws IOException {
         String reqPath = t.getHttpContext().getPath();
+  	  	String reqArgs = IOUtils.toString(t.getRequestBody(), StandardCharsets.UTF_8);
         String resp = "";
         
         try {
           switch (reqPath) {
           case "/getExpandedNavTreeNodes":
               resp = QTestCiController.getExpandedNavTreeNodes();
+              break;
+          case "/getModuleSynopsis":
+              resp = QTestCiController.getModuleSynopsis(reqArgs);
               break;
           }
         } catch(Exception x) {

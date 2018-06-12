@@ -1,9 +1,7 @@
-1. Carrie Reid Opens
-2. Opportunities page loads
-3. Distributor is selected
-4. Apply Filters is applied and search results display
-5. Opportunity Selected
-6. Rationale dropdown appears
-7. CSV Downloads
-8. Opportunity that was selected was added
-9. CSV Downloads with Opportunities that were selected was added
+1. Carrie Reid Opens 
+2. Opportunities page loads 
+3. Filter Disabled 
+4. Helper text is displayed to show how to apply this filter 
+5. Non Buy Enabled 
+6. Distribution Type check mark enabled and Filter Tile added 
+7. Filter Tile added and Filter applied to search results

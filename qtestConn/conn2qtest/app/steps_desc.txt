@@ -1,9 +1,7 @@
-1. Login with a user - Carrie Reid
-2. Go to Opportunities
-3. Search for Chicago Bev for Distributor and select it
-4. Click Apply Filters
-5. Select 1 Opportunity
-6. Click Download 
-7. Select with Rationale
-8. Open download
-9. Select all Opportunities on page and download without rationale
+1. Login with a user - Carrie Reid 
+2. Go to Opportunities 
+3. Check Distribution Type Filter 
+4. Hover over Distribution Type 
+5. Select each Non Buy, At Risk, and New Placement (no rebuy) filters for Opportunity type and each combination of this filter 
+6. Select Distribution Type 
+7. Search for Chicago Bev, select it, and apply filters

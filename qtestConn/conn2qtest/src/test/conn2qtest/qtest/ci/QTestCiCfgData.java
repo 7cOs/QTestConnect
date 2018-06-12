@@ -2,7 +2,7 @@ package test.conn2qtest.qtest.ci;
 
 import com.google.gson.JsonObject;
 
-public final class QTestCiCfg {
+public final class QTestCiCfgData {
 	
 	public static Object get(String key) {
 		Object data = null;
@@ -18,14 +18,14 @@ public final class QTestCiCfg {
 			break;
 		case "compassPortalTestDesignURL":
 			data = String.format("%s%s%s", 
-					QTestCiCfg.get("baseURL"), 
-					QTestCiCfg.get("compassPortalPath"),
-					QTestCiCfg.get("testDesignPath"));
+					QTestCiCfgData.get("baseURL"), 
+					QTestCiCfgData.get("compassPortalPath"),
+					QTestCiCfgData.get("testDesignPath"));
 			break;
 		case "compassPortalTestCaseURL":
-			String tcId = "18084088";
+			String tcId = "22758615";
 			data = String.format("%s%s%s", 
-					QTestCiCfg.get("compassPortalTestDesignURL"),"1&id=", tcId);
+					QTestCiCfgData.get("compassPortalTestDesignURL"),"1&id=", tcId);
 			break;
 		case "isSilentMode":
 			data = true;
@@ -45,7 +45,7 @@ public final class QTestCiCfg {
 			data = new JsonObject();
 			((JsonObject) data).addProperty("username", "soko.karnesh@cbrands.com");
 			((JsonObject) data).addProperty("password", "test1@7197c");
-			break;		
+			break;
 		}
 		
 		return data;
@@ -68,11 +68,11 @@ public final class QTestCiCfg {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(QTestCiCfg.get("compassPortalTestDesignURL"));
-		System.out.println(QTestCiCfg.get("compassPortalTestCaseURL"));
-		System.out.println(QTestCiCfg.get("credentials"));
-		System.out.println(QTestCiCfg.getJso(QTestCiCfg.get("driverProps")));
-		JsonObject dps = QTestCiCfg.getJso(QTestCiCfg.get("driverProps"));
+		System.out.println(QTestCiCfgData.get("compassPortalTestDesignURL"));
+		System.out.println(QTestCiCfgData.get("compassPortalTestCaseURL"));
+		System.out.println(QTestCiCfgData.get("credentials"));
+		System.out.println(QTestCiCfgData.getJso(QTestCiCfgData.get("driverProps")));
+		JsonObject dps = QTestCiCfgData.getJso(QTestCiCfgData.get("driverProps"));
 	    System.out.format("fission.driver:\nname = %s, path = %s", dps.get("name").getAsString(), dps.get("path").getAsString());
 	}
 }
