@@ -27,8 +27,11 @@ public final class QTestCiComponent {
 			xp = QTestCiComponent.getXpath("navTreeNodes") +
 				"//*[text()='[Name]']";
 			break;
+		case "isLoading":
+			xp = "//*[@id='loadingOverlay']";
+			break;
 		case "testDesignPane":
-			xp = "//*[@id='main_pane_testdesign']";
+			xp = "//*[@id='main_pane_testdesign']//*[contains(@class, 'rc-content-wrapper')]/../../..";
 			break;
 		case "Step description":
 		case "Expected result":

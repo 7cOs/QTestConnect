@@ -19,6 +19,7 @@ var style = {
 		ss.insertRule('ci layout main {display: flex; flex: 1; border:solid; flex-direction: column;}');
 		ss.insertRule('ci layout main > quadrant {display: flex; flex: 1; flex-direction: row; border: solid;}');
 		ss.insertRule('ci layout main > quadrant > contents {display: flex; flex: 1; flex-direction: column; border: solid;}');
+		ss.insertRule('ci layout main > quadrant > contents info {display: flex; flex-direction: column;}');
 		
 		ss.insertRule('ci layout main > quadrant > navigator {width: 21%; display: flex; flex-direction: column;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants {display: flex; flex-direction: column;}');

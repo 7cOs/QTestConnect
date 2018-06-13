@@ -155,54 +155,6 @@ function addNavigatorRootNode() {
 	} 	
 }
 
-function addNavigatorTreeNodes() {
-	var ns = qs("[id*='test-design-tree'] [class*='tree-row removable']");
-	[].forEach.call(ns, function( n ) {
-		with(n.style) {
-			cursor = 'pointer';
-			// - Hide object type elements - //
-			if(ot = n.querySelector("[class*='object-type']") ) {
-				ot.style.display = 'none'; // - Hide object type indicator - //						
-				// - Prepend object type icons - //
-				var ico = ot.parentNode.insertBefore(doc.createElement('ico'), ot.nextSibling); 
-				if(ot.textContent.indexOf('MD')>-1) {
-					ico.className = 'fa fa-cogs module';
-				} else if( ot.textContent.indexOf('TC')>-1) {
-					ico.className = 'fa fa-cog testcase';
-				}
-				// - Style ot icons - //
-				with(ico.style) {
-					marginRight = '3px';
-					if( ico.className.indexOf('module') > -1 ) {
-						color = 'darkgreen';
-					}else {
-						color = 'lightgreen';
-					}
-				}						
-				// - Style links - //
-				if( a = n.querySelector('a') ) {
-					with( a.style ) {
-						textDecoration = 'none';
-						color = 'rgb(0,0,0)';
-					}
-				}
-			}
-		}    			
-		// - Add Tree node listeners - //
-		n.addEventListener('click', function(e) {
-			var n = this.querySelector('a');
-			!n ? n = this.querySelector('div') : null;
-			// - Query child nodes - //
-			var ns = qs( '#'+n.id+'-children' );
-			[].forEach.call(ns, function(n){
-				with(n.style){
-					display != 'none' ? display = 'none' : display = '';
-				}
-			});
-		});
-	});
-}
-
 function refurbishNavTree() {
 	// - Make tree root node returned by service a child of navigator header - //
 	var rn = addNavigatorRootNode();
@@ -247,10 +199,15 @@ function refurbishNavTree() {
 			// - Query child nodes - //
 			var ns = qs( '#'+n.id+'-children' );
 			[].forEach.call(ns, function(n){
+				console.log( n.q('ico') );
+				console.log( n.q('a') );
+				
 				with(n.style){
 					display != 'none' ? display = 'none' : display = '';
 				}
 			});
+			// - Retrieve item details - module
+			services.getNavItemDetails( this );
 		});
 	});
 }

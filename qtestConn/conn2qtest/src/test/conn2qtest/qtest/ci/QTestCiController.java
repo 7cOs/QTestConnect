@@ -392,33 +392,17 @@ public class QTestCiController {
 	  } catch( Exception x ) {
 		  // x.printStackTrace();
 	  }
+	  System.out.println("Nav tree nodes expansion complete");
   }
-  
-  public static String getModuleSynopsis(String name) 
-		  throws InterruptedException {
+
+  public static String getNavItemDetails(String name) throws InterruptedException {
 	  try {
 		  expandAllNavTreeNodes();
 		  clickNavItem(name);
 		  
 		  return (String) jse.executeScript(
 				  "return arguments[0].outerHTML", waitUntilElementAvailable(
-				  QTestCiComponent.getXpath("testDesignPane"), 5));
-		  
-	  } catch( Exception x ) {
-		  x.printStackTrace();
-	  }
-	  
-	  return null;
-  }
-  
-  public static String getTestCase(String name) throws InterruptedException {
-	  try {
-		  expandAllNavTreeNodes();
-		  clickNavItem(name);
-		  
-		  return (String) jse.executeScript(
-				  "return arguments[0].outerHTML", waitUntilElementAvailable(
-				  QTestCiComponent.getXpath("testDesignPane"), 5));
+				  QTestCiComponent.getXpath("testDesignPane")));
 		  
 	  } catch( Exception x ) {
 		  x.printStackTrace();
@@ -428,8 +412,8 @@ public class QTestCiController {
   }
   
   public static void main(String[] args) throws Exception {
-    d = QTestCiController.launchLoginQTest(TEST_CASE_URL, false);
-    QTestCiController.insertStepDescExpectedResultsSteps();
+   //  d = QTestCiController.launchLoginQTest(TEST_CASE_URL, false);
+    // QTestCiController.insertStepDescExpectedResultsSteps();
     
     // QTestCiController.getModuleStatistics("To Be Automated");
     /*
@@ -465,9 +449,12 @@ public class QTestCiController {
 		  x.printStackTrace();
 	  }
 	  */
-	  
 	  // - Test enterCredentials and enter methods - //
 	  // d = QTestCiController.launchLoginQTest(BASE_URL, false);
 	  // System.out.println( getTestCase("Disable Save Reports link when no filters have been applied") );
+	  
+	  // - Test retrieve QTest item - module, test case, etc. details - //
+	  d = QTestCiController.launchLoginQTest(BASE_URL, false);
+	  System.out.println(getNavItemDetails("Automated Tests")); 
   }
 }
