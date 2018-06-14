@@ -397,8 +397,12 @@ public class QTestCiController {
 
   public static String getNavItemDetails(String name) throws InterruptedException {
 	  try {
-		  expandAllNavTreeNodes();
+		  // expandAllNavTreeNodes();
+		  System.out.println( "Locating item details for " + name.trim() + "..." );
 		  clickNavItem(name);
+		  pause( 2525 );
+		  
+		  System.out.println( "Located tem details for " + name.trim() + "!" );
 		  
 		  return (String) jse.executeScript(
 				  "return arguments[0].outerHTML", waitUntilElementAvailable(

@@ -26,6 +26,7 @@ var services = {
 	},
 	
 	getNavItemDetails: function( m ) {
+		
 		console.log( m.q('a span.text') );
 		var pI = q('ci layout _progress > quadrants quadrant#progressInfo');
 		pI.style.display = 'block';
@@ -38,28 +39,15 @@ var services = {
 		    if (this.readyState == 4 && this.status == 200) {
 
 		    	var results = this.responseText;
-		    	qdInfo.htm( results ); // - Set item details - //
-		    	// - Restrict - //
-		    	[].forEach.call( qdInfo.qs('*'), function(n) {
-		    		n.hide();
-		    	});
 		    	
-		    	// - Retrieve items of interest - //
-		    	var ls = ['.rc-header', '.dijitTitlePane'];
-		    	ls.forEach(function(cls) {
-		    		if( qs(cls).length == 1 && cls == '.rc-header') {
-		    			qdInfo.add('header').add('_details').htm('header-details');
-		    			qdInfo.q('header').add('actions').htm('header-actions');
-		    		}else {
-		    			qdInfo.add('contents').htm('contents');
-		    		}
-		    	});
-
+		    	// - Refurbish - //
+		    	refurbishNavItemDetails(results);
 		    	
 		    	// - Dismiss progress info - //
 		    	pI.hide();
 		    }
 		};
+		
 		xhr.open("POST", "/getNavItemDetails", true);
 		xhr.send(m.q('a span.text').textContent);
 	},

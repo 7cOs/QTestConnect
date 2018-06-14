@@ -208,6 +208,90 @@ function refurbishNavTree() {
 	});
 }
 
+function refurbishNavItemDetails(results) {
+	var qdInfo = ci.q('layout main quadrant contents quadrants info'); 
+	qdInfo.clear();
+	
+	// - Set item details - //
+	qdInfo.htm( results ); 
+	
+	// - Restrict - use for data retrieval purposes - //
+	[].forEach.call( qdInfo.qs('*'), function(n) {
+		n.hide();
+	});
+	
+	// - Retrieve items of interest - //
+	var ls = ['.rc-header', '.rc-tab-bar', '.dijitTitlePane'];
+	ls.forEach(function(cls) {
+		if( qs(cls).length == 1 && cls == '.rc-header') {
+			qdInfo.add('header').add('ico');
+			qdInfo.q('header').add('_details');
+			qdInfo.q('header _details').add('summary');
+			qdInfo.q('header _details summary').add('type').htm('ItemType');
+			qdInfo.q('header _details summary').add('_title').htm('ItemTitle');
+			qdInfo.q('header _details summary').add('lastUpdated').htm('ItemLastUpdated');
+			qdInfo.q('header').add('actions').htm('header-actions');
+			if( q('#moduleContentPane') ) {
+				qdInfo.q('header ico').className = 'fa fa-cogs w3-xxlarge';
+				qdInfo.q('header _details summary type').htm('Project Module');
+			}else {
+				qdInfo.q('header ico').className = 'fa fa-cog w3-xxlarge';
+				qdInfo.q('header _details summary type').htm('Test Case');
+			}
+			// - Pull / Re-align - //
+			var _title = q("[widgetid*='dijit_InlineEditBox']").textContent;
+			var lastUpdated = q(".edit-msg").textContent;
+			qdInfo.q('header _details summary _title').htm(_title);
+			qdInfo.q('header _details summary lastUpdated').htm(lastUpdated);
+			// - The Acts... - //
+			qdInfo.q('header actions').htm('');
+			var acts = qs('.rc-header .right-pane .dijitButton');
+			[].forEach.call( acts, function(n) {
+				var a = qdInfo.q('header actions').add('action');
+				a.add( 'ico' ).className = 'fa fa-cog';
+				console.log( n.textContent.replace('?', '') )
+				var desc = n.textContent.replace('?', '');
+				a.add('desc').htm( desc );
+			});
+			if( ! q('#moduleContentPane') ) {
+				// - Prepend necessary actions - //
+				var a = qdInfo.q('header actions').insertBefore( 
+							qdInfo.q('header actions').add('action'),  
+						qdInfo.q('header actions').firstChild );
+				a.add('ico').className = 'fa fa-cog';
+				a.add('desc').htm('Execute Test(s)');
+			}
+			
+		} else if(qs(cls).length == 1 && cls == '.rc-tab-bar') {
+			var tB = qdInfo.add('tabbar');
+			[].forEach.call(qs(cls)[0].querySelectorAll('.tab'), function(n) {
+				if( n.textContent !='' ) {
+					var t = tB.add('tab');
+					t.htm(n.textContent);
+				}
+			});
+		}
+		else {
+			qdInfo.add('contents');
+			qdInfo.q('info > contents').add('tabContainer');
+			qdInfo.q('info > contents tabContainer').add( 'tabs' );
+			qdInfo.q('info > contents tabContainer').add( 'tabTitleContainer' );
+			qdInfo.q('info > contents tabContainer').add('tabContents');
+			[].forEach.call( qs(cls), function(n, i) {
+				var t = qdInfo.q('info > contents tabContainer tabs').add('tab');
+				// - Store tab title container in tab - //
+				t.cntabTitle = qdInfo.q('info > contents tabContainer tabTitleContainer');
+				t.htm( n.querySelector('.dijitTitlePaneTextNode').textContent );
+				// Set tab events - //
+				setEvents( t );
+				
+				var tc = qdInfo.q('info > contents tabContainer tabContents').add('tabContent');
+				tc.htm(n.querySelector('.dijitTitlePaneTextNode').textContent);
+			});
+		}
+	});
+}
+
 function showHideNavigator() {
 	var nav = q('ci main navigator');
 	nav.isDisplayed() ? nav.hide() : nav.show();

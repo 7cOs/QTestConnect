@@ -11,6 +11,10 @@ function setEvents(o) {
 			expandCollapseNavTreeNode(this.progen);
 		} else if( this.type == 'lnkTreeNode' ) {
 			services.getNavItemDetails(this.progen);
+		} else if( this.nodeName.toLowerCase() == 'tab' ) {
+			if( this.cntabTitle ) {
+				this.cntabTitle.htm(this.textContent);
+			}
 		}
 	});
 }

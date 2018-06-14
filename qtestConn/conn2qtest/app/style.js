@@ -11,8 +11,8 @@ var style = {
 		ss.insertRule('ci layout quadrant#header logo {margin-left: 5px; margin-right: 7px;}');
 		ss.insertRule('ci layout header _title {font-weight: bold; font-size: 29px;}');
 		ss.insertRule('ci layout header desc {display: block; letter-spacing: 2.1px;}');
-		ss.insertRule('ci layout header actions {}' );
-		ss.insertRule('ci layout header action {margin-right: 5px; cursor: pointer;}');
+		ss.insertRule('ci layout header > actions {}' );
+		ss.insertRule('ci layout header > action {margin-right: 5px; cursor: pointer;}');
 		
 		ss.insertRule('ci layout main > actions {border:solid; display: none;}');
 		
@@ -21,9 +21,32 @@ var style = {
 		ss.insertRule('ci layout main > quadrant > contents {display: flex; flex: 1; flex-direction: column;');
 		ss.insertRule('ci layout main > quadrant > contents quadrants {display: flex; flex-direction: column;}');
 		ss.insertRule('ci layout main > quadrant > contents quadrants > info {; height: 100%; display: flex; flex-direction: column;}');
-		ss.insertRule('ci layout main > quadrant > contents info > header {display: flex;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header {display: flex; align-items: center;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header > ico {margin-right: 11px;}');
 		ss.insertRule('ci layout main > quadrant > contents info > header _details {flex: 1;}');
-		ss.insertRule('ci layout main > quadrant > contents info contents { flex: 1; padding: 7px; border: solid green;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header _details summary {display:flex; flex-direction: column;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header _details summary _title {font-size: 21px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header _details summary lastUpdated {font-style: italic;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header > actions {display: flex; font-direction: row;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header > actions desc {display: inline;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header > actions > action {padding: 7px; margin-right: 3.997px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header > actions > action {border: solid 2px; border-radius: 7px; cursor: pointer;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header > actions > action ico {margin-right: 3.9px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > tabbar {background-color: hsl(180, 20%, 30%); color: rgb(255,255,255); padding: 7px; border-top: solid 2px black;}');
+		ss.insertRule('ci layout main > quadrant > contents info > tabbar > tab {margin-right: 37.5px; font-weight: bold; cursor: pointer;}');
+		
+		ss.insertRule('ci layout main > quadrant > contents info contents { flex: 1; margin-top: 11px;}');
+		
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer {display: flex; flex-direction: column;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabs {display: flex; /*border-bottom: solid 1.75px;*/}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {text-align: center; padding: 7.97px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {background-color: hsl(180, 20%, 30%);}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {color: rgb(255,255,255); margin-right: 1px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {width: 175px; cursor: pointer; border-bottom: solid .25px black;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {background-color: hsl(180, 20%, 30%);}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {color: rgb(255,255,255); padding: 7px;}');
+		
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {display: flex; flex-direction: column; padding: 5px;}');
 		
 		ss.insertRule('ci layout main > quadrant > navigator {width: 21%; display: flex; flex-direction: column; border-left: solid black;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants {display: flex; flex-direction: column;}');
