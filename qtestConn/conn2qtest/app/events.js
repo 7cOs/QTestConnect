@@ -7,6 +7,10 @@ function setEvents(o) {
 			}
 		} else if(o.id == 'icoDisplayNav') {
 			showHideNavigator();
+		} else if ( this.type == 'icoCollapseTreeNode' ) {
+			expandCollapseNavTreeNode(this.progen);
+		} else if( this.type == 'lnkTreeNode' ) {
+			services.getNavItemDetails(this.progen);
 		}
 	});
 }

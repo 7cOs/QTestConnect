@@ -168,12 +168,27 @@ function refurbishNavTree() {
 			if(ot = n.querySelector("[class*='object-type']") ) {
 				ot.style.display = 'none'; // - Hide object type indicator - //						
 				// - Prepend object type icons - //
-				var ico = ot.parentNode.insertBefore(doc.createElement('ico'), ot.nextSibling); 
+				var ico = ot.parentNode.insertBefore(doc.createElement('ico'), ot.nextSibling);
 				if(ot.textContent.indexOf('MD')>-1) {
 					ico.className = 'fa fa-cogs module';
+					ico.type = 'icoCollapseTreeNode';
+					ico.title = 'Expand/Collapse';
 				} else if( ot.textContent.indexOf('TC')>-1) {
 					ico.className = 'fa fa-cog testcase';
+					ico.type = 'icoTestCaseTreeNode';
 				}
+				// - Store progen in ico - //
+				ico.progen = n;
+				// - Set events ico - //
+				setEvents( ico );
+				
+				// - Set events links - //
+				var lnk = n.querySelector('a');
+				lnk.type = 'lnkTreeNode';
+				// -Store progen in lnk - //
+				lnk.progen = n;
+				setEvents( lnk );
+				
 				// - Style ot icons - //
 				with(ico.style) {
 					marginRight = '3px';
@@ -184,48 +199,35 @@ function refurbishNavTree() {
 					}
 				}						
 				// - Style links - //
-				if( a = n.querySelector('a') ) {
-					with( a.style ) {
-						textDecoration = 'none';
-						color = 'rgb(0,0,0)';
-					}
+				with( lnk.style ) {
+					textDecoration = 'none';
+					color = 'rgb(0,0,0)';
 				}
 			}
-		}    			
-		// - Add Tree node listeners - //
-		n.addEventListener('click', function(e) {
-			var n = this.querySelector('a');
-			!n ? n = this.querySelector('div') : null;
-			// - Query child nodes - //
-			var ns = qs( '#'+n.id+'-children' );
-			[].forEach.call(ns, function(n){
-				console.log( n.q('ico') );
-				console.log( n.q('a') );
-				
-				with(n.style){
-					display != 'none' ? display = 'none' : display = '';
-				}
-			});
-			// - Retrieve item details - module
-			services.getNavItemDetails( this );
-		});
+		}
 	});
 }
 
 function showHideNavigator() {
 	var nav = q('ci main navigator');
 	nav.isDisplayed() ? nav.hide() : nav.show();
-	
-	//	nav.q('quadrants > contents').hide();
-	//	nav.q('footer').hide();
-	//	nav.style.width = '55px';
 }
 
-function expandCollapseNavTree(act) {
-	var actId = act.id;
+function expandCollapseNavTreeNode(n) {
+	var a = n.querySelector('a');
+	var ns = qs( '#'+a.id+'-children' );
+	[].forEach.call(ns, function(n){			
+		with(n.style){
+			display != 'none' ? display = 'none' : display = '';
+		}
+	});
+}
+
+function expandCollapseNavTree(a) {
+	var aId = a.id;
 	var ns = qs("[id*='test-design-tree'] [class*='tree-row removable'] [class*='object-type-0']");
 	[].forEach.call(ns, function(n){
 		var id = n.parentNode.id+'-children';
-		actId == 'expand_all' ? q( '#'+id ).style.display = '' : q( '#'+id ).style.display = 'none';
+		aId == 'expand_all' ? q( '#'+id ).style.display = '' : q( '#'+id ).style.display = 'none';
 	});
 }

@@ -17,11 +17,15 @@ var style = {
 		ss.insertRule('ci layout main > actions {border:solid; display: none;}');
 		
 		ss.insertRule('ci layout main {display: flex; flex: 1; border:solid; flex-direction: column;}');
-		ss.insertRule('ci layout main > quadrant {display: flex; flex: 1; flex-direction: row; border: solid;}');
-		ss.insertRule('ci layout main > quadrant > contents {display: flex; flex: 1; flex-direction: column; border: solid;}');
-		ss.insertRule('ci layout main > quadrant > contents info {display: flex; flex-direction: column;}');
+		ss.insertRule('ci layout main > quadrant {display: flex; flex: 1; flex-direction: row;}');
+		ss.insertRule('ci layout main > quadrant > contents {display: flex; flex: 1; flex-direction: column;');
+		ss.insertRule('ci layout main > quadrant > contents quadrants {display: flex; flex-direction: column;}');
+		ss.insertRule('ci layout main > quadrant > contents quadrants > info {; height: 100%; display: flex; flex-direction: column;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header {display: flex;}');
+		ss.insertRule('ci layout main > quadrant > contents info > header _details {flex: 1;}');
+		ss.insertRule('ci layout main > quadrant > contents info contents { flex: 1; padding: 7px; border: solid green;}');
 		
-		ss.insertRule('ci layout main > quadrant > navigator {width: 21%; display: flex; flex-direction: column;}');
+		ss.insertRule('ci layout main > quadrant > navigator {width: 21%; display: flex; flex-direction: column; border-left: solid black;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants {display: flex; flex-direction: column;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants > header {padding: 9.979px;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants > contents {height: 100%; overflow: auto; white-space: nowrap;}');

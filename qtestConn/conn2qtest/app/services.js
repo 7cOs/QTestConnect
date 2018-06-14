@@ -44,33 +44,17 @@ var services = {
 		    		n.hide();
 		    	});
 		    	
-		    	// - Retrieve only those items of interest - //
-		    	var ls = ['.rc-header' /*, '.dijitTitlePane *'*/];
-		    	ls.forEach( function(cS) {
-		    		qdInfo.q(cS).show();
-		    		[].forEach.call(qdInfo.qs(cS + " *"), function(item) {
-		    			item.show();
-		    		});
-
-		    		// -- Add item of interest - //
-		    		var item = qdInfo.q(cS);
-		    		qdInfo.add( item );
-		    		console.log( item.className )
-		    		
-		    		// -Style items of interest - //
-		    		with( item.style ) {
-		    			backgroundColor = 'silver';
-		    			display = 'flex';
-		    			alignItems = 'center';
-		    			padding = '7px';
-		    			if( iT = q('.rc-header-title') ){
-		    				console.log( iT );
-		    				with( iT.style ) {
-		    					flex = 1;
-		    				}
-		    			}
+		    	// - Retrieve items of interest - //
+		    	var ls = ['.rc-header', '.dijitTitlePane'];
+		    	ls.forEach(function(cls) {
+		    		if( qs(cls).length == 1 && cls == '.rc-header') {
+		    			qdInfo.add('header').add('_details').htm('header-details');
+		    			qdInfo.q('header').add('actions').htm('header-actions');
+		    		}else {
+		    			qdInfo.add('contents').htm('contents');
 		    		}
 		    	});
+
 		    	
 		    	// - Dismiss progress info - //
 		    	pI.hide();
