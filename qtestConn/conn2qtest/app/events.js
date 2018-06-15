@@ -14,6 +14,9 @@ function setEvents(o) {
 		} else if( this.nodeName.toLowerCase() == 'tab' ) {
 			if( this.cntabTitle ) {
 				this.cntabTitle.htm(this.textContent);
+				
+				highlightItemDetailsTab(this);
+				addItemDetailsContents(this);
 			}
 		}
 	});

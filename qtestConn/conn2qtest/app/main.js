@@ -279,17 +279,40 @@ function refurbishNavItemDetails(results) {
 			qdInfo.q('info > contents tabContainer').add('tabContents');
 			[].forEach.call( qs(cls), function(n, i) {
 				var t = qdInfo.q('info > contents tabContainer tabs').add('tab');
-				// - Store tab title container in tab - //
+				t.htm(n.querySelector('.dijitTitlePaneTextNode').textContent);
+				// - Store tab title and contents container in tab - //
 				t.cntabTitle = qdInfo.q('info > contents tabContainer tabTitleContainer');
-				t.htm( n.querySelector('.dijitTitlePaneTextNode').textContent );
+				t.cnTabContents = qdInfo.q('info > contents tabContainer tabContents');
 				// Set tab events - //
 				setEvents( t );
-				
-				var tc = qdInfo.q('info > contents tabContainer tabContents').add('tabContent');
-				tc.htm(n.querySelector('.dijitTitlePaneTextNode').textContent);
 			});
 		}
 	});
+}
+
+function highlightItemDetailsTab(t) {
+	[].forEach.call(t.progen.qs('tab'), function(t) {
+		with(t.style) {
+			backgroundColor = 'hsl(180, 20%, 25%)';
+			color = 'rgb(255,255,255)';
+			borderTopColor = 'transparent';
+			borderLeft = 'none';
+			borderRight = borderLeft;
+		}
+	});
+	// - Highlight selected item - //
+	with(t.style) {
+		backgroundColor = 'rgb(255,255,255)';
+		color = 'hsl(180, 20%, 25%)';
+		borderTopColor = '#8bc34a';
+		borderLeft = 'solid 1px';
+		borderRight = borderLeft;
+		whiteSpace = 'nowrap';
+	}
+}
+
+function addItemDetailsContents(t) {
+	t.cnTabContents.htm(t.textContent);
 }
 
 function showHideNavigator() {

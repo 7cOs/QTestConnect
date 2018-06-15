@@ -38,13 +38,14 @@ var style = {
 		ss.insertRule('ci layout main > quadrant > contents info contents { flex: 1; margin-top: 11px;}');
 		
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer {display: flex; flex-direction: column;}');
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabs {display: flex; /*border-bottom: solid 1.75px;*/}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabs {display: flex; align-items: center; /*border-bottom: solid 1.75px;*/}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {text-align: center; padding: 7.97px;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {background-color: hsl(180, 20%, 30%);}');
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {color: rgb(255,255,255); margin-right: 1px;}');
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {width: 175px; cursor: pointer; border-bottom: solid .25px black;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {color: rgb(255,255,255); margin-right: 2px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {width: 177px; cursor: pointer;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {border-top: solid 3px transparent;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {background-color: hsl(180, 20%, 30%);}');
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {color: rgb(255,255,255); padding: 7px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {color: rgb(255,255,255); font-weight: bold; padding: 7px;}');
 		
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {display: flex; flex-direction: column; padding: 5px;}');
 		
