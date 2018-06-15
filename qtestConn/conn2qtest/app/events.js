@@ -16,6 +16,7 @@ function setEvents(o) {
 				this.cntabTitle.htm(this.textContent);
 				
 				highlightItemDetailsTab(this);
+				
 				addItemDetailsContents(this);
 			}
 		}

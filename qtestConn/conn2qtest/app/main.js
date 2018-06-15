@@ -215,10 +215,8 @@ function refurbishNavItemDetails(results) {
 	// - Set item details - //
 	qdInfo.htm( results ); 
 	
-	// - Restrict - use for data retrieval purposes - //
-	[].forEach.call( qdInfo.qs('*'), function(n) {
-		n.hide();
-	});
+	// - Restrict - use for data retrieval purposes only - //
+	qdInfo.q("[class*='main-content']").hide();
 	
 	// - Retrieve items of interest - //
 	var ls = ['.rc-header', '.rc-tab-bar', '.dijitTitlePane'];
@@ -311,8 +309,46 @@ function highlightItemDetailsTab(t) {
 	}
 }
 
-function addItemDetailsContents(t) {
-	t.cnTabContents.htm(t.textContent);
+function addItemDetailsContents(tb) {
+	var name = tb.textContent;
+	var sect = null;
+	name=='Properties' ? sect=q('[name=fmTestCase] .property-table') : 
+	name=='Test Steps' ? sect=qs('#testStepGrid table') :
+	name=='Resources' ? sect=q('#testCaseResourcePane_pane .resource-table') : 
+	name.indexOf('Session List') > -1 ? sect=q('#session_pane_testcase_pane table') : 
+	null;
+	
+	tb.cnTabContents.clear();
+	
+	if(name=='Properties') {
+		console.log( sect );
+		var t = tb.cnTabContents.add('table');
+		t.id = 'tTcPropsSect';
+		var b = t.add( 'tbody' );
+		b.id = 'bTcPropsSect';
+		[].forEach.call( sect.qs('tr'), function(n) {
+			var r = b.add( 'tr' );
+			r.className = 'rTcPropsSect';
+			[].forEach.call(n.qs('td'), function(n) {
+				var c = r.add('td');
+				c.className = 'cTcPropsSect';
+				var cs = n.getAttribute('colspan');
+				cs ? c.setAttribute('colspan', cs) : null;
+				var lb = n.q("label[for]");
+				var fd = n.q(".property-input");
+				lb ? c.htm(lb.textContent) : c.add('input');
+				lb ? c.className = 'label' : c.className = 'field';
+				// - Adjust for select - //
+				
+				// - Adjust for RTF - //
+				if( n.q('.qasRichTextEditor') ) {
+					c.clear();
+					c.add( 'rtf' ).contentEditable = true;
+				}
+			});
+		});
+		console.log( t );
+	}
 }
 
 function showHideNavigator() {

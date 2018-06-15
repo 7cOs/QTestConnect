@@ -47,8 +47,15 @@ var style = {
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {background-color: hsl(180, 20%, 30%);}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {color: rgb(255,255,255); font-weight: bold; padding: 7px;}');
 		
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {display: flex; flex-direction: column; padding: 5px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {display: flex; flex-direction: column; padding: 17px;}');
 		
+		ss.insertRule('table#tTcPropsSect {width: 100%; font-size: 11px;}');
+		ss.insertRule('table#tTcPropsSect td {padding: 11px; vertical-align: top;}');
+		ss.insertRule('table#tTcPropsSect .label {width: 7%; padding-left: 17px;}');
+		ss.insertRule('table#tTcPropsSect .field input {width: 100%;}');
+		ss.insertRule('table#tTcPropsSect .field rtf {width: 100%; height: 125px; display: block; border: solid;}');
+		ss.insertRule('table#tTcPropsSect .field select {width: 100%;}');
+
 		ss.insertRule('ci layout main > quadrant > navigator {width: 21%; display: flex; flex-direction: column; border-left: solid black;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants {display: flex; flex-direction: column;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants > header {padding: 9.979px;}');
