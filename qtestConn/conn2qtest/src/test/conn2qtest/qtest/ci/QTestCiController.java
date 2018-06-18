@@ -403,16 +403,56 @@ public class QTestCiController {
 		  pause( 2525 );
 		  
 		  System.out.println( "Located tem details for " + name.trim() + "!" );
-		  
-		  return (String) jse.executeScript(
+		  		  
+		  String itemDetails = (String) jse.executeScript(
 				  "return arguments[0].outerHTML", waitUntilElementAvailable(
-				  QTestCiComponent.getXpath("testDesignPane")));
+				  QTestCiComponent.getXpath("testDesignPane"))) + getItemDetailsPopupMenus();
+		  
+		  return itemDetails;
 		  
 	  } catch( Exception x ) {
 		  x.printStackTrace();
 	  }
 	  
 	  return null;
+  }
+  
+  public static String getItemDetailsPopupMenus() throws InterruptedException {
+	  List<WebElement> ls = d.findElements(By.xpath(
+			  "//input[contains(@class, 'dijitArrowButtonInner')]"));
+	  for(WebElement el : ls ) {
+		  try {
+			  if(el.isDisplayed()) { 
+				  el.click(); 
+				  pause(1595); 
+				  String xp = "//*[contains(@class, 'dijitMenuItem')]";
+				  List<WebElement> res = d.findElements(By.xpath(xp));
+				  System.out.println(res.size());
+				  for(WebElement _el : res) {
+						 // menus.append((String)jse.executeScript("return arguments[0].outerHTML", el)+"\n");
+						 System.out.println((String)jse.executeScript("return arguments[0].textContent", el)+"\n");
+					  }
+			  }
+		  } catch( Exception x ) {}
+	  }	
+
+	  pause(2575);
+
+	  StringBuilder menus = new StringBuilder();
+	  menus.append("<popupmenus style='display: none;'>\n");
+	  // String xp = "//*[(contains(@class, 'ComboBoxMenu')) or (contains(@class, 'dojoxCheckedMultiSelectWrapper'))]";
+	  String xp = "//*[contains(@class, 'dijitMenu')]";
+	  List<WebElement> res = d.findElements(By.xpath(xp));
+	  System.out.println(res.size());
+	  for(WebElement el : res) {
+		 // menus.append((String)jse.executeScript("return arguments[0].outerHTML", el)+"\n");
+		  menus.append((String)jse.executeScript("return arguments[0].innerHTML", el)+"\n");
+	  }
+	  menus.append("</popupmenus>");
+	  
+	  System.out.println(menus);
+	  
+	  return menus.toString();
   }
   
   public static void main(String[] args) throws Exception {
@@ -458,7 +498,8 @@ public class QTestCiController {
 	  // System.out.println( getTestCase("Disable Save Reports link when no filters have been applied") );
 	  
 	  // - Test retrieve QTest item - module, test case, etc. details - //
-	  d = QTestCiController.launchLoginQTest(BASE_URL, false);
-	  System.out.println(getNavItemDetails("Automated Tests")); 
+	  d = QTestCiController.launchLoginQTest(BASE_URL, true);
+	  expandAllNavTreeNodes();
+	  System.out.println(getNavItemDetails("Login and logout as a given user")); 
   }
 }

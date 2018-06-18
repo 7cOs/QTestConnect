@@ -338,16 +338,35 @@ function addItemDetailsContents(tb) {
 				var fd = n.q(".property-input");
 				lb ? c.htm(lb.textContent) : c.add('input');
 				lb ? c.className = 'label' : c.className = 'field';
+				if( ver = n.q('#propVersionDisplay') ) {
+					with(c.q('input')) {
+						value = ver.textContent;
+						readOnly = true;
+						with(style) {
+							border='none';
+						}
+					}
+				}
 				// - Adjust for select - //
-				
+				else if( n.q("[role=combobox]") ) {
+					c.clear();
+					c.add( 'select' );
+					getSelectOptions(lb);
+				}
 				// - Adjust for RTF - //
-				if( n.q('.qasRichTextEditor') ) {
+				else if( n.q('.qasRichTextEditor') ) {
 					c.clear();
 					c.add( 'rtf' ).contentEditable = true;
 				}
 			});
 		});
-		console.log( t );
+	}
+	
+	
+	function getSelectOptions(lb) {
+		if( lb == 'Status' ) {
+			console.log( q("[id*='propStatus'] .dijitComboBoxMenu") );
+		}
 	}
 }
 

@@ -20,7 +20,8 @@ var style = {
 		ss.insertRule('ci layout main > quadrant {display: flex; flex: 1; flex-direction: row;}');
 		ss.insertRule('ci layout main > quadrant > contents {display: flex; flex: 1; flex-direction: column;');
 		ss.insertRule('ci layout main > quadrant > contents quadrants {display: flex; flex-direction: column;}');
-		ss.insertRule('ci layout main > quadrant > contents quadrants > info {; height: 100%; display: flex; flex-direction: column;}');
+		ss.insertRule('ci layout main > quadrant > contents quadrants > info {height: 100%; display: flex; flex-direction: column;}');
+		
 		ss.insertRule('ci layout main > quadrant > contents info > header {display: flex; align-items: center;}');
 		ss.insertRule('ci layout main > quadrant > contents info > header > ico {margin-right: 11px;}');
 		ss.insertRule('ci layout main > quadrant > contents info > header _details {flex: 1;}');
@@ -35,25 +36,26 @@ var style = {
 		ss.insertRule('ci layout main > quadrant > contents info > tabbar {background-color: hsl(180, 20%, 30%); color: rgb(255,255,255); padding: 7px; border-top: solid 2px black;}');
 		ss.insertRule('ci layout main > quadrant > contents info > tabbar > tab {margin-right: 37.5px; font-weight: bold; cursor: pointer;}');
 		
-		ss.insertRule('ci layout main > quadrant > contents info contents { flex: 1; margin-top: 11px;}');
+		ss.insertRule('ci layout main > quadrant > contents info contents {flex: 1; margin-top: 11px; height: 100%;}');
 		
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer {display: flex; flex-direction: column;}');
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabs {display: flex; align-items: center; /*border-bottom: solid 1.75px;*/}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer {display: flex; flex-direction: column; height: 100%;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabs {display: flex; align-items: center;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {text-align: center; padding: 7.97px;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {background-color: hsl(180, 20%, 30%);}');
-		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {color: rgb(255,255,255); margin-right: 2px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {color: rgb(255,255,255); margin-right: .1em;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {width: 177px; cursor: pointer;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabs > tab {border-top: solid 3px transparent;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {background-color: hsl(180, 20%, 30%);}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer tabTitleContainer {color: rgb(255,255,255); font-weight: bold; padding: 7px;}');
 		
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {display: flex; flex-direction: column; padding: 17px;}');
+		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {flex: 1; overflow: auto;}');
 		
 		ss.insertRule('table#tTcPropsSect {width: 100%; font-size: 11px;}');
 		ss.insertRule('table#tTcPropsSect td {padding: 11px; vertical-align: top;}');
 		ss.insertRule('table#tTcPropsSect .label {width: 7%; padding-left: 17px;}');
 		ss.insertRule('table#tTcPropsSect .field input {width: 100%;}');
-		ss.insertRule('table#tTcPropsSect .field rtf {width: 100%; height: 125px; display: block; border: solid;}');
+		ss.insertRule('table#tTcPropsSect .field rtf {width: 100%; height: 155px; display: block; border: solid 1px silver;}');
 		ss.insertRule('table#tTcPropsSect .field select {width: 100%;}');
 
 		ss.insertRule('ci layout main > quadrant > navigator {width: 21%; display: flex; flex-direction: column; border-left: solid black;}');
