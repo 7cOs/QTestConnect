@@ -44,5 +44,8 @@ var data = {
 	},
 	footer: {
 		companyInfo: 'rege-it solutions, professional llc &copy;7012'
+	},
+	config: {
+		defItemDetailsTab: 'Properties'
 	}
 };

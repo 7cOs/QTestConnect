@@ -19,6 +19,8 @@ function setEvents(o) {
 				
 				addItemDetailsContents(this);
 			}
+		} else if( this.className == 'rtf-lnk' ) {
+			window.open(this.href, this.target);
 		}
 	});
 }

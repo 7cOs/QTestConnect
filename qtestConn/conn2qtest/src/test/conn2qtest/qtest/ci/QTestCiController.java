@@ -406,7 +406,8 @@ public class QTestCiController {
 		  		  
 		  String itemDetails = (String) jse.executeScript(
 				  "return arguments[0].outerHTML", waitUntilElementAvailable(
-				  QTestCiComponent.getXpath("testDesignPane"))) + getItemDetailsPopupMenus();
+				  QTestCiComponent.getXpath("testDesignPane")))
+				  /* + getItemDetailsPopupMenus() */;
 		  
 		  return itemDetails;
 		  
@@ -424,14 +425,8 @@ public class QTestCiController {
 		  try {
 			  if(el.isDisplayed()) { 
 				  el.click(); 
-				  pause(1595); 
-				  String xp = "//*[contains(@class, 'dijitMenuItem')]";
-				  List<WebElement> res = d.findElements(By.xpath(xp));
-				  System.out.println(res.size());
-				  for(WebElement _el : res) {
-						 // menus.append((String)jse.executeScript("return arguments[0].outerHTML", el)+"\n");
-						 System.out.println((String)jse.executeScript("return arguments[0].textContent", el)+"\n");
-					  }
+				  pause(1595);
+				  String xp = "//*[contains(@class, 'dijitComboBoxMenu') or contains(@class, 'customizeComboBoxMenu')]";
 			  }
 		  } catch( Exception x ) {}
 	  }	
@@ -498,8 +493,8 @@ public class QTestCiController {
 	  // System.out.println( getTestCase("Disable Save Reports link when no filters have been applied") );
 	  
 	  // - Test retrieve QTest item - module, test case, etc. details - //
-	  d = QTestCiController.launchLoginQTest(BASE_URL, true);
+	  d = QTestCiController.launchLoginQTest(BASE_URL, false);
 	  expandAllNavTreeNodes();
-	  System.out.println(getNavItemDetails("Login and logout as a given user")); 
+	  System.out.println(getNavItemDetails("Distribution Type Filter - Simple Distribution Types")); 
   }
 }

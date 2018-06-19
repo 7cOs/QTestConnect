@@ -210,13 +210,13 @@ function refurbishNavTree() {
 
 function refurbishNavItemDetails(results) {
 	var qdInfo = ci.q('layout main quadrant contents quadrants info'); 
-	qdInfo.clear();
+	qdInfo.clear(); // - Rinse info quadrant - // 
 	
-	// - Set item details - //
-	qdInfo.htm( results ); 
+	// - Store results in info > results item - //
+	qdInfo.add('results').htm( results );
 	
 	// - Restrict - use for data retrieval purposes only - //
-	qdInfo.q("[class*='main-content']").hide();
+	qdInfo.q( 'results' ).hide();
 	
 	// - Retrieve items of interest - //
 	var ls = ['.rc-header', '.rc-tab-bar', '.dijitTitlePane'];
@@ -247,7 +247,7 @@ function refurbishNavItemDetails(results) {
 			[].forEach.call( acts, function(n) {
 				var a = qdInfo.q('header actions').add('action');
 				a.add( 'ico' ).className = 'fa fa-cog';
-				console.log( n.textContent.replace('?', '') )
+				// console.log( n.textContent.replace('?', '') )
 				var desc = n.textContent.replace('?', '');
 				a.add('desc').htm( desc );
 			});
@@ -270,20 +270,29 @@ function refurbishNavItemDetails(results) {
 			});
 		}
 		else {
-			qdInfo.add('contents');
-			qdInfo.q('info > contents').add('tabContainer');
-			qdInfo.q('info > contents tabContainer').add( 'tabs' );
-			qdInfo.q('info > contents tabContainer').add( 'tabTitleContainer' );
-			qdInfo.q('info > contents tabContainer').add('tabContents');
-			[].forEach.call( qs(cls), function(n, i) {
-				var t = qdInfo.q('info > contents tabContainer tabs').add('tab');
-				t.htm(n.querySelector('.dijitTitlePaneTextNode').textContent);
-				// - Store tab title and contents container in tab - //
-				t.cntabTitle = qdInfo.q('info > contents tabContainer tabTitleContainer');
-				t.cnTabContents = qdInfo.q('info > contents tabContainer tabContents');
-				// Set tab events - //
-				setEvents( t );
-			});
+			if( qs(cls).length != 0 ) {
+				qdInfo.add('contents');
+				qdInfo.q('info > contents').add('tabContainer');
+				qdInfo.q('info > contents tabContainer').add( 'tabs' );
+				qdInfo.q('info > contents tabContainer').add( 'tabTitleContainer' );
+				qdInfo.q('info > contents tabContainer').add('tabContents');
+				[].forEach.call(qs(cls), function(n, i) {
+					var t = qdInfo.q('info > contents tabContainer tabs').add('tab');
+					t.htm(n.querySelector('.dijitTitlePaneTextNode').textContent);
+					// - Store tab title and contents container in tab - //
+					t.cntabTitle = qdInfo.q('info > contents tabContainer tabTitleContainer');
+					t.cnTabContents = qdInfo.q('info > contents tabContainer tabContents');
+					// Set tab events - //
+					setEvents( t );
+				});
+			}
+		}
+	});
+	
+	// - Click default item details tab *See CI app/data.js - //
+	[].forEach.call( qs('info > contents tabContainer tab'), function( t ) {
+		if(t.textContent.indexOf(data.config.defItemDetailsTab) > -1 ) {
+			t.click(); return;
 		}
 	});
 }
@@ -310,62 +319,155 @@ function highlightItemDetailsTab(t) {
 }
 
 function addItemDetailsContents(tb) {
+	
+	var type = q('info header type').textContent;
 	var name = tb.textContent;
 	var sect = null;
-	name=='Properties' ? sect=q('[name=fmTestCase] .property-table') : 
-	name=='Test Steps' ? sect=qs('#testStepGrid table') :
-	name=='Resources' ? sect=q('#testCaseResourcePane_pane .resource-table') : 
-	name.indexOf('Session List') > -1 ? sect=q('#session_pane_testcase_pane table') : 
-	null;
 	
 	tb.cnTabContents.clear();
 	
-	if(name=='Properties') {
-		console.log( sect );
-		var t = tb.cnTabContents.add('table');
-		t.id = 'tTcPropsSect';
-		var b = t.add( 'tbody' );
-		b.id = 'bTcPropsSect';
-		[].forEach.call( sect.qs('tr'), function(n) {
-			var r = b.add( 'tr' );
-			r.className = 'rTcPropsSect';
-			[].forEach.call(n.qs('td'), function(n) {
-				var c = r.add('td');
-				c.className = 'cTcPropsSect';
-				var cs = n.getAttribute('colspan');
-				cs ? c.setAttribute('colspan', cs) : null;
-				var lb = n.q("label[for]");
-				var fd = n.q(".property-input");
-				lb ? c.htm(lb.textContent) : c.add('input');
-				lb ? c.className = 'label' : c.className = 'field';
-				if( ver = n.q('#propVersionDisplay') ) {
-					with(c.q('input')) {
-						value = ver.textContent;
-						readOnly = true;
-						with(style) {
-							border='none';
+	if(type == 'Test Case') {
+		
+		name == 'Properties' ? sect=q('[name=fmTestCase] .property-table') : 
+		name == 'Test Steps' ? sect=qs('#testStepGrid table') :
+		name == 'Resources' ? sect=q('#testCaseResourcePane_pane .resource-table') : 
+		name.indexOf('Session List') > -1 ? sect=q('#session_pane_testcase_pane table') : null;
+		
+		switch(name) {
+		
+		case 'Properties':
+			// - Let dSo be default selected field options values - //
+			dSo = qs("[class*='dijitInputInner'][type='text']");
+
+			var t = tb.cnTabContents.add('table');
+			t.id = 'tTcPropsSect';
+			var b = t.add( 'tbody' );
+			b.id = 'bTcPropsSect';
+			[].forEach.call( sect.qs('tr'), function(n) {
+				var r = b.add( 'tr' );
+				r.className = 'rTcPropsSect';
+				[].forEach.call(n.qs('td'), function(n) {
+					var c = r.add('td');
+					var cs = n.getAttribute('colspan');
+					cs ? c.setAttribute('colspan', cs) : null;
+					var lb = n.q("label[for]");
+					var fd = n.q(".property-input");
+					lb ? c.htm(lb.textContent) : c.add('input');
+					lb ? c.className = 'label' : c.className = 'field';
+					if( ver = n.q('#propVersionDisplay') ) {
+						with(c.q('input')) {
+							value = ver.textContent;
+							readOnly = true;
+							with(style) {
+								border='none';
+							}
 						}
 					}
-				}
-				// - Adjust for select - //
-				else if( n.q("[role=combobox]") ) {
-					c.clear();
-					c.add( 'select' );
-					getSelectOptions(lb);
-				}
-				// - Adjust for RTF - //
-				else if( n.q('.qasRichTextEditor') ) {
-					c.clear();
-					c.add( 'rtf' ).contentEditable = true;
-				}
+					// - Adjust for select - //
+					else if( n.q("[role=combobox]") ) {
+						c.clear();
+						c.add( 'select' );
+						lb = c.previousSibling.textContent;
+						c.q('select').label = lb;
+						setSelectOptions(c.q('select'));
+					}
+					// - Adjust for RTF - //
+					else if( rtf = n.q('.qasRichTextEditor') ) {
+						c.clear();
+						c.add('rtf').contentEditable = true;
+						lb = c.previousSibling.textContent;
+						lb == 'Description' ? c.q('rtf').htm(q("#propDescriptionId_editorNode").textContent) : 
+						lb == 'Precondition' ? c.q('rtf').htm(q("#propPreconditionId_editorNode").textContent) : null;
+						// - Set link(s) target - //
+						[].forEach.call(c.qs('a'), function(a) {
+							a.className = 'rtf-lnk';
+							a.target = '_blank';
+							with(a.style) {
+								color = 'yellowgreen';
+								cursor = 'pointer';
+							}
+							setEvents(a);
+						});
+					}
+				});
 			});
-		});
+			break; // - End case 'Properties' - //
+		} 
+	}	// - End if 'Test Case' - //
+	else if(type == 'Project Module') {
+		name == 'Properties' ? sect=q('[name=frmProjectModule] .property-table') : 
+		null;
+		
+		switch( name ) {
+		case "Properties":
+			var t = tb.cnTabContents.add('table');
+			// t.border = 1;
+			t.id = 'tpMPropsSect';
+			var b = t.add( 'tbody' );
+			b.id = 'bpMPropsSect';
+			[].forEach.call(sect.qs('tbody tr'), function(n) {
+				var  r = b.add( 'tr' );
+				r.className = 'rpMPropsSect';
+				[].forEach.call(n.qs('td'), function(n) {
+					var c = r.add('td') ;
+					if(n.className == 'property-label') {
+						c.className = 'label';
+						c.htm(n.textContent.trim());
+					}else if( n.className == 'property-input' ) {
+						c.className = 'field';
+						if( rtf = q('.qasRichTextEditor') ) {
+							c.add('rtf').contentEditable = true;
+							c.q('rtf').htm(q('#descriptionTestCasetestdesign_editorNode').textContent);
+						}
+					}
+				});
+			});
+			break;
+		}
+		
+	} // - End if 'Project Module' - //
+
+}
+
+function setSelectOptions(so) {
+	var opts = null;
+	var lb = so.label;
+	if( lb == 'Status' ) {
+		opts = ['New','In Progress','Ready For Baseline','Baselined'];
+	}else if (lb=='Test Type') {
+		opts = ['Manual', 'Automation', 'Performance', 'Scenario', 'Acceptance', 'Regression', 'Smoke', 'Other'];
+	} else if( lb=='Assigned To' ) {
+		opts = ['Andrew Bain', 'Chad Dodson', 'Edie Liao', 'Hema Khilnani', 'James Keightley', 'JUlie Mayer', 'Mike  Dabisch', 'Soko Karneh'];
+	} else if( lb == 'Priority') {
+		opts = ['Undecided','Low','Medium','High','Critical'];
+	} else if (lb=='Automation Status') {
+		opts = ['Undecided', 'Needs Automation', 'Automation Not Needed', 'WIP', 'Automated'];
+	} else if( lb == 'Sub Test Type' ) {
+		opts = ['Positive','Negative', 'Edge']
 	}
 	
+	so.appendChild( d.createElement('option') ).htm('');
+	opts.forEach(function(name) {
+		var opt = so.appendChild(d.createElement('option'));
+		opt.htm(name);
+		for(var i=0; i<dSo.length; i++) {
+			if(name == dSo[i]) {
+				opt.selected =  true;
+			}
+		}
+	});
 	
-	function getSelectOptions(lb) {
-		if( lb == 'Status' ) {
-			console.log( q("[id*='propStatus'] .dijitComboBoxMenu") );
+	// - Set default selected option values - //
+	setDefaultSelected();
+	
+	function setDefaultSelected() {
+		for(var i=0; i<so.qs('option').length; i++ ) {
+			var o = so.qs('option')[i];
+			for(var j=0; j<dSo.length; j++) {
+				if(o.textContent == (dSo[j].value || dSo[j].title) ) {
+					o.selected =  true;
+				}
+			}
 		}
 	}
 }

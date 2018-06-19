@@ -25,9 +25,8 @@ var services = {
 		xhr.send();
 	},
 	
-	getNavItemDetails: function( m ) {
+	getNavItemDetails: function(itm) {
 		
-		console.log( m.q('a span.text') );
 		var pI = q('ci layout _progress > quadrants quadrant#progressInfo');
 		pI.style.display = 'block';
 		
@@ -49,7 +48,7 @@ var services = {
 		};
 		
 		xhr.open("POST", "/getNavItemDetails", true);
-		xhr.send(m.q('a span.text').textContent);
+		xhr.send(itm.q('a span.text').textContent);
 	},
 	
 	getXhr: function() {

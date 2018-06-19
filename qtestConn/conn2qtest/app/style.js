@@ -51,12 +51,19 @@ var style = {
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {display: flex; flex-direction: column; padding: 17px;}');
 		ss.insertRule('ci layout main > quadrant > contents info > contents tabContainer > tabContents {flex: 1; overflow: auto;}');
 		
-		ss.insertRule('table#tTcPropsSect {width: 100%; font-size: 11px;}');
-		ss.insertRule('table#tTcPropsSect td {padding: 11px; vertical-align: top;}');
-		ss.insertRule('table#tTcPropsSect .label {width: 7%; padding-left: 17px;}');
-		ss.insertRule('table#tTcPropsSect .field input {width: 100%;}');
-		ss.insertRule('table#tTcPropsSect .field rtf {width: 100%; height: 155px; display: block; border: solid 1px silver;}');
-		ss.insertRule('table#tTcPropsSect .field select {width: 100%;}');
+		ss.insertRule('#tTcPropsSect, #tpMPropsSect {width: 100%; font-size: 11px;}');
+		ss.insertRule('#tTcPropsSect td {padding: 11px; vertical-align: top;}');
+		ss.insertRule('#tTcPropsSect .label {width: 7%; padding-left: 17px;}');
+		ss.insertRule('#tTcPropsSect .field input {width: 100%; height: 25px; border-radius: 5px; border-width: 1px;}');
+		ss.insertRule('#tTcPropsSect .field select {width: 100%;  height: 25px; border-radius: 5px;}');
+		ss.insertRule('#tTcPropsSect .field rtf {display: block; width: 100%; height: 155px; padding: 5px; border-radius: 5px;}');
+		ss.insertRule('#tTcPropsSect .field rtf {overflow: auto; border: solid 1px silver;}');
+		ss.insertRule('#tTcPropsSect .field select {width: 100%;}');
+		
+		ss.insertRule('#tpMPropsSect td {padding: 11px; vertical-align: top;}');
+		ss.insertRule('#tpMPropsSect .label {width: 7%; padding-left: 17px;}');
+		ss.insertRule('#tpMPropsSect .field rtf {display: block; width: 100%; height: 155px; padding: 5px; border-radius: 5px;}');
+		ss.insertRule('#tpMPropsSect .field rtf {overflow: auto; border: solid 1px silver;}');
 
 		ss.insertRule('ci layout main > quadrant > navigator {width: 21%; display: flex; flex-direction: column; border-left: solid black;}');
 		ss.insertRule('ci layout main > quadrant > navigator quadrants {display: flex; flex-direction: column;}');
