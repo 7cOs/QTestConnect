@@ -5,27 +5,63 @@
 * let dasReglement be Rules
 * let artikelarten be Item Types
 * let erhalteArtikeltypen be get Item Types
+* let ubersetzen be Translator
 */	
 var daten = {
-	beobachtungstitel: 'Beobachtungstabelle der Aktionen',
+	ci: {
+		titel: 'Beobachtungstabelle der Aktionen',
+		hauptAktionen: [{
+			id: 'aktionHinzufugen',
+			etikette: 'aktion hinzufugen...',
+			titel: 'add action...',
+			act: 'aktion'
+		},{
+			id: 'szenarioSpeichern',
+			etikette: 'szenario speichern...',
+			titel: 'save scenario',
+			act: 'aktion'
+		},{
+			id: 'testfallErstellen',
+			etikette: 'testfall erstellen...',
+			titel: 'create test case',
+			act: 'aktion'
+		},{
+			id: 'testSuiteErstellen',
+			etikette: 'test suite erstellen...',
+			titel: 'create test suite',
+			act: 'aktion'
+		}],
+		suche: {
+			id: 'cnSuche',
+			htm: '<input id=suche placeholder=suche />'
+		},
+		stil: {
+			farbeBg: 'rgb(154,205,50)',
+			farbe: 'rgb(255,255,255)',
+			einfassen: 'solid 1px',
+			grenzradius: '7px',
+			mauszeiger: 'pointer',
+			randRechts: '3.5'
+		}
+	},
 	dasReglement: [{
-		action: 'Enter',
-		field: 'Input field name (*Enclose in double quotes)',
-		type: [],
+		aktion: 'Enter',
+		feld: 'Input field name (*Enclose in double quotes)',
+		art: [],
 		xpath: "Enter XPATH (optional)",
-		value: 'Value to enter (*Enclose in double quotes)'
+		wert: 'Value to enter (*Enclose in double quotes)'
 	},{
-		action: 'Click',
-		field: 'Name of item to click (*Enclose in double quotes)',
-		types: [],
+		aktion: 'Click',
+		feld: 'Name of item to click (*Enclose in double quotes)',
+		art: [],
 		xpath: "Enter XPATH (optional)",
-		value: 'Optional value(s) to consider (*Enclose in double quotes)'
+		wert: 'Optional value(s) to consider (*Enclose in double quotes)'
 	},{
-		action: 'Select',
-		field: 'Name of item to select (*Enclose in double quotes)',
-		types: [],
+		aktion: 'Select',
+		feld: 'Name of item to select (*Enclose in double quotes)',
+		art: [],
 		xpath: "Enter XPATH (optional)",
-		value: 'Enter select options (*Enclosed in quotes - separated by single quotes and comma)'
+		wert: 'Enter select options (*Enclosed in quotes - separated by single quotes and comma)'
 	}],		
 	artikelarten: [
 		'Button',
@@ -40,5 +76,12 @@ var daten = {
 	],
 	erhalteArtikeltypen: function() {
 		return this.artikelarten;
+	},
+	ubersetzen: {
+		aktion: 'action',
+		feld: 'field',
+		art: 'type',
+		xpath: 'xpath',
+		wert: 'value'
 	}
 };

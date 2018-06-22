@@ -7,15 +7,12 @@
 	window.onload = function() {
 		// - Initialize Process - //
 		prozessInitialisieren();
-		
-		// - Set process title - //
-		einstellenBeobachtungstitel('Beobachtungstabelle der Aktionen');
-		
-		// - Container: Observations - //
+
+		// - Add container - Observations - //
 		ci.hinzufugen('cn').id = 'cnBeobachtungen';
 		
 		// - Create/add table of observation (actions) - //
-		tabelleDerBeobachtungenHinzufügen();
+		tabelleDerBeobachtungenHinzufügen(daten.ci.titel);
 		
 		// - Set style - //
 		stilFestlegen(ci);
@@ -26,24 +23,46 @@
 
 	function prozessInitialisieren() {
 		init();
+		// - Set process title - //
+		einstellenBeobachtungstitel(daten.ci.titel);
 	}
 	
 	function einstellenBeobachtungstitel(titel) {
-		doc.title = daten.beobachtungstitel;
+		doc.title = titel;
 	}
 	
-	function tabelleDerBeobachtungenHinzufügen() {
+	function tabelleDerBeobachtungenHinzufügen(titel) {
 		var t = ci.q('cn').hinzufugen('table');
 		ci.q( 'cn table' ).id = 'tblBeobachtungen';
 		var c = t.hinzufugen('caption');
-		c.htm('Beobachtungstabelle der Aktionen');
+		c.htm( titel.replace('der', ' <br />der') );
 		var h = t.hinzufugen('thead');
-		h.hinzufugen('tr');
-		var b = t.hinzufugen('tbody');
+		// - Add actions container - //
+		var akts = h.hinzufugen('tr');
+		akts.hinzufugen('td').hinzufugen('quadrant');
+		akts.q('td quadrant').id = 'quadCnAktionenSuche';
+		var cn = akts.q('td quadrant').hinzufugen('cn');
+		cn.id = 'cnAktionen';
 		// - Add table header columns - //
+		h.hinzufugen('tr').id = 'cnHeaderSpaltenfelder';
 		for( var i in o = daten.dasReglement[0] ) {
-			var c = h.q('tr').hinzufugen('th');
-			c.htm( i );
-		}		
+			var c = h.q('#cnHeaderSpaltenfelder').hinzufugen('th');
+			c.htm(i);
+		}
+		// - Add actions - //
+		akts.q('tr td').colSpan = h.qs('#cnHeaderSpaltenfelder th').length;
+		for(var i=0; i<(o = daten.ci.hauptAktionen).length; i++) {
+			var akt = akts.q('#cnAktionen').hinzufugen('aktion');
+			for(var j in o[i]) {
+				if(o[i][j]=='cnSuche'){ continue; }
+				j=='etikette' ? akt.htm( o[i][j] ) : akt.setAttribute(j, o[i][j]);
+				j=='titel'? akt.title =  o[i][j] : null;
+			}
+		}
+		// - Add search item - //
+		akts.q('#cnAktionen').progen.hinzufugen('cn').id='cnSuche';
+		akts.q('#cnAktionen').progen.q('#cnSuche');
+		
+		var b = t.hinzufugen('tbody');
 	}
 </script>

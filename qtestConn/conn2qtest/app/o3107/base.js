@@ -7,7 +7,8 @@ function init() {
 	qs=function( q ) { return d.querySelectorAll( q ); };
 	
 	// - Set - //
-	ci = doc.body;
+	ci = doc.body; 
+	ci.id = 'ci';
 
 	Element.prototype.add = function(n) {
 		if(typeof(n)== 'object') {
