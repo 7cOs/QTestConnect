@@ -1,0 +1,49 @@
+
+<script type="text/javascript" src='./base.js'></script>
+<script type="text/javascript" src='./daten.js'></script>
+<script type="text/javascript" src='./stil.js'></script>
+
+<script type='text/javascript'>
+	window.onload = function() {
+		// - Initialize Process - //
+		prozessInitialisieren();
+		
+		// - Set process title - //
+		einstellenBeobachtungstitel('Beobachtungstabelle der Aktionen');
+		
+		// - Container: Observations - //
+		ci.hinzufugen('cn').id = 'cnBeobachtungen';
+		
+		// - Create/add table of observation (actions) - //
+		tabelleDerBeobachtungenHinzufügen();
+		
+		// - Set style - //
+		stilFestlegen(ci);
+		
+		// - Reveal - //
+		ci.zeigen();
+	};
+
+	function prozessInitialisieren() {
+		init();
+	}
+	
+	function einstellenBeobachtungstitel(titel) {
+		doc.title = daten.beobachtungstitel;
+	}
+	
+	function tabelleDerBeobachtungenHinzufügen() {
+		var t = ci.q('cn').hinzufugen('table');
+		ci.q( 'cn table' ).id = 'tblBeobachtungen';
+		var c = t.hinzufugen('caption');
+		c.htm('Beobachtungstabelle der Aktionen');
+		var h = t.hinzufugen('thead');
+		h.hinzufugen('tr');
+		var b = t.hinzufugen('tbody');
+		// - Add table header columns - //
+		for( var i in o = daten.dasReglement[0] ) {
+			var c = h.q('tr').hinzufugen('th');
+			c.htm( i );
+		}		
+	}
+</script>
