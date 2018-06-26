@@ -16,6 +16,11 @@ var daten = {
 			titel: 'add action...',
 			act: 'aktion'
 		},{
+			id: 'aktionLoschen',
+			etikette: 'aktion loschen',
+			titel: 'delete action...',
+			act: 'aktion'
+		},{
 			id: 'szenarioSpeichern',
 			etikette: 'szenario speichern',
 			titel: 'save scenario',
@@ -44,31 +49,44 @@ var daten = {
 			einfassen: 'solid 1px',
 			grenzradius: '7px',
 			mauszeiger: 'pointer',
-			randRechts: '5.5'
+			randRechts: '5.5',
+			artikelauswahlSpalteBg: 'rgb(157,207,55)'
 		}
 	},
 	dasReglement: [{
 		aktion: 'Navigate To',
-		feld: 'Input field name (*Enclose in double quotes)',
+		feld: '[N/A]',
+		art: [],
+		xpath: '[N/A]',
+		wert: 'Enter Site URL [Required]'
+	},{
+		aktion: 'Login',
+		feld: '[N/A]',
 		art: [],
 		xpath: "Enter XPATH (optional)",
-		wert: 'Value to enter (*Enclose in double quotes)'
+		wert: 'Enter Test User Credentials [Required]'
 	},{
 		aktion: 'Enter',
-		feld: 'Input field name (*Enclose in double quotes)',
+		feld: 'Input ield name [Required]',
 		art: [],
-		xpath: "Enter XPATH (optional)",
-		wert: 'Value to enter (*Enclose in double quotes)'
+		xpath: "Enter XPATH [Optional]",
+		wert: 'Value to enter [Required]'
 	},{
 		aktion: 'Click',
-		feld: 'Name of item to click (*Enclose in double quotes)',
+		feld: 'Enter Item Name to click [Required]',
 		art: [],
-		xpath: "Enter XPATH (optional)",
-		wert: 'Optional value(s) to consider (*Enclose in double quotes)',
+		xpath: "Enter XPATH [Optional]",
+		wert: 'Optional value(s)',
 		ausgewahlt: true
 	},{
 		aktion: 'Select',
-		feld: 'Name of item to select (*Enclose in double quotes)',
+		feld: 'Enter Item Field to Select [Required]',
+		art: [],
+		xpath: "Enter XPATH (optional)",
+		wert: 'Enter select options (*Enclosed in quotes - separated by single quotes and comma)'
+	},{
+		aktion: 'Deselect',
+		feld: 'Name of item to de-select (*Enclose in double quotes)',
 		art: [],
 		xpath: "Enter XPATH (optional)",
 		wert: 'Enter select options (*Enclosed in quotes - separated by single quotes and comma)'
@@ -78,9 +96,20 @@ var daten = {
 		art: [],
 		xpath: "Enter XPATH (optional)",
 		wert: 'Enter search value (*Enclosed in quotes)'
+	},{
+		aktion: 'Logout',
+		feld: 'Input field name (*Enclose in double quotes)',
+		art: [],
+		xpath: "Enter XPATH (optional)",
+		wert: 'Value to enter (*Enclose in double quotes)'
 	}],
 	bekommeRegeln: function() {
 		return this.dasReglement;
+	},
+	regelErhalten: function(aktion) {
+		this.bekommeRegeln.forEach( function( n ) {
+			console.log( n );
+		});
 	},
 	ubersetzen: {
 		aktion: 'action',
@@ -92,13 +121,14 @@ var daten = {
 	artikelarten: [
 		'Select...',
 		'Button',
-		'radio Button', 
+		'Radio Button', 
 		'Field',
 		'Text',
-		'Option',
+		'Options',
 		'Checkbox', 
 		'Increment', 
-		'Decrement', 
+		'Decrement',
+		'Pre-defined',
 		'Other'
 	],
 	erhalteArtikeltypen: function() {
@@ -107,6 +137,7 @@ var daten = {
 	bekommenSieAktionen: function() {
 		var reg = this.bekommeRegeln();
 		var s = doc.create('select');
+		s.className = 'ausgewahlteAktion';
 		for(var i=0; i<reg.length; i++) {
 			s.hinzufugen('option').htm( reg[i]['aktion'] );
 			if( reg[i]['ausgewahlt'] ) {
@@ -114,12 +145,14 @@ var daten = {
 				s.options.daten = reg[i];
 			}
 		}
+		// - Set events - //
+		ereignisseFestlegen(s);
 		return s;
 	},
 	wahlenSieDieOptionenFurDenArtikeltyp: function() {
 		var s = doc.create('select');
 		var ls = this.erhalteArtikeltypen();
-		ls.forEach.call(function(itm){
+		ls.forEach(function(itm){
 			var o = s.hinzufugen( 'option' );
 			if( itm == 'Select...') {o.value='select';}
 			o.htm( itm );

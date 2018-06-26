@@ -46,11 +46,16 @@
 		cn.id = 'cnAktionen';
 		// - Add table header columns - //
 		h.hinzufugen('tr').id = 'cnHeaderSpaltenfelder';
+		// - Add selector column - //
+		var sc = h.q('#cnHeaderSpaltenfelder').hinzufugen('th');
+		sc.id = 'wahleAlleGegenstandeAus';
+		sc.htm('&nbsp;');
 		for( var i in o = daten.dasReglement[0] ) {
 			var c = h.q('#cnHeaderSpaltenfelder').hinzufugen('th');
 			c.htm(i);
 			c.title = daten.ubersetzen[i];
 		}
+		
 		// - Add actions - //
 		akts.q('tr td').colSpan = h.qs('#cnHeaderSpaltenfelder th').length;
 		for(var i=0; i<(o = daten.ci.hauptAktionen).length; i++) {
@@ -63,6 +68,7 @@
 			// - Set action events - //
 			ereignisseFestlegen(akt);
 		}
+		
 		// - Add search item - //
 		akts.q('#cnAktionen').progen.hinzufugen('cn').id = daten.ci.suche.id;
 		akts.q('#cnAktionen').progen.q('#' + daten.ci.suche.id );
@@ -70,6 +76,25 @@
 		akts.progen.q('#cnSuche input').id = daten.ci.suche.eingang.id;
 		akts.progen.q('#cnSuche #suche').placeholder =  daten.ci.suche.eingang.platzhalter;
 		
-		var b = t.hinzufugen('tbody');
+		ci.q('#cnBeobachtungen').hinzufugen('table').id = 'tblInhaltUndNavigator';
+		t = q('#tblInhaltUndNavigator');
+		var r = t.hinzufugen('tbody').hinzu('tr');
+		// - Add quadrants: inhalt & navigator - //
+		for(var i=0; i<2; i++) {
+			var c = r.hinzufugen( 'td' );
+			if(i==0) {
+				c.id = 'cnInhalt';
+				c.hinzu('table').hinzufugen('thead');
+				c.q('table').id = 'tblInhalt';
+				c.q('table thead').hinzufugen(q('#cnHeaderSpaltenfelder'));
+				c.q('table').hinzu( 'tbody' );
+			}else {
+				c.id = 'cnNavigator';
+				c.htm(c.id + ': platzhalter');
+			}
+		}
+		
+		// t.hinzu('thead').hinzufugen( q('#cnHeaderSpaltenfelder') );
+
 	}
 </script>

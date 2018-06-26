@@ -63,10 +63,10 @@ function init() {
 	Element.prototype.suspend = function( ) {
 		this.style.display = 'none';
 	};
+
+	Element.prototype.verbergen = Element.prototype.hide;
 	
-	Element.prototype.zeigen = function( ) {
-		this.style.display = '';
-	};	
+	Element.prototype.zeigen = Element.prototype.show;
 	
 	Element.prototype.isDisplayed = function() {
 		return this.style.display == '';

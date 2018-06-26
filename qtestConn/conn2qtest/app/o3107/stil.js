@@ -7,25 +7,34 @@ function stilFestlegen( o ) {
 	const id = o.id;
 	const clz = o.className;
 	const nN = o.nodeName.toLowerCase();
+	
 	const farbeBg = daten.ci.stil.farbeBg;
 	const farbe = daten.ci.stil.farbe;
 	const einfassen = daten.ci.stil.einfassen;
 	const grenzradius = daten.ci.stil.grenzradius;
 	const mauszeiger = daten.ci.stil.mauszeiger;
 	const randRechts = daten.ci.stil.randRechts;
+	const artikelauswahlSpalteBg = daten.ci.stil.artikelauswahlSpalteBg;
 	
 	with( o.style ) {
 		fontFamily = 'arial';
-		stilFestlegen(o.q('table'));
 		if(id=='ci') {
 			margin = '0';
+			[].forEach.call(o.qs('*'), function(o) {
+				console.log( o.id );
+				stilFestlegen(o);
+			});
+		}
+		if(id=='cnBeobachtungen') {
+			
 		}
 		if( nN == 'table') {
 			// o.border = '1';
 			width = '100%';
+			borderCollapse = 'collapse';
 		}
 		if(o.id == 'tblBeobachtungen') {
-			borderCollapse = 'collapse';
+			height = '100%';
 			stilFestlegen(o.q('caption'));
 			[].forEach.call(o.qs('th'), function(c){
 				 stilFestlegen(c);
@@ -79,6 +88,46 @@ function stilFestlegen( o ) {
 			borderRadius = grenzradius;
 			border = einfassen;
 			borderColor = farbe;
+		}
+		if(id=='tblInhaltUndNavigator') {
+			height = '100%';
+		}
+		if(id=='wahleAlleGegenstandeAus') {
+			width='3%';
+			cursor = mauszeiger;
+		}
+		if(id=='cnInhalt') {
+			width = '81%';
+			verticalAlign = 'top';
+		}
+		if(id=='tblInhalt') {
+		}
+		if( clz == 'cnAktionszeile' ) {
+			[].forEach.call(o.qs('td *'), function(n){
+				var nn = n.nodeName.toLowerCase();
+				with(n.style) {
+					if( n.className  ==  'cnArtikelauswahl' ) {
+						background = artikelauswahlSpalteBg;
+						textAlign = 'center';
+						borderTop = einfassen + ' ' + farbe;
+						
+					} else {
+						if( (nn == 'input' || nn == 'select') && n.className != 'cbxArtikelauswahl' ) {
+							width = '100%';
+							height = '100%';
+							padding = '7px';
+
+						}
+					}
+				}
+			});
+		}
+		if(id == 'cnHeaderSpaltenfelder') {
+			// o.verbergen();
+		}
+		if(id=='cnNavigator'){
+			verticalAlign = 'top';
+			borderLeft = einfassen + ' ' + farbeBg;
 		}
 	}
 }

@@ -4,12 +4,21 @@
  * let o be object
  */
 function ereignisseFestlegen(o) {
-	var act = o.getAttribute('act');
 	o.addEventListener('click', function(e){
+		var act = o.getAttribute('act');
 		if( act == 'aktion' ) {
 			if(this.id == 'aktionHinzufugen') {
-				fugenSieEineAktionszeileZurTabelleHinzu(q('#tblBeobachtungen'));
+				fugenSieEineAktionszeileZurTabelleHinzu(q('#tblInhalt'));
 			}
+			if(this.id == 'aktionLoschen') {
+				fugenSieEineAktionszeileZurTabelleHinzu(q('#tblInhalt'));
+			}
+		}
+	});
+	
+	o.addEventListener('change', function(e) {
+		if(this.className == 'ausgewahlteAktion') {
+			
 		}
 	});
 }
@@ -22,13 +31,20 @@ function fugenSieEineAktionszeileZurTabelleHinzu(t) {
 	var s = daten.bekommenSieAktionen(); 
 
 	var r = t.q('tbody').hinzufugen('tr');
+	r.className = 'cnAktionszeile';
+	// -- Add itemSelector column und selector - //
+	r.hinzufugen('td').className = 'cnArtikelauswahl';
+	r.q('td .cnartikelauswahl').hinzufugen('input').type = 'checkbox';
+	r.q('input[type=checkbox]').className = 'cbxArtikelauswahl';
+
+	// - Add remaining action fields or columns - //
 	for(var i in o=s.options.daten) {
 		if( i=='ausgewahlt') { continue; }
 		var c = r.hinzufugen( 'td' );
 		c.htm('Platzhalter');
 		if(i=='aktion') {
 			c.spulen(); // - Rinse column contents - //
-			c.hinzufugen(s);
+			c.hinzufugen(daten.bekommenSieAktionen());
 		}else {
 			c.htm(o[i]);
 			if(i=='feld' || i=='wert' || i=='xpath') {
@@ -41,4 +57,11 @@ function fugenSieEineAktionszeileZurTabelleHinzu(t) {
 			}
 		}
 	}
+	
+	// - Set action row style - //
+	stilFestlegen( r );
+}
+
+function elementLoschen() {
+	
 }
