@@ -16,7 +16,10 @@ function stilFestlegen( o ) {
 	
 	with( o.style ) {
 		fontFamily = 'arial';
-		stilFestlegen( o.q('table') );
+		stilFestlegen(o.q('table'));
+		if(id=='ci') {
+			margin = '0';
+		}
 		if( nN == 'table') {
 			// o.border = '1';
 			width = '100%';
@@ -46,16 +49,16 @@ function stilFestlegen( o ) {
 		}
 		if(id == 'quadCnAktionenSuche') {
 			display = 'flex';
+			alignItems = 'center';
 			backgroundColor = farbeBg;
-			padding = '5px';
+			padding = '7px';
+			paddingLeft = '5px';
 			[].forEach.call(o.qs('#cnAktionen, #cnSuche'), function(n) {
 				stilFestlegen(n);
 			});
 		}
 		if( id == 'cnAktionen' ) {
-			display = 'flex';
-			backgroundColor = farbeBg;
-			padding = '5px';
+			flex = '1';
 			[].forEach.call( o.qs('aktion'), function(a) {
 				stilFestlegen(a);
 			});
@@ -67,6 +70,15 @@ function stilFestlegen( o ) {
 			border = einfassen;
 			borderRadius = grenzradius;
 			cursor = mauszeiger;
+		}
+		if( id == 'cnSuche' ) {
+			stilFestlegen(o.q('#suche'));
+		}
+		if( id == 'suche' ) {
+			padding = '11px';
+			borderRadius = grenzradius;
+			border = einfassen;
+			borderColor = farbe;
 		}
 	}
 }

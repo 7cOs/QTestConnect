@@ -12,28 +12,31 @@ var daten = {
 		titel: 'Beobachtungstabelle der Aktionen',
 		hauptAktionen: [{
 			id: 'aktionHinzufugen',
-			etikette: 'aktion hinzufugen...',
+			etikette: 'aktion hinzufugen',
 			titel: 'add action...',
 			act: 'aktion'
 		},{
 			id: 'szenarioSpeichern',
-			etikette: 'szenario speichern...',
+			etikette: 'szenario speichern',
 			titel: 'save scenario',
 			act: 'aktion'
 		},{
 			id: 'testfallErstellen',
-			etikette: 'testfall erstellen...',
+			etikette: 'testfall erstellen',
 			titel: 'create test case',
 			act: 'aktion'
 		},{
 			id: 'testSuiteErstellen',
-			etikette: 'test suite erstellen...',
+			etikette: 'test suite erstellen',
 			titel: 'create test suite',
 			act: 'aktion'
 		}],
 		suche: {
 			id: 'cnSuche',
-			htm: '<input id=suche placeholder=suche />'
+			eingang: {
+				id: 'suche',
+				platzhalter: 'suche...'
+			}
 		},
 		stil: {
 			farbeBg: 'rgb(154,205,50)',
@@ -41,10 +44,16 @@ var daten = {
 			einfassen: 'solid 1px',
 			grenzradius: '7px',
 			mauszeiger: 'pointer',
-			randRechts: '3.5'
+			randRechts: '5.5'
 		}
 	},
 	dasReglement: [{
+		aktion: 'Navigate To',
+		feld: 'Input field name (*Enclose in double quotes)',
+		art: [],
+		xpath: "Enter XPATH (optional)",
+		wert: 'Value to enter (*Enclose in double quotes)'
+	},{
 		aktion: 'Enter',
 		feld: 'Input field name (*Enclose in double quotes)',
 		art: [],
@@ -55,15 +64,33 @@ var daten = {
 		feld: 'Name of item to click (*Enclose in double quotes)',
 		art: [],
 		xpath: "Enter XPATH (optional)",
-		wert: 'Optional value(s) to consider (*Enclose in double quotes)'
+		wert: 'Optional value(s) to consider (*Enclose in double quotes)',
+		ausgewahlt: true
 	},{
 		aktion: 'Select',
 		feld: 'Name of item to select (*Enclose in double quotes)',
 		art: [],
 		xpath: "Enter XPATH (optional)",
 		wert: 'Enter select options (*Enclosed in quotes - separated by single quotes and comma)'
-	}],		
+	},{
+		aktion: 'Search',
+		feld: 'Name of item to search (*Enclose in double quotes)',
+		art: [],
+		xpath: "Enter XPATH (optional)",
+		wert: 'Enter search value (*Enclosed in quotes)'
+	}],
+	bekommeRegeln: function() {
+		return this.dasReglement;
+	},
+	ubersetzen: {
+		aktion: 'action',
+		feld: 'field',
+		art: 'type',
+		xpath: 'xpath',
+		wert: 'value'
+	},
 	artikelarten: [
+		'Select...',
 		'Button',
 		'radio Button', 
 		'Field',
@@ -77,11 +104,27 @@ var daten = {
 	erhalteArtikeltypen: function() {
 		return this.artikelarten;
 	},
-	ubersetzen: {
-		aktion: 'action',
-		feld: 'field',
-		art: 'type',
-		xpath: 'xpath',
-		wert: 'value'
+	bekommenSieAktionen: function() {
+		var reg = this.bekommeRegeln();
+		var s = doc.create('select');
+		for(var i=0; i<reg.length; i++) {
+			s.hinzufugen('option').htm( reg[i]['aktion'] );
+			if( reg[i]['ausgewahlt'] ) {
+				s.lastChild.selected = reg[i]['ausgewahlt'];
+				s.options.daten = reg[i];
+			}
+		}
+		return s;
+	},
+	wahlenSieDieOptionenFurDenArtikeltyp: function() {
+		var s = doc.create('select');
+		var ls = this.erhalteArtikeltypen();
+		ls.forEach.call(function(itm){
+			var o = s.hinzufugen( 'option' );
+			if( itm == 'Select...') {o.value='select';}
+			o.htm( itm );
+		});
+		console.log( s );
+		return s;
 	}
 };

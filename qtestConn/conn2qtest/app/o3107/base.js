@@ -10,6 +10,8 @@ function init() {
 	ci = doc.body; 
 	ci.id = 'ci';
 
+	d.create = document.createElement;
+	
 	Element.prototype.add = function(n) {
 		if(typeof(n)== 'object') {
 			this.appendChild( n ); 
@@ -32,7 +34,7 @@ function init() {
 	
 	Element.prototype.hinzufugen = Element.prototype.add;
 	
-	Element.prototype.hin = Element.prototype.add;
+	Element.prototype.hinzu = Element.prototype.add;
 	
 	Element.prototype.q = function( q ) {
 		return this.querySelector( q );
@@ -45,6 +47,10 @@ function init() {
 	Element.prototype.clear = function() {
 		this.textContent = '';
 	};
+	
+	Element.prototype.rinse = Element.prototype.clear;
+	
+	Element.prototype.spulen = Element.prototype.rinse;
 	
 	Element.prototype.show = function( ) {
 		this.style.display = '';

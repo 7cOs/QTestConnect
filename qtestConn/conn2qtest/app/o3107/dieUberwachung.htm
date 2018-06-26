@@ -2,6 +2,7 @@
 <script type="text/javascript" src='./base.js'></script>
 <script type="text/javascript" src='./daten.js'></script>
 <script type="text/javascript" src='./stil.js'></script>
+<script type="text/javascript" src='./veranstaltungen.js'></script>
 
 <script type='text/javascript'>
 	window.onload = function() {
@@ -48,6 +49,7 @@
 		for( var i in o = daten.dasReglement[0] ) {
 			var c = h.q('#cnHeaderSpaltenfelder').hinzufugen('th');
 			c.htm(i);
+			c.title = daten.ubersetzen[i];
 		}
 		// - Add actions - //
 		akts.q('tr td').colSpan = h.qs('#cnHeaderSpaltenfelder th').length;
@@ -58,10 +60,15 @@
 				j=='etikette' ? akt.htm( o[i][j] ) : akt.setAttribute(j, o[i][j]);
 				j=='titel'? akt.title =  o[i][j] : null;
 			}
+			// - Set action events - //
+			ereignisseFestlegen(akt);
 		}
 		// - Add search item - //
-		akts.q('#cnAktionen').progen.hinzufugen('cn').id='cnSuche';
-		akts.q('#cnAktionen').progen.q('#cnSuche');
+		akts.q('#cnAktionen').progen.hinzufugen('cn').id = daten.ci.suche.id;
+		akts.q('#cnAktionen').progen.q('#' + daten.ci.suche.id );
+		akts.progen.q('#cnSuche').hinzufugen('input');
+		akts.progen.q('#cnSuche input').id = daten.ci.suche.eingang.id;
+		akts.progen.q('#cnSuche #suche').placeholder =  daten.ci.suche.eingang.platzhalter;
 		
 		var b = t.hinzufugen('tbody');
 	}
