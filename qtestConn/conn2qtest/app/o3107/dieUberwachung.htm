@@ -46,16 +46,17 @@
 		cn.id = 'cnAktionen';
 		// - Add table header columns - //
 		h.hinzufugen('tr').id = 'cnHeaderSpaltenfelder';
-		// - Add selector column - //
+		// - Add select all items (rows) column - //
 		var sc = h.q('#cnHeaderSpaltenfelder').hinzufugen('th');
 		sc.id = 'wahleAlleGegenstandeAus';
 		sc.htm('&nbsp;');
+		ereignisseFestlegen(sc);
+		// - Add remaining table header column fields - //
 		for( var i in o = daten.dasReglement[0] ) {
 			var c = h.q('#cnHeaderSpaltenfelder').hinzufugen('th');
 			c.htm(i);
 			c.title = daten.ubersetzen[i];
-		}
-		
+		}		
 		// - Add actions - //
 		akts.q('tr td').colSpan = h.qs('#cnHeaderSpaltenfelder th').length;
 		for(var i=0; i<(o = daten.ci.hauptAktionen).length; i++) {
@@ -93,8 +94,5 @@
 				c.htm(c.id + ': platzhalter');
 			}
 		}
-		
-		// t.hinzu('thead').hinzufugen( q('#cnHeaderSpaltenfelder') );
-
 	}
 </script>

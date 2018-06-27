@@ -106,10 +106,12 @@ var daten = {
 	bekommeRegeln: function() {
 		return this.dasReglement;
 	},
-	regelErhalten: function(aktion) {
-		this.bekommeRegeln.forEach( function( n ) {
-			console.log( n );
-		});
+	regelErhalten: function( a ) {
+		for(var i = 0; i < (o = this.bekommeRegeln()).length; i++) {
+			if( o[i].aktion == a ) {
+				return o[i];
+			}
+		}
 	},
 	ubersetzen: {
 		aktion: 'action',
@@ -157,7 +159,6 @@ var daten = {
 			if( itm == 'Select...') {o.value='select';}
 			o.htm( itm );
 		});
-		console.log( s );
 		return s;
 	}
 };
