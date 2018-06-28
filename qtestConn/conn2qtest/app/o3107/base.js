@@ -81,7 +81,7 @@ function init() {
 	};
 
 	Element.prototype.kilsof = function(o) {
-		o.progen.removeChild(o);
+		o ? o.progen.removeChild(o) : null;
 	};	
 	
 	/** let g be host or der Gastgeber */

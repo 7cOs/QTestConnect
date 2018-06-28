@@ -9,6 +9,7 @@ function stilFestlegen( o ) {
 	const nN = o.nodeName.toLowerCase();
 	
 	const farbeBg = daten.ci.stil.farbeBg;
+	const hintergrundfarbe = daten.ci.stil.hintergrundfarbe;
 	const farbe = daten.ci.stil.farbe;
 	const einfassen = daten.ci.stil.einfassen;
 	const grenzradius = daten.ci.stil.grenzradius;
@@ -163,17 +164,26 @@ function stilFestlegen( o ) {
 		}
 		if( id == 'menu_schaffenTestobjekte' ) {
 			var p = o.progen;
-			// border = 'solid';
-			width = '155px';
-			height = '255px';
+			backgroundColor = hintergrundfarbe;
+			color = farbe;
+			display = 'flex';
+			flexDirection = 'column';
 			position = 'absolute';
-			top = (p.getBoundingClientRect().bottom) - (p.getBoundingClientRect().height/2)+5.97;
-			backgroundColor = farbe;
+			top = (p.getBoundingClientRect().top) + 
+				(p.getBoundingClientRect().height);
 			boxShadow = '0px 8px 16px 0px rgba(0,0,0,0.2)';
-			backgroundColor = farbeBg;
-			o.onmouseout = function() {
-				this.kilsof(this);
-			}
+			border = einfassen+' '+farbeBg;
+			borderRadius = grenzradius;
+			[].forEach.call(o.qs('mitem'), function(mi) {
+				stilFestlegen(mi);
+			});
+		}
+		if(nN == 'mitem') {
+			display = 'flex';
+			flexDirection = 'column';
+			padding = '5px';
+			width = '155px';
+			border = 'solid black'
 		}
 	}
 }

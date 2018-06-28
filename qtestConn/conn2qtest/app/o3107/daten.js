@@ -19,7 +19,27 @@ var daten = {
 			etikette: 'schaffen...',
 			titel: 'create test object',
 			act: 'aktion',
-			menu: ['aktion', 'szenario', 'testfalle', 'testsuite']
+			menu: [{
+				etikette: 'aktion',
+				actId: 'aktionHinzufugen',
+				ico: { clz: 'fa fa-cog' },
+				titel: 'create action'
+			},{
+				etikette: 'szenario',
+				actId: 'szenarioErstellen',
+				ico: { clz: 'fa fa-cog' },
+				titel: 'create scenario'
+			},{
+				etikette: 'testfalle',
+				actId: 'testfallErstellen',
+				ico: { clz: 'fa fa-cog' },
+				titel: 'create test case'
+			},{
+				etikette: 'testSuite',
+				actId: 'testSuiteErstellen',
+				ico: { clz: 'fa fa-cog' },
+				titel: 'create test suite'
+			}]
 		},{
 			id: 'redigieren',
 			etikette: 'redigieren...',
@@ -106,6 +126,7 @@ var daten = {
 		},
 		stil: {
 			farbeBg: 'rgb(154,205,50)',
+			hintergrundfarbe: 'rgb(154,205,50)',
 			farbe: 'rgb(255,255,255)',
 			einfassen: 'solid 1px',
 			grenzradius: '7px',

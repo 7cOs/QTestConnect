@@ -74,10 +74,9 @@
 			if( o[i].anzeigen == false) {
 				akt.verbergen();
 			}
-			// - Add aktion menu - //
-			if(o[i].menu) {
-				akt.menu = o[i].menu;
-			}
+			// - Store menu daten in akt if applicable - //
+			o[i].menu ? akt.menu = o[i].menu : null;
+			
 			// - Set action events - //
 			ereignisseFestlegen(akt);
 		}

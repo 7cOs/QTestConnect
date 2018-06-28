@@ -54,10 +54,24 @@ function ereignisseFestlegen(o) {
 
 // - Get action menu - //
 function aktionsmenuHinzufugen(o) {
-	var m = doc.create('menu');
+	/** Spulen */
+	o.kilsof( q('#menu_'+o.id) );
+	
+	var m = doc.create('_menu');
 	m.id = 'menu_'+o.id;
 	o.hinzufugen( m );
-	stilFestlegen( m );
+	
+	o.menu.forEach( function(o) {
+		var mI = m.hinzufugen('mitem');
+		mI.hinzu('ico').className = o.ico.clz;;
+		mI.hinzu('etikette').htm(o.etikette);
+		mI.title = o.titel;
+	});
+	
+	/** Legen Sie Ereignisse und Stil fest */
+	ereignisseFestlegen(m);
+	stilFestlegen(m);
+	
 	return m;
 }
 
