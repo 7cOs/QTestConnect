@@ -80,6 +80,10 @@ function init() {
 		this.innerHTML = h;
 	};
 
+	Element.prototype.kilsof = function(o) {
+		o.progen.removeChild(o);
+	};	
+	
 	/** let g be host or der Gastgeber */
 	Element.prototype.d2c = function( h ) {
 		var size = {

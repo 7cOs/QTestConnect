@@ -1,4 +1,6 @@
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <script type="text/javascript" src='./base.js'></script>
 <script type="text/javascript" src='./daten.js'></script>
 <script type="text/javascript" src='./stil.js'></script>
@@ -67,6 +69,14 @@
 				if(o[i][j]=='cnSuche'){ continue; }
 				j=='etikette' ? akt.htm( o[i][j] ) : akt.setAttribute(j, o[i][j]);
 				j=='titel'? akt.title =  o[i][j] : null;
+			}
+			// - Show/hide aktion - //
+			if( o[i].anzeigen == false) {
+				akt.verbergen();
+			}
+			// - Add aktion menu - //
+			if(o[i].menu) {
+				akt.menu = o[i].menu;
 			}
 			// - Set action events - //
 			ereignisseFestlegen(akt);

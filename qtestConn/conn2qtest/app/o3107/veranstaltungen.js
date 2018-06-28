@@ -7,13 +7,18 @@ function ereignisseFestlegen(o) {
 	o.addEventListener('click', function(e){
 		var act = o.getAttribute('act');
 		if( act == 'aktion' ) {
+			if( this.id == 'schaffenTestobjekte' ) {
+				if( this.menu ) {
+					this.hinzufugen( aktionsmenuHinzufugen(this) );
+				}
+			}
 			if(this.id == 'aktionHinzufugen') {
 				fugenSieEineAktionszeileZurTabelleHinzu(q('#tblInhalt'));
 			}
 			if(this.id == 'aktionLoschen') {
 				loschenSieDenAusgewahltenTabellenzeileneintrag(q('#tblInhalt'));
 			}
-			if(this.id == 'szenarioSpeichern') {
+			if(this.id == 'szenarioErstellen') {
 				testobjektHinzufugen(this);
 			}			
 		}
@@ -35,6 +40,9 @@ function ereignisseFestlegen(o) {
 				o.alleAusgewahlt = false;
 			}
 		}
+		if(this.id=='modalSchliezen') { //- Close modal - //
+			this.kilsof(this.modal);
+		}
 	});
 	
 	o.addEventListener('change', function(e) {
@@ -42,6 +50,15 @@ function ereignisseFestlegen(o) {
 			legenSieAusgewahlteAktionszeilenfelderFest(this.options[this.selectedIndex]);
 		}
 	});
+}
+
+// - Get action menu - //
+function aktionsmenuHinzufugen(o) {
+	var m = doc.create('menu');
+	m.id = 'menu_'+o.id;
+	o.hinzufugen( m );
+	stilFestlegen( m );
+	return m;
 }
 
 // - Add action row to table passed to the method - //
@@ -169,14 +186,27 @@ function testobjektHinzufugen(o) {
 
 function getModal() {
 	
+	var mo = daten.ci.modal;
+	
 	var m = doc.create('modal');
 	m.className = 'modal';
-	var h = m.hinzu('header');
+	var cn = m.hinzu('cn');
+	cn.id = 'cnHeader';
+	var h = cn.hinzu('header');
+	var ico = cn.hinzu('ico');
+	ico.id = mo.schliezen.ico.id;
+	ico.className = mo.schliezen.ico.clz;
+	ico.title = mo.schliezen.ico.titel;
+	ico.modal = m; // - Store modal in ico - //
+	// - Set close modal events - //
+	ereignisseFestlegen( ico );
 	
-	var c = m.hinzu('contents');
+	// - Add modal contents container - //
+	cn = m.hinzu('cn');
+	cn.id = '';
 	
 	var acs = m.hinzu('actions');
-	daten.ci.modal.actions.forEach( function( o ) {
+	mo.actions.forEach( function( o ) {
 		var ac = acs.hinzufugen('action');
 		for( var i in o ) {
 			i == 'id' ? ac.id = o[i] :

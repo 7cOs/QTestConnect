@@ -2,6 +2,7 @@
 /**
 * let daten be Data
 * let beobachtungstitel be Title of Observation
+* let hauptAktionen be main actions
 * let dasReglement be Rules
 * let artikelarten be Item Types
 * let erhalteArtikeltypen be get Item Types
@@ -13,39 +14,63 @@ var daten = {
 	ci: {
 		titel: 'Beobachtungstabelle der Aktionen',
 		hauptAktionen: [{
+			id: 'schaffenTestobjekte',
+			ico: { clz: '**TODO**' },
+			etikette: 'schaffen...',
+			titel: 'create test object',
+			act: 'aktion',
+			menu: ['aktion', 'szenario', 'testfalle', 'testsuite']
+		},{
+			id: 'redigieren',
+			etikette: 'redigieren...',
+			titel: 'edit test object',
+			act: 'aktion'
+		},{
+			id: 'loschen',
+			etikette: 'loschen...',
+			titel: 'delete test object(s)',
+			act: 'aktion'
+		},{
 			id: 'aktionHinzufugen',
 			etikette: 'aktion hinzufugen',
 			titel: 'add action...',
 			act: 'aktion',
-			modalerTitel: 'aktion hinzufügen'
+			modalerTitel: 'aktion hinzufügen',
+			anzeigen: false
 		},{
 			id: 'aktionLoschen',
 			etikette: 'aktion loschen',
 			titel: 'delete action...',
-			act: 'aktion'
-		},{
-			id: 'szenarioSpeichern',
-			etikette: 'szenario speichern',
-			titel: 'save scenario',
 			act: 'aktion',
-			modalerTitel: 'szenario erstellen'
+			anzeigen: false
+		},{
+			id: 'szenarioErstellen',
+			etikette: 'szenario erstellen',
+			titel: 'create scenario',
+			act: 'aktion',
+			modalerTitel: 'szenario erstellen',
+			anzeigen: false
+			
 		},{
 			id: 'testfallErstellen',
 			etikette: 'testfall erstellen',
 			titel: 'create test case',
 			act: 'aktion',
-			modalerTitel: 'testfall trstellen'
+			modalerTitel: 'testfall trstellen',
+			anzeigen: false
 		},{
 			id: 'testSuiteErstellen',
 			etikette: 'test suite erstellen',
 			titel: 'create test suite',
 			act: 'aktion',
-			modalerTitel: 'test suite erstellen'
+			modalerTitel: 'test suite erstellen',
+			anzeigen: false
 		},{
 			id: 'ausfuhrenAusgewahlt',
 			etikette: 'ausfuhren ausgewahlt',
 			titel: 'execute selected',
-			act: 'aktion'
+			act: 'aktion',
+			anzeigen: false
 		}],
 		suche: {
 			id: 'cnSuche',
@@ -62,6 +87,13 @@ var daten = {
 			}
 		},
 		modal: {
+			schliezen: { // - Close - //
+				ico: {
+					id: 'modalSchliezen',
+					clz: 'fa fa-close',
+					titel: 'close'
+				}
+			},
 			actions: [{
 				id: 'sparen',
 				etikette: 'sparen',

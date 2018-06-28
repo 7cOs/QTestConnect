@@ -21,7 +21,7 @@ function stilFestlegen( o ) {
 		if(id=='ci') {
 			margin = '0';
 			[].forEach.call(o.qs('*'), function(o) {
-				console.log( o.id );
+				// console.log( o.id );
 				stilFestlegen(o);
 			});
 		}
@@ -137,10 +137,43 @@ function stilFestlegen( o ) {
 			fontWeight = 'bold';
 		}
 		if( clz == 'modal' ) {
-			display = 'block';
+			display = 'flex';
+			flexDirection = 'column';
+			backgroundColor = farbe;
 			width = '575px';
 			height = '255px';
-			border = 'solid'
+			border = einfassen+' '+farbeBg;
+			borderRadius = grenzradius;
+			with( (cn = o.q('#cnHeader')).style ) {
+				display = 'flex';
+				alignItems = 'center';
+				backgroundColor = farbeBg;
+				color = farbe;
+				padding = '5px';
+				border = einfassen+' '+farbe;
+				with( (h = cn.q('header').style )) {
+					flex = 1;
+					fontWeight = 'normal';
+				}
+				with( (ic = cn.q('ico').style )) {
+					textAlign = 'center';
+					cursor = mauszeiger;
+				}
+			}
+		}
+		if( id == 'menu_schaffenTestobjekte' ) {
+			var p = o.progen;
+			// border = 'solid';
+			width = '155px';
+			height = '255px';
+			position = 'absolute';
+			top = (p.getBoundingClientRect().bottom) - (p.getBoundingClientRect().height/2)+5.97;
+			backgroundColor = farbe;
+			boxShadow = '0px 8px 16px 0px rgba(0,0,0,0.2)';
+			backgroundColor = farbeBg;
+			o.onmouseout = function() {
+				this.kilsof(this);
+			}
 		}
 	}
 }
