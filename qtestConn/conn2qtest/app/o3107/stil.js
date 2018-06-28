@@ -129,6 +129,19 @@ function stilFestlegen( o ) {
 			verticalAlign = 'top';
 			borderLeft = einfassen + ' ' + farbeBg;
 		}
+		if(id=='cnNavHeader') {
+			padding = '7px';
+			textAlign = 'center';
+			background = farbeBg;
+			color = farbe;
+			fontWeight = 'bold';
+		}
+		if( clz == 'modal' ) {
+			display = 'block';
+			width = '575px';
+			height = '255px';
+			border = 'solid'
+		}
 	}
 }
 	

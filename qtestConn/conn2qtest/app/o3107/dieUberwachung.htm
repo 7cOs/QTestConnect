@@ -49,6 +49,7 @@
 		// - Add select all items (rows) column - //
 		var sc = h.q('#cnHeaderSpaltenfelder').hinzufugen('th');
 		sc.id = 'wahleAlleGegenstandeAus';
+		sc.title = 'select/deselect all';
 		sc.htm('&nbsp;');
 		ereignisseFestlegen(sc);
 		// - Add remaining table header column fields - //
@@ -61,6 +62,7 @@
 		akts.q('tr td').colSpan = h.qs('#cnHeaderSpaltenfelder th').length;
 		for(var i=0; i<(o = daten.ci.hauptAktionen).length; i++) {
 			var akt = akts.q('#cnAktionen').hinzufugen('aktion');
+			akt.daten = o[i];
 			for(var j in o[i]) {
 				if(o[i][j]=='cnSuche'){ continue; }
 				j=='etikette' ? akt.htm( o[i][j] ) : akt.setAttribute(j, o[i][j]);
@@ -91,7 +93,8 @@
 				c.q('table').hinzu( 'tbody' );
 			}else {
 				c.id = 'cnNavigator';
-				c.htm(c.id + ': platzhalter');
+				c.hinzu('header').htm(daten.ci.navigator.header.etikette);
+				c.q('header').id = 'cnNavHeader';
 			}
 		}
 	}

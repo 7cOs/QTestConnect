@@ -80,6 +80,28 @@ function init() {
 		this.innerHTML = h;
 	};
 
+	/** let g be host or der Gastgeber */
+	Element.prototype.d2c = function( h ) {
+		var size = {
+		  width: window.innerWidth || document.body.clientWidth,
+		  height: window.innerHeight || document.body.clientHeight
+		};
+		// - Add to host - //
+		h.hinzufugen( this );
+
+		var r = h.getBoundingClientRect();
+		var c = this.getBoundingClientRect();
+		
+		var _x = (size.width/2) - (c.width/2);
+		var _y = size.height/2 - c.height/2;
+		
+		with( this.style ) {
+			position = 'absolute';
+			left = _x;
+			top = _y;
+		}
+	};
+	
 	// - Displace (Temp) - //
 	ci.suspend();
 }

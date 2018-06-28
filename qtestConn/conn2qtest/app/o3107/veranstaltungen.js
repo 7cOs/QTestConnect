@@ -13,6 +13,9 @@ function ereignisseFestlegen(o) {
 			if(this.id == 'aktionLoschen') {
 				loschenSieDenAusgewahltenTabellenzeileneintrag(q('#tblInhalt'));
 			}
+			if(this.id == 'szenarioSpeichern') {
+				testobjektHinzufugen(this);
+			}			
 		}
 		if(this.id == 'wahleAlleGegenstandeAus') {
 			var cbxz = qs('#tblInhalt .cbxArtikelauswahl');
@@ -60,7 +63,8 @@ function fugenSieEineAktionszeileZurTabelleHinzu(t) {
 	for(var i in o=s.options.daten) {
 		if( i=='ausgewahlt') { continue; }
 		var c = r.hinzufugen( 'td' );
-
+		c.setAttribute('name', i);
+		
 		c.htm('Platzhalter');
 		if(i=='aktion') {
 			c.spulen(); // - Rinse column contents - //
@@ -71,10 +75,12 @@ function fugenSieEineAktionszeileZurTabelleHinzu(t) {
 				c.spulen();
 				var f = c.hinzufugen('input');
 				f.placeholder = o[i];
+				console.log( 'typeof wert: ' + typeof o[i] );
 			}
 			if(i=='art') {
 				c.hinzufugen(daten.wahlenSieDieOptionenFurDenArtikeltyp());
 			}
+			
 		}
 	}
 	
@@ -100,7 +106,87 @@ function ausgewahlteTabellenelemente(t) {
 
 // - Set selected action item fields  - //
 function legenSieAusgewahlteAktionszeilenfelderFest(o) {
-	var a = daten.regelErhalten(o.textContent);
-	console.log( o.progen.progen.progen );
-	// console.log( o.progen.progen.progen )
+	var akt = o.textContent;
+	// - das reglement - //
+	var r = daten.regelErhalten(akt); 
+	// - Selected action row - //
+	var p = o.progen.progen.progen; 
+	for( var i in r ) {
+		if( i=='aktion' ) { continue; }
+		 // - Selected aktion column - //
+		var c = p.q('td[name='+i+']');
+		switch(i) {
+		case 'feld':
+		case 'xpath':
+		case 'wert':
+			var f = c.q('input');
+			f.placeholder = r[i];
+			f.readOnly = false;
+			if( akt == 'Navigate To' || akt == 'Login') {
+				if( i != 'wert' ) {
+					f.readOnly = true;
+					if(akt == 'Navigate To') {
+						f.readOnly = false;
+					}
+				}
+				if(akt == 'Login' && i == 'wert') {
+					c.spulen(); // - Rinse - //
+					// - Add test users select options - //
+					c.hinzufugen( daten.erhaltenSieDieAnmeldedatenFurTestbenutzer() );
+					// - Style aktion row - //
+					stilFestlegen( p );
+				}
+			}
+			break;
+		case 'art':
+			var s = c.q('select');
+			s.disabled = false;
+			[].forEach.call( s.options, function(o, i){
+				var tx = o.textContent;
+				if((akt == 'Navigate To' || akt == 'Login')
+						&& tx == 'Predefined') {
+					s.selectedIndex = i;
+					s.disabled = true;
+				} else {
+					if(tx == 'Select...') {
+						s.selectedIndex = i;
+					}
+				}
+			});
+			break;
+		}
+	}
 }
+
+// - Add test object to action observation table (beobachtungstabelle) - //
+function testobjektHinzufugen(o) {
+	console.log( o.daten );
+	var m = getModal();
+	m.q('header').htm( o.daten.modalerTitel );
+	m.d2c( ci );
+	console.log( m );
+}
+
+function getModal() {
+	
+	var m = doc.create('modal');
+	m.className = 'modal';
+	var h = m.hinzu('header');
+	
+	var c = m.hinzu('contents');
+	
+	var acs = m.hinzu('actions');
+	daten.ci.modal.actions.forEach( function( o ) {
+		var ac = acs.hinzufugen('action');
+		for( var i in o ) {
+			i == 'id' ? ac.id = o[i] :
+			i == 'etikette' ? ac.htm( o[i]) :
+			i == 'titel' ? ac.title = (o[i]) : null;
+		}
+	});
+	
+	stilFestlegen( m );
+	
+	return m;
+}
+ 

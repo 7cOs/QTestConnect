@@ -6,6 +6,8 @@
 * let artikelarten be Item Types
 * let erhalteArtikeltypen be get Item Types
 * let ubersetzen be Translator
+* let benutzeranmeldeinformationen be User Credentials
+* let erhaltenSieDieAnmeldedatenFurTestbenutzer be Get Test Users Credentials
 */	
 var daten = {
 	ci: {
@@ -14,7 +16,8 @@ var daten = {
 			id: 'aktionHinzufugen',
 			etikette: 'aktion hinzufugen',
 			titel: 'add action...',
-			act: 'aktion'
+			act: 'aktion',
+			modalerTitel: 'aktion hinzufügen'
 		},{
 			id: 'aktionLoschen',
 			etikette: 'aktion loschen',
@@ -24,16 +27,24 @@ var daten = {
 			id: 'szenarioSpeichern',
 			etikette: 'szenario speichern',
 			titel: 'save scenario',
-			act: 'aktion'
+			act: 'aktion',
+			modalerTitel: 'szenario erstellen'
 		},{
 			id: 'testfallErstellen',
 			etikette: 'testfall erstellen',
 			titel: 'create test case',
-			act: 'aktion'
+			act: 'aktion',
+			modalerTitel: 'testfall trstellen'
 		},{
 			id: 'testSuiteErstellen',
 			etikette: 'test suite erstellen',
 			titel: 'create test suite',
+			act: 'aktion',
+			modalerTitel: 'test suite erstellen'
+		},{
+			id: 'ausfuhrenAusgewahlt',
+			etikette: 'ausfuhren ausgewahlt',
+			titel: 'execute selected',
 			act: 'aktion'
 		}],
 		suche: {
@@ -42,6 +53,24 @@ var daten = {
 				id: 'suche',
 				platzhalter: 'suche...'
 			}
+		},
+		navigator: {
+			id: 'navigator',
+			header: {
+				etikette: 'testobjekte',
+				titel: 'test objects'
+			}
+		},
+		modal: {
+			actions: [{
+				id: 'sparen',
+				etikette: 'sparen',
+				titel: 'save'
+			},{
+				id: 'stornieren',
+				etikette: 'stornieren',
+				titel: 'cancel'
+			}]
 		},
 		stil: {
 			farbeBg: 'rgb(154,205,50)',
@@ -55,19 +84,19 @@ var daten = {
 	},
 	dasReglement: [{
 		aktion: 'Navigate To',
-		feld: '[N/A]',
+		feld: 'Site',
 		art: [],
 		xpath: '[N/A]',
 		wert: 'Enter Site URL [Required]'
 	},{
 		aktion: 'Login',
-		feld: '[N/A]',
+		feld: 'Credentials',
 		art: [],
-		xpath: "Enter XPATH (optional)",
-		wert: 'Enter Test User Credentials [Required]'
+		xpath: "[N/A]",
+		wert: []
 	},{
 		aktion: 'Enter',
-		feld: 'Input ield name [Required]',
+		feld: 'Input field name [Required]',
 		art: [],
 		xpath: "Enter XPATH [Optional]",
 		wert: 'Value to enter [Required]'
@@ -130,9 +159,32 @@ var daten = {
 		'Checkbox', 
 		'Increment', 
 		'Decrement',
-		'Pre-defined',
-		'Other'
+		'Predefined',
+		'Other',
+		'[N/A]'
 	],
+	benutzeranmeldeInformationen: [{
+		email: 'chris.williams@cbrands.com',
+		code: 'Corona.2016',
+		role: 'NonCorporate'
+	},{
+		email: 'john.uttter@cbrands.com',
+		code: 'Corona.2016',
+		role: 'NonCorporate'
+	}],
+	erhaltenSieDieAnmeldedatenFurTestbenutzer: function() {
+		var s = doc.create('select');
+		s.hinzufugen( 'option' ).htm('[Required] Select Test User...');
+		this.benutzeranmeldeInformationen.forEach( function(o) {
+			var email = o.email, role = o.role;
+			var desc = 'email: '+email+'\nrole: '+role;
+			var _o = s.hinzufugen('option');
+			_o.daten = o; // - Store objekt in element - //
+			_o.htm(email);
+			_o.title = desc;
+		});
+		return s;
+	},
 	erhalteArtikeltypen: function() {
 		return this.artikelarten;
 	},
