@@ -68,7 +68,7 @@ function aktionsmenuHinzufugen(o) {
 		mI.title = o.titel;
 	});
 	
-	/** Legen Sie Ereignisse und Stil fest */
+	// - Legen Sie Ereignisse und Stil fest - //
 	ereignisseFestlegen(m);
 	stilFestlegen(m);
 	

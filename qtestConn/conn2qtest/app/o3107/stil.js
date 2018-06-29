@@ -1,6 +1,5 @@
 
 /** let stilFestlegen be set style */
-
 function stilFestlegen( o ) {
 	if( !o || !o.style ) return;
 	
@@ -17,7 +16,7 @@ function stilFestlegen( o ) {
 	const randRechts = daten.ci.stil.randRechts;
 	const artikelauswahlSpalteBg = daten.ci.stil.artikelauswahlSpalteBg;
 	
-	with( o.style ) {
+	with( o.style ) {		
 		fontFamily = 'arial';
 		if(id=='ci') {
 			margin = '0';
@@ -69,8 +68,8 @@ function stilFestlegen( o ) {
 		}
 		if( id == 'cnAktionen' ) {
 			flex = '1';
-			[].forEach.call( o.qs('aktion'), function(a) {
-				stilFestlegen(a);
+			[].forEach.call( o.qs('aktion'), function(o) {
+				stilFestlegen(o);
 			});
 		}
 		if(nN == 'aktion') {
@@ -80,6 +79,7 @@ function stilFestlegen( o ) {
 			border = einfassen;
 			borderRadius = grenzradius;
 			cursor = mauszeiger;
+			console.log( q('iko').removeAttribute('style') );
 		}
 		if( id == 'cnSuche' ) {
 			stilFestlegen(o.q('#suche'));
@@ -180,10 +180,14 @@ function stilFestlegen( o ) {
 		}
 		if(nN == 'mitem') {
 			display = 'flex';
-			flexDirection = 'column';
+			flexDirection = 'row';
 			padding = '5px';
 			width = '155px';
-			border = 'solid black'
+			[].forEach.call(o.qs('ico'), function(o) {
+				with( o.style ) {
+					marginRight = '9px';
+				}
+			})
 		}
 	}
 }

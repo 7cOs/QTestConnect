@@ -15,8 +15,8 @@ var daten = {
 		titel: 'Beobachtungstabelle der Aktionen',
 		hauptAktionen: [{
 			id: 'schaffenTestobjekte',
-			ico: { clz: '**TODO**' },
-			etikette: 'schaffen...',
+			etikette: 'schaffen',
+			iko: { clz: 'fa fa-caret-down' },
 			titel: 'create test object',
 			act: 'aktion',
 			menu: [{
