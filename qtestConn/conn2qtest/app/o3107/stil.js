@@ -16,6 +16,9 @@ function stilFestlegen( o ) {
 	const randRechts = daten.ci.stil.randRechts;
 	const artikelauswahlSpalteBg = daten.ci.stil.artikelauswahlSpalteBg;
 	
+	// - Disregard styling for the following tags - //
+	if(nN == 'iko') return;
+	
 	with( o.style ) {		
 		fontFamily = 'arial';
 		if(id=='ci') {
@@ -79,7 +82,13 @@ function stilFestlegen( o ) {
 			border = einfassen;
 			borderRadius = grenzradius;
 			cursor = mauszeiger;
-			console.log( q('iko').removeAttribute('style') );
+			o.qs('*')
+			/*with(o.q('iko').style) {
+				marginLeft = '7px';
+			}
+			with(o.q('etikette').style) {
+				border = 'solid';
+			}*/
 		}
 		if( id == 'cnSuche' ) {
 			stilFestlegen(o.q('#suche'));
