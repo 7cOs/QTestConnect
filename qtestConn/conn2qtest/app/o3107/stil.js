@@ -1,6 +1,7 @@
 
 /** let stilFestlegen be set style */
 function stilFestlegen( o ) {
+	// - Bounce if object does not include style property - //
 	if( !o || !o.style ) return;
 	
 	const id = o.id;
@@ -82,13 +83,13 @@ function stilFestlegen( o ) {
 			border = einfassen;
 			borderRadius = grenzradius;
 			cursor = mauszeiger;
-			o.qs('*')
-			/*with(o.q('iko').style) {
-				marginLeft = '7px';
-			}
-			with(o.q('etikette').style) {
-				border = 'solid';
-			}*/
+			// - Consider child objects - //
+			[].forEach.call(o.qs('*'), function(o) {
+				var nn = o.nodeName.toLowerCase();
+				with(o.style) {
+					nn == 'etikette' ? marginRight = '7px' : null
+				}
+			});
 		}
 		if( id == 'cnSuche' ) {
 			stilFestlegen(o.q('#suche'));
@@ -154,7 +155,31 @@ function stilFestlegen( o ) {
 			height = '255px';
 			border = einfassen+' '+farbeBg;
 			borderRadius = grenzradius;
-			with( (cn = o.q('#cnHeader')).style ) {
+			/** stil Kindknoten */
+			[].forEach.call( o.qs('*'), function(o) {
+				console.log( o.id );
+				with( o.style ) {
+					switch( o.id ) {
+					case 'cnHeader':
+						display = 'flex';
+						alignItems = 'center';
+						backgroundColor = farbeBg;
+						color = farbe;
+						padding = '5px';
+						border = einfassen+' '+farbe;
+						borderTopLeftRadius = grenzradius;
+						borderTopRightRadius = borderTopLeftRadius;
+						with( (h = o.q('header').style )) {
+							flex = 1;
+							fontWeight = 'normal';
+						}
+						break;
+					}
+				}
+			});
+			
+			/*
+			with((cn = o.q('#cnHeader')).style) {
 				display = 'flex';
 				alignItems = 'center';
 				backgroundColor = farbeBg;
@@ -170,6 +195,15 @@ function stilFestlegen( o ) {
 					cursor = mauszeiger;
 				}
 			}
+			with((cn = o.q('#cnContents')).style) {
+				flex = 1;
+				padding = '5px';
+			}
+			with((acts = o.q('actions')).style) {
+				padding = '5px';
+				border = einfassen+' '+farbe;
+			}
+			*/
 		}
 		if( id == 'menu_schaffenTestobjekte' ) {
 			var p = o.progen;

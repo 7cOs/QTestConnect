@@ -82,9 +82,11 @@ function init() {
 
 	Element.prototype.kilsof = function(o) {
 		o ? o.progen.removeChild(o) : null;
-	};	
-	
-	/** let g be host or der Gastgeber */
+	};
+	/** 
+	 * let d2c be drift-to-center of h (host) passed to the element 
+	 * let h be host or der Gastgeber
+	 */
 	Element.prototype.d2c = function( h ) {
 		var size = {
 		  width: window.innerWidth || document.body.clientWidth,
@@ -104,6 +106,10 @@ function init() {
 			left = _x;
 			top = _y;
 		}
+	};
+	/** Let nN be nodeName */
+	Element.prototype.nN = function() {
+		return this.nodeName.toLowerCase();
 	};
 	
 	// - Displace (Temp) - //
