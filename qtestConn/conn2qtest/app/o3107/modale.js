@@ -22,18 +22,21 @@ function modalWerden() {
 	
 	// - Add modal contents container - //
 	cn = m.hinzu('cn');
-	cn.id = 'cnContents';
+	cn.id = 'cnInhalt';
 	cn.htm( cn.id );
 	
-	var acs = m.hinzu('actions');
+	var acs = m.hinzu('aktions');
 	acs.id = 'modaleAktionen';
 	mo.actions.forEach( function( o ) {
-		var ac = acs.hinzufugen('action');
+		var ac = acs.hinzufugen('aktion');
 		for( var i in o ) {
 			i == 'id' ? ac.id = o[i] :
 			i == 'etikette' ? ac.htm( o[i]) :
 			i == 'titel' ? ac.title = (o[i]) : null;
+			// - Set action events - //
+			ereignisseFestlegen(ac);
 		}
+		ac.modal = m;
 	});
 	
 	stilFestlegen( m );

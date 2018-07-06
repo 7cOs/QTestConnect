@@ -237,8 +237,13 @@ function legenSieAusgewahlteAktionszeilenfelderFest(o) {
 
 // - Display Add test object to action observation table (beobachtungstabelle) - //
 function testobjektHinzufugen(o) {
-	var m = modalWerden(); // - Display modal - //
-	m.q('header').htm(o.progen.aktion.etikette);
-	m.d2c(ci);
+	try {
+		var m = modalWerden(); // - Display modal - //
+		m.q('header').htm(o.progen.aktion.etikette);
+		m.d2c(ci);
+		ci.scrollenDeaktivieren();
+	} catch(e) {
+		ci.scrollenAktivieren();
+	}
 }
  

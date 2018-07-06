@@ -3,7 +3,7 @@
 * let daten be Data
 * let beobachtungstitel be Title of Observation
 * let hauptAktionen be main actions
-* let dasReglement be Rules
+* let dasReglement be action Rules
 * let artikelarten be Item Types
 * let erhalteArtikeltypen be get Item Types
 * let ubersetzen be Translator
@@ -127,6 +127,7 @@ var daten = {
 		stil: {
 			farbeBg: 'rgb(154,205,50)',
 			hintergrundfarbe: 'rgb(154,205,50)',
+			vordergrundfarbe: 'rgb(255,255,255)',
 			farbe: 'rgb(255,255,255)',
 			einfassen: 'solid 1px',
 			grenzradius: '7px',

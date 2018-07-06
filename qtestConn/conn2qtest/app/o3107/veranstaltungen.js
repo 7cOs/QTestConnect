@@ -47,19 +47,24 @@ function ereignisseFestlegen(o) {
 			// - Execute aktion menu item event - //
 			if(nN == 'mitem') {
 				e.stopPropagation();
-				
 				// - Add test object - //
 				testobjektHinzufugen(o);
+				// - Displace progen - //
+				this.kilsof(this.progen);
 			}
-			
 			 //- Close modal - //
 			if(this.id=='modalSchliezen') {
+				this.kilsof(this.modal);
+			}
+			// - Modal actions - //
+			if( this.id == 'stornieren' ) {
 				this.kilsof(this.modal);
 			}
 		});
 		o.addEventListener('change', function(e) {
 			if(this.className == 'ausgewahlteAktion') {
-				legenSieAusgewahlteAktionszeilenfelderFest(this.options[this.selectedIndex]);
+				legenSieAusgewahlteAktionszeilenfelderFest(
+						this.options[this.selectedIndex]);
 			}
 		});
 

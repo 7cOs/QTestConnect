@@ -83,6 +83,10 @@ function init() {
 	Element.prototype.kilsof = function(o) {
 		o ? o.progen.removeChild(o) : null;
 	};
+	
+	Element.prototype.euthanise = function() {
+		// this.progen.removeChild()
+	};
 	/** 
 	 * let d2c be drift-to-center of h (host) passed to the element 
 	 * let h be host or der Gastgeber
@@ -110,6 +114,14 @@ function init() {
 	/** Let nN be nodeName */
 	Element.prototype.nN = function() {
 		return this.nodeName.toLowerCase();
+	};
+	/** Let scrollenDeaktivieren be disable scrolling */
+	Element.prototype.scrollenDeaktivieren = function() {
+		this.style.overflow = 'hidden';
+	};
+	/** Let scrollenAktivieren be enable scrolling */
+	Element.prototype.scrollenAktivieren = function() {
+		this.style.overflow = 'auto';
 	};
 	
 	// - Displace (Temp) - //

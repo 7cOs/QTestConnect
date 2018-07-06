@@ -10,6 +10,7 @@ function stilFestlegen( o ) {
 	
 	const farbeBg = daten.ci.stil.farbeBg;
 	const hintergrundfarbe = daten.ci.stil.hintergrundfarbe;
+	const vordergrundfarbe = daten.ci.stil.vordergrundfarbe;
 	const farbe = daten.ci.stil.farbe;
 	const einfassen = daten.ci.stil.einfassen;
 	const grenzradius = daten.ci.stil.grenzradius;
@@ -159,13 +160,13 @@ function stilFestlegen( o ) {
 			[].forEach.call( o.qs('*'), function(o) {
 				console.log( o.id );
 				with( o.style ) {
+					padding = '5px';
 					switch( o.id ) {
 					case 'cnHeader':
 						display = 'flex';
 						alignItems = 'center';
 						backgroundColor = farbeBg;
 						color = farbe;
-						padding = '5px';
 						border = einfassen+' '+farbe;
 						borderTopLeftRadius = grenzradius;
 						borderTopRightRadius = borderTopLeftRadius;
@@ -174,36 +175,30 @@ function stilFestlegen( o ) {
 							fontWeight = 'normal';
 						}
 						break;
+					case 'modalSchliezen':
+						cursor = mauszeiger;
+						break;
+					case 'cnInhalt':
+						flex = 1;
+						break;
+					case 'modaleAktionen':
+						display = 'flex';
+						justifyContent = 'center';
+						backgroundColor = hintergrundfarbe;
+						borderTop = einfassen + ' ' + hintergrundfarbe;
+						break;
+					case 'sparen':
+					case 'stornieren':
+						color = farbeBg;
+						backgroundColor = vordergrundfarbe;
+						border = einfassen + ' ' + farbeBg;
+						borderRadius = grenzradius;
+						cursor = mauszeiger;
+						marginRight = '5px';
+						break;
 					}
 				}
 			});
-			
-			/*
-			with((cn = o.q('#cnHeader')).style) {
-				display = 'flex';
-				alignItems = 'center';
-				backgroundColor = farbeBg;
-				color = farbe;
-				padding = '5px';
-				border = einfassen+' '+farbe;
-				with( (h = cn.q('header').style )) {
-					flex = 1;
-					fontWeight = 'normal';
-				}
-				with( (ic = cn.q('ico').style )) {
-					textAlign = 'center';
-					cursor = mauszeiger;
-				}
-			}
-			with((cn = o.q('#cnContents')).style) {
-				flex = 1;
-				padding = '5px';
-			}
-			with((acts = o.q('actions')).style) {
-				padding = '5px';
-				border = einfassen+' '+farbe;
-			}
-			*/
 		}
 		if( id == 'menu_schaffenTestobjekte' ) {
 			var p = o.progen;
