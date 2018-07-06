@@ -53,7 +53,7 @@ function ereignisseFestlegen(o) {
 				this.kilsof(this.progen);
 			}
 			 //- Close modal - //
-			if(this.id=='modalSchliezen') {
+			if(this.id=='modalSchliezen' || ) {
 				this.kilsof(this.modal);
 			}
 			// - Modal actions - //
